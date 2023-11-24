@@ -12,7 +12,7 @@ jobs:
       with:
         distribution: temurin
         java-version: 11
-        
+    - run: chmod +x ./gradlew
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
     
