@@ -16,7 +16,7 @@ public class FoodGame extends ApplicationAdapter
 	@Override
 	public void create () 
 	{
-		kitchen1 = new Room(1, false, 0);
+		kitchen1 = new Room(Room.RoomType.KITCHEN_DEMO, false, 0);
 		batch = new SpriteBatch();
 	}
 	@Override

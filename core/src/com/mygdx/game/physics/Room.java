@@ -10,14 +10,17 @@ import com.badlogic.gdx.Gdx;
 
 public class Room
 {
-	private int roomType;
+	public static enum RoomType{
+		KITCHEN_DEMO,
+	}
+
+	private RoomType roomType;
 	private boolean hasBoss;
 	private int enemiesNumber;
 	private int roomID;
 	private Texture background;
-	
-	
-	public Room(int type, boolean boss, int enemyNum)
+
+	public Room(RoomType type, boolean boss, int enemyNum)
 	{
 		roomID = 1;
 		
@@ -26,11 +29,10 @@ public class Room
 		enemiesNumber = enemyNum;
 		
 		
-		if (roomID == 1){
+		if (roomType == RoomType.KITCHEN_DEMO){
 			background = new Texture("kitchen_size1.png");
 		}
-	
-		
+
 	}
 	
 	public void render(SpriteBatch batch)
