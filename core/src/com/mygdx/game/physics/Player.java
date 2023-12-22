@@ -26,7 +26,7 @@ public class Player extends DynamicObject {
     public Player(float x, float y, float width, float height)
     {
 		score = 0;
-		playerTexture = new Texture("Chef_Still_Image.png");
+		playerTexture = new Texture("Cheff/Chef_Still_Image.png");
 		playerSprite = new Sprite(playerTexture);
 		playerSprite.setSize(width, height);
 		playerSprite.setPosition(x, y);
