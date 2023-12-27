@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Gdx;
@@ -9,11 +8,7 @@ import com.mygdx.game.physics.Room;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Intersector;
-
-//testing stuff for the rectangle goes here
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class FoodGame extends ApplicationAdapter 
 {
@@ -31,10 +26,7 @@ public class FoodGame extends ApplicationAdapter
 		batch = new SpriteBatch();
 		player1 = new Player(400, 400, 56, 185);//first two are position. second two are for size of the hitbox
 		playerSize = 200;
-		
 	}
-	
-	
 	
 	@Override
 	public void render ()
