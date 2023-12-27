@@ -44,11 +44,6 @@ public class FoodGame extends ApplicationAdapter
 		
 		float speed = 5;
 		
-		
-		
-		
-		
-		
 		if (Gdx.input.isKeyPressed(Input.Keys.A)){
 			player1.testMove(-speed, 0);
 			if (player1.getFace()){
