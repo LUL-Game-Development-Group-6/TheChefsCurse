@@ -5,11 +5,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.mygdx.game.misc.Coords;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-
 
 //testing stuff for the rectangle goes here
 import com.badlogic.gdx.graphics.Color;
@@ -22,8 +18,7 @@ public class Player extends DynamicObject {
 	private Sprite playerSprite;
 	private Texture playerTexture;
 	private boolean facingRight;
-	
-	
+	private static float speed = 5;
 
     public Player(float x, float y, float width, float height)
     {
@@ -59,8 +54,6 @@ public class Player extends DynamicObject {
 	{
 		float previousX = this.getSprite().getX();
 		float previousY = this.getSprite().getY();
-
-		float speed = 5;
 
 		if (Gdx.input.isKeyPressed(Input.Keys.A)){
 			updateFace(speed, true);
