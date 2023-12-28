@@ -63,22 +63,17 @@ public class Player extends DynamicObject {
 		float speed = 5;
 
 		if (Gdx.input.isKeyPressed(Input.Keys.A)){
-			this.testMove(-speed, 0);
-			if (this.getFace()){
-				this.getSprite().flip(true, false);
-				this.setFace(false);
-			}
+			updateFace(speed, true);
 		}
+
 		if (Gdx.input.isKeyPressed(Input.Keys.D)){
-			this.testMove(speed, 0);
-			if (!this.getFace()){
-				this.getSprite().flip(true, false);
-				this.setFace(true);
-			}
+			updateFace(speed, false);
 		}
+
 		if (Gdx.input.isKeyPressed(Input.Keys.W)){
 			this.testMove(0, speed);
 		}
+
 		if (Gdx.input.isKeyPressed(Input.Keys.S)){
 			this.testMove(0, -speed);
 		}
@@ -128,6 +123,17 @@ public class Player extends DynamicObject {
 			if (Gdx.input.isKeyPressed(Input.Keys.W)){
 				this.testMove(1, 0);
 			}
+		}
+	}
+	private void updateFace(float speed, boolean speedDirection)
+	{
+		this.testMove((speedDirection ? -speed : speed), 0);
+		if (this.getFace()) {
+			this.getSprite().flip(true, false);
+			this.setFace(false);
+		} else {
+			this.getSprite().flip(true, false);
+			this.setFace(true);
 		}
 	}
 	
