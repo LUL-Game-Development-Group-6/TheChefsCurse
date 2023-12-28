@@ -4,25 +4,23 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Gdx;
-import com.mygdx.game.physics.Room;
+import com.mygdx.game.physics.Room.KitchenRoomFactory;
+import com.mygdx.game.physics.Room.Room;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class FoodGame extends ApplicationAdapter 
 {
-	private Room kitchen1;
+	private Room currentRoom;
 	private SpriteBatch batch;
 	private Player player1;
-	private ShapeRenderer shapeRenderer;//remove this later
 	private float playerSize;
 	
 	@Override
 	public void create () 
 	{
-		shapeRenderer = new ShapeRenderer();//remove this later
-		kitchen1 = new Room(Room.RoomType.KITCHEN_DEMO, false, 0);
+		currentRoom = new KitchenRoomFactory().createRoomBuilder().build();
 		batch = new SpriteBatch();
 		player1 = new Player(400, 400, 56, 185);//first two are position. second two are for size of the hitbox
 		playerSize = 200;
@@ -104,43 +102,16 @@ public class FoodGame extends ApplicationAdapter
 			}
 		}
 		
-		
-		
-		
-		
 		batch.begin();
 		ScreenUtils.clear(0, 0, 0, 0);
-		kitchen1.render(batch);
+		currentRoom.render(batch);
 		batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
 		batch.end();
-		
-		
-		/*
-		//rectangle stuff. remove it all later.
-		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-		shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
-		player1.renderHitbox(shapeRenderer);
-		
-		//stuff for working out where the lines are
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(1, 0, 0, 1);
-		//shapeRenderer.line(85, 270, 1230, 270);
-		//shapeRenderer.line(685, 0, 685, 720);
-		//shapeRenderer.line(0, 45, 1280, 45);
-		shapeRenderer.line(85, 270, 630, 45);//bottom left
-		shapeRenderer.line(1230, 290, 630, 45);//bottom right
-		shapeRenderer.line(85, 460, 685, 700);//top left
-		shapeRenderer.line(1230, 480, 685, 700);//top right
-		shapeRenderer.end();
-		*/
-
 	}
+
 	@Override
 	public void dispose()
 	{
 		batch.dispose();
-		//shapeRenderer.dispose();//remove this later
 	}
-
-
 }
