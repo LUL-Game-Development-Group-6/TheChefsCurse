@@ -78,9 +78,15 @@ public class Player extends DynamicObject {
 			this.testMove(0, -speed);
 		}
 
+		staticInterceptors(previousX, previousY);
+	}
+
+	private void staticInterceptors(float previousX, float previousY)
+	{
 		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, this.getHitbox())){//this could all be much neater, but it will work for now.
 			this.testMove(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());//moves the player back to previous position
-			if (Gdx.input.isKeyPressed(Input.Keys.A)){//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
+			if (Gdx.input.isKeyPressed(Input.Keys.A)){
+				//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
 				this.testMove(0, 1);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)){
@@ -125,6 +131,7 @@ public class Player extends DynamicObject {
 			}
 		}
 	}
+
 	private void updateFace(float speed, boolean speedDirection)
 	{
 		this.testMove((speedDirection ? -speed : speed), 0);
