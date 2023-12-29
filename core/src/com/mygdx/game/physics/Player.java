@@ -50,6 +50,9 @@ public class Player extends DynamicObject {
 			facingRight = newDirection;
 	}
 
+	/*
+		Renders the player
+	 */
 	public void render()
 	{
 		float previousX = this.getSprite().getX();
@@ -74,6 +77,11 @@ public class Player extends DynamicObject {
 		staticInterceptors(previousX, previousY);
 	}
 
+	/*
+		Checks player's position for obstacles and prevents movement beyond them
+		@Param float previuosX - previous player position in X dimension
+		@Param float previuosY - previous player position in Y dimension
+	 */
 	private void staticInterceptors(float previousX, float previousY)
 	{
 		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, this.getHitbox())){//this could all be much neater, but it will work for now.
@@ -125,6 +133,11 @@ public class Player extends DynamicObject {
 		}
 	}
 
+	/*
+		Updated player's face direction (cap direction?)
+		@Param float speed - numerical speed
+		@Param boolean speedDirection - if true the speed is negative, if false positive
+	 */
 	private void updateFace(float speed, boolean speedDirection)
 	{
 		this.move((speedDirection ? -speed : speed), 0);
@@ -137,8 +150,12 @@ public class Player extends DynamicObject {
 		}
 	}
 	
-	
-	public void move(float x, float y)
+	/*
+		Moves a player's texture with it's hitbox
+		@Param float x - distance to move player horizontally
+		@Param float y - distance to move player vertically
+	 */
+	private void move(float x, float y)
 	{
 		playerSprite.setPosition(playerSprite.getX() + x, playerSprite.getY() + y);
 		playerHitbox.setPosition(playerHitbox.getX() + x, playerHitbox.getY() + y);
