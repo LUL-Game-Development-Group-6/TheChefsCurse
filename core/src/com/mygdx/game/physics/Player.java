@@ -64,11 +64,11 @@ public class Player extends DynamicObject {
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.W)){
-			this.testMove(0, speed);
+			move(0, speed);
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.S)){
-			this.testMove(0, -speed);
+			move(0, -speed);
 		}
 
 		staticInterceptors(previousX, previousY);
@@ -77,57 +77,57 @@ public class Player extends DynamicObject {
 	private void staticInterceptors(float previousX, float previousY)
 	{
 		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, this.getHitbox())){//this could all be much neater, but it will work for now.
-			this.testMove(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());//moves the player back to previous position
+			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());//moves the player back to previous position
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
 				//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
-				this.testMove(0, 1);
+				move(0, 1);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				this.testMove(1, 0);
+				move(1, 0);
 			}
 		}
 
 		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, this.getHitbox())){
-			this.testMove(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
+			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				this.testMove(0, 1);
+				move(0, 1);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				this.testMove(-1, 0);
+				move(-1, 0);
 			}
 		}
 
 		if (Intersector.intersectSegmentRectangle(1230, 0, 1230, 720, this.getHitbox())){
-			this.testMove(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
+			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 		}
 		if (Intersector.intersectSegmentRectangle(85, 0, 85, 720, this.getHitbox())){
-			this.testMove(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
+			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 		}
 
 		if (Intersector.intersectSegmentRectangle(1230, 480, 685, 700, this.getHitbox())){
-			this.testMove(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
+			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				this.testMove(0, -1);
+				move(0, -1);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				this.testMove(-1, 0);
+				move(-1, 0);
 			}
 		}
 
 		if (Intersector.intersectSegmentRectangle(85, 460, 685, 700, this.getHitbox())){
-			this.testMove(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
+			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
-				this.testMove(0, -1);
+				move(0, -1);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				this.testMove(1, 0);
+				move(1, 0);
 			}
 		}
 	}
 
 	private void updateFace(float speed, boolean speedDirection)
 	{
-		this.testMove((speedDirection ? -speed : speed), 0);
+		this.move((speedDirection ? -speed : speed), 0);
 		if (this.getFace()) {
 			this.getSprite().flip(true, false);
 			this.setFace(false);
@@ -138,7 +138,7 @@ public class Player extends DynamicObject {
 	}
 	
 	
-	public void testMove(float x, float y)
+	public void move(float x, float y)
 	{
 		playerSprite.setPosition(playerSprite.getX() + x, playerSprite.getY() + y);
 		playerHitbox.setPosition(playerHitbox.getX() + x, playerHitbox.getY() + y);
