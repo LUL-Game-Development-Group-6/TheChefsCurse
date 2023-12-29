@@ -3,12 +3,9 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.Gdx;
-import com.mygdx.game.physics.Room.KitchenRoomFactory;
+import com.mygdx.game.physics.Room.factories.KitchenRoomFactory;
 import com.mygdx.game.physics.Room.Room;
 import com.mygdx.game.physics.Player;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Intersector;
 
 public class FoodGame extends ApplicationAdapter 
 {

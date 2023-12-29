@@ -1,4 +1,6 @@
-package com.mygdx.game.physics.Room;
+package com.mygdx.game.physics.Room.factories;
+
+import com.mygdx.game.physics.Room.builders.KitchenRoomBuilder;
 
 public class KitchenRoomFactory extends RoomFactory{
     @Override

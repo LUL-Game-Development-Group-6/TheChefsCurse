@@ -1,4 +1,6 @@
-package com.mygdx.game.physics.Room;
+package com.mygdx.game.physics.Room.factories;
+
+import com.mygdx.game.physics.Room.builders.RoomBuilder;
 
 public abstract class RoomFactory {
     public RoomBuilder create()
