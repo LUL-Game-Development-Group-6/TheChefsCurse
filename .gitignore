@@ -49,10 +49,12 @@ libgdx-*.zip
 libgdx-*.zip.MD5
 
 *.iml
+gradlew
 /.idea/
 
 #core & extension libs/ folders that have no 3rd party dependencies in them
 /gdx/libs
+/core/build
 /backends/gdx-backend-jglfw/libs/
 /backends/gdx-backend-robovm/libs/
 /extensions/gdx-audio/libs/
