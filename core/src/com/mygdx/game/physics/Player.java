@@ -30,7 +30,7 @@ public class Player extends DynamicObject {
 		playerSprite = new Sprite(playerTexture);
 		playerSprite.setSize(width, height);
 		playerSprite.setPosition(x, y);
-		playerHitbox = new Rectangle(x + width + 22, y, width, height);
+		playerHitbox = new Rectangle(x + width + 14, y, width, height);//width + 22 for 200
 		facingRight = true;
     }
 	
