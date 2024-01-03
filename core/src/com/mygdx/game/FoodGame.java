@@ -29,8 +29,8 @@ public class FoodGame extends ApplicationAdapter
 		shapeRenderer = new ShapeRenderer();//remove this later
 		kitchen1 = new Room(Room.RoomType.KITCHEN_DEMO, false, 0);
 		batch = new SpriteBatch();
-		player1 = new Player(400, 400, 56, 185);//first two are position. second two are for size of the hitbox
-		playerSize = 200;
+		player1 = new Player(400, 400, 48, 150);//first two are position. second two are for size of the hitbox 56, 185 are dimensions for 200 scale
+		playerSize = 165;//originally 200
 		
 	}
 	
@@ -42,9 +42,9 @@ public class FoodGame extends ApplicationAdapter
 		float previousX = player1.getSprite().getX();
 		float previousY = player1.getSprite().getY();
 		
-		float speed = 5;
+		float speed = 2f;
 		
-		
+		float jitter = 2f;
 		
 		
 		
@@ -73,20 +73,20 @@ public class FoodGame extends ApplicationAdapter
 		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, player1.getHitbox())){//this could all be much neater, but it will work for now.
 			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());//moves the player back to previous position
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
-				player1.testMove(0, 1);
+				player1.testMove(0, jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				player1.testMove(1, 0);
+				player1.testMove(jitter, 0);
 			}
 		}
 		
 		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, player1.getHitbox())){
 			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				player1.testMove(0, 1);
+				player1.testMove(0, jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				player1.testMove(-1, 0);
+				player1.testMove(-jitter, 0);
 			}
 		}
 		
@@ -97,23 +97,23 @@ public class FoodGame extends ApplicationAdapter
 			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
 		}
 		
-		if (Intersector.intersectSegmentRectangle(1230, 480, 685, 700, player1.getHitbox())){
+		if (Intersector.intersectSegmentRectangle(1230, 445, 685, 665, player1.getHitbox())){//1230, 380, 685, 700 for 200
 			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				player1.testMove(0, -1);
+				player1.testMove(0, -jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				player1.testMove(-1, 0);
+				player1.testMove(-jitter, 0);
 			}
 		}
 		
-		if (Intersector.intersectSegmentRectangle(85, 460, 685, 700, player1.getHitbox())){
+		if (Intersector.intersectSegmentRectangle(85, 425, 685, 665, player1.getHitbox())){//85, 460, 685, 700 for 200
 			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
-				player1.testMove(0, -1);
+				player1.testMove(0, -jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				player1.testMove(1, 0);
+				player1.testMove(jitter, 0);
 			}
 		}
 		
@@ -142,8 +142,8 @@ public class FoodGame extends ApplicationAdapter
 		//shapeRenderer.line(0, 45, 1280, 45);
 		shapeRenderer.line(85, 270, 630, 45);//bottom left
 		shapeRenderer.line(1230, 290, 630, 45);//bottom right
-		shapeRenderer.line(85, 460, 685, 700);//top left
-		shapeRenderer.line(1230, 480, 685, 700);//top right
+		shapeRenderer.line(85, 425, 685, 665);//top left
+		shapeRenderer.line(1230, 445, 685, 665);//top right
 		shapeRenderer.end();
 		*/
 
