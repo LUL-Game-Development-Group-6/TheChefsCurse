@@ -14,32 +14,23 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class Player extends DynamicObject {
     private int score;
-	private Rectangle playerHitbox;
-	private Sprite playerSprite;
-	private Texture playerTexture;
 	private boolean facingRight;
-	private static float speed = 5;
 
     public Player(float x, float y, float width, float height)
     {
 		score = 0;
-		playerTexture = new Texture("Chef_Still_Image.png");
-		playerSprite = new Sprite(playerTexture);
+		setSpeed(5);
+		Texture playerTexture = new Texture("Chef_Still_Image.png");
+		setTexture(playerTexture);
+
+		Sprite playerSprite = new Sprite(playerTexture);
 		playerSprite.setSize(width, height);
 		playerSprite.setPosition(x, y);
-		playerHitbox = new Rectangle(x + width + 22, y, width, height);
+		setSprite(playerSprite);
+
+		setHitbox(new Rectangle(x + width + 22, y, width, height));
 		facingRight = true;
     }
-	
-	public Sprite getSprite()
-	{
-		return playerSprite;
-	}
-	
-	public Rectangle getHitbox()
-	{
-			return playerHitbox;
-	}
 	
 	public boolean getFace()
 	{
@@ -157,15 +148,15 @@ public class Player extends DynamicObject {
 	 */
 	private void move(float x, float y)
 	{
-		playerSprite.setPosition(playerSprite.getX() + x, playerSprite.getY() + y);
-		playerHitbox.setPosition(playerHitbox.getX() + x, playerHitbox.getY() + y);
+		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
+		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
 	
 	//more rectangle stuff
 	public void renderHitbox(ShapeRenderer shapeRenderer){
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.rect(playerHitbox.getX(), playerHitbox.getY(), playerHitbox.getWidth(), playerHitbox.getHeight());
+		shapeRenderer.rect(hitbox.getX(), hitbox.getY(), hitbox.getWidth(), hitbox.getHeight());
 		shapeRenderer.end();
 	}
 	
