@@ -27,11 +27,8 @@ public class Room
 		
 		if (roomType == RoomType.KITCHEN_DEMO){
 			//background = new Texture("kitchen_size1.png");
-			background = new Texture("kitchen_size1_With_Objects.png");
-			
+			background = new Texture("rooms/kitchens/Kitchen_size1/kitchen_size1.png");	
 		}
-	
-		
 	}
 	
 	public void render(SpriteBatch batch)
