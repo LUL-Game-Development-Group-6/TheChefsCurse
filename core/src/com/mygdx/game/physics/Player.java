@@ -13,8 +13,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class Player extends DynamicObject {
-    private int score;
+	private int score;
 	private boolean facingRight;
+	
 
     public Player(float x, float y, float width, float height)
     {
@@ -152,7 +153,8 @@ public class Player extends DynamicObject {
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
 	
-	//more rectangle stuff
+	// more rectangle stuff
+	// Outline hitbox for testing
 	public void renderHitbox(ShapeRenderer shapeRenderer){
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
