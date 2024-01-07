@@ -1,0 +1,11 @@
+hotdog.png
+size:2048,2048
+repeat:none
+hotdog1
+bounds:964,1286,960,640
+hotdog2
+bounds:2,1286,960,640
+hotdog3
+bounds:2,2,960,640
+hotdog4
+bounds:2,644,960,640

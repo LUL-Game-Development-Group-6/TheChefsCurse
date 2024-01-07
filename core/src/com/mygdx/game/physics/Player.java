@@ -30,7 +30,7 @@ public class Player extends DynamicObject {
 		setSprite(playerSprite);
 
 		setHitbox(new Rectangle(x + width + 22, y, width, height));
-		facingRight = true;
+		facingRight = false;
     }
 	
 	public boolean getFace()
@@ -130,17 +130,15 @@ public class Player extends DynamicObject {
 		@Param float speed - numerical speed
 		@Param boolean speedDirection - if true the speed is negative, if false positive
 	 */
-	private void updateFace(float speed, boolean speedDirection)
-	{
-		this.move((speedDirection ? -speed : speed), 0);
-		if (this.getFace()) {
+	private void updateFace(float speed, boolean speedDirection) {
+		if (speedDirection != this.getFace()) {
 			this.getSprite().flip(true, false);
-			this.setFace(false);
-		} else {
-			this.getSprite().flip(true, false);
-			this.setFace(true);
+			this.setFace(!this.getFace()); // Toggle face direction
 		}
+		
+		this.move((speedDirection ? -speed : speed), 0);
 	}
+	
 	
 	/*
 		Moves a player's texture with it's hitbox
