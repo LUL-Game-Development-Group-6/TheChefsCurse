@@ -9,21 +9,46 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Enemy extends DynamicObject{
+  
   private Vector2 position;
   private Vector2 velocity;
+  private int type; // values 0 - 3, 0 is melee, 1 is ranged, 2 is boss, 3 is boss minion
 
-  public Enemy(Vector2 position, float width, float height)
+  public Enemy(Vector2 position, float width, float height, int type)
   {
+    switch(type){
+      case 0:
+        // melee enemy 1
+        break;
+      case 1:
+        // melee enemy 2
+        break;
+      case 2:
+        // ranged enemy 1
+        break;
+      case 3:
+        // ranged enemy 2
+        break;
+      case 4:
+        // boss enemy
+        break;
+      case 5:
+        // boss minion
+        break;
+      default:  
+        // default is melee enemy
+        break;
+    }
       this.position = position;
       this.velocity = new Vector2(1, 1);
       setSpeed(50);
-      Texture playerTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
-      setTexture(playerTexture);
+      Texture enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
+      setTexture(enemyTexture);
 
-      Sprite playerSprite = new Sprite(playerTexture);
-      playerSprite.setSize(width, height);
-      playerSprite.setPosition(position.x, position.y);
-      setSprite(playerSprite);
+      Sprite enemySprite = new Sprite(enemyTexture);
+      enemySprite.setSize(width, height);
+      enemySprite.setPosition(position.x, position.y);
+      setSprite(enemySprite);
 
       setHitbox(new Rectangle(position.x + width + 22, position.y, width, height));
   }

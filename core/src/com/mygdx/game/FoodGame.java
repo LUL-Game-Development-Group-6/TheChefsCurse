@@ -25,7 +25,7 @@ public class FoodGame extends ApplicationAdapter
 		currentRoom = new KitchenRoomFactory().createRoomBuilder().build();
 		batch = new SpriteBatch();
 		player1 = new Player(400, 400, 56, 185);
-		enemy = new Enemy(new Vector2(300,300), 56, 185);
+		enemy = new Enemy(new Vector2(300,300), 56, 185, 0);
 		playerSize = 200;
 	}
 	
