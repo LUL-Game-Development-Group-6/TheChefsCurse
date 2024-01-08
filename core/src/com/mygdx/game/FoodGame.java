@@ -32,7 +32,7 @@ public class FoodGame extends ApplicationAdapter
 	@Override
 	public void render ()
 	{
-		time += Gdx.graphics.getDeltaTime();
+		time = Gdx.graphics.getDeltaTime();
 		batch.begin();
 		player1.render();
 		ScreenUtils.clear(0, 0, 0, 0);

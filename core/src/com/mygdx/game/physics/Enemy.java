@@ -16,7 +16,7 @@ public class Enemy extends DynamicObject{
   {
       this.position = position;
       this.velocity = new Vector2(1, 1);
-      setSpeed(1);
+      setSpeed(50);
       Texture playerTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
       setTexture(playerTexture);
 
@@ -55,7 +55,7 @@ public class Enemy extends DynamicObject{
   }
 
 
-  	private void move(float x, float y)
+  private void move(float x, float y)
 	{
     // This works, but the sprite is not updated
     //System.out.println("Enemy position (x = " + x + " , y = " + y + ")");
