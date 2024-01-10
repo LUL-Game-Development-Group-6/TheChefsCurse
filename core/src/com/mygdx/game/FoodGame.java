@@ -17,7 +17,7 @@ public class FoodGame extends ApplicationAdapter
 	private Player player1;
 	private Enemy enemy;
 	private float playerSize;
-	private float time;
+	private float timeBetweenRenderCalls;
 	
 	@Override
 	public void create () 
@@ -25,14 +25,15 @@ public class FoodGame extends ApplicationAdapter
 		currentRoom = new KitchenRoomFactory().createRoomBuilder().build();
 		batch = new SpriteBatch();
 		player1 = new Player(400, 400, 56, 185);
-		enemy = new Enemy(new Vector2(300,300), 56, 185, 0);
+		enemy = new Enemy(new Vector2(300,300), 56, 185, Enemy.EnemyType.POPCORN);
 		playerSize = 200;
 	}
 	
 	@Override
 	public void render ()
 	{
-		time = Gdx.graphics.getDeltaTime();
+		// This is passed to render() so that it can calculate position
+		timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
 		batch.begin();
 		player1.render();
 		ScreenUtils.clear(0, 0, 0, 0);
@@ -42,7 +43,7 @@ public class FoodGame extends ApplicationAdapter
 		batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
 		Vector2 playerPosition = new Vector2(player1.getSprite().getX(), player1.getSprite().getY());
 		batch.draw(enemy.getSprite(), enemy.getSprite().getX(), enemy.getSprite().getY(), playerSize, playerSize);
-		enemy.render(time, playerPosition);
+		enemy.render(timeBetweenRenderCalls, playerPosition);
 		batch.end();
 	}
 

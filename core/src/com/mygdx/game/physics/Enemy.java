@@ -12,38 +12,37 @@ public class Enemy extends DynamicObject{
   
   private Vector2 position;
   private Vector2 velocity;
-  private int type; // values 0 - 3, 0 is melee, 1 is ranged, 2 is boss, 3 is boss minion
+  public static enum EnemyType{
+    HAMBURGER,
+    HOTDOG,
+    POPCORN,
+    SODA,
+  }
 
-  public Enemy(Vector2 position, float width, float height, int type)
-  {
-    switch(type){
-      case 0:
-        // melee enemy 1
+  private EnemyType enemyType;
+
+  public Enemy(Vector2 position, float width, float height, EnemyType enemyType){
+    Texture enemyTexture;
+    switch(enemyType){
+      case HAMBURGER:
+        enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
         break;
-      case 1:
-        // melee enemy 2
+      case HOTDOG:
+        enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
         break;
-      case 2:
-        // ranged enemy 1
+      case POPCORN:
+        enemyTexture = new Texture("enemies/Popcorn/popcorn.png");
         break;
-      case 3:
-        // ranged enemy 2
+      case SODA:
+        enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
         break;
-      case 4:
-        // boss enemy
-        break;
-      case 5:
-        // boss minion
-        break;
-      default:  
-        // default is melee enemy
+      default:
+        enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
         break;
     }
       this.position = position;
       this.velocity = new Vector2(1, 1);
       setSpeed(50);
-      Texture enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
-      setTexture(enemyTexture);
 
       Sprite enemySprite = new Sprite(enemyTexture);
       enemySprite.setSize(width, height);
