@@ -14,13 +14,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class Player extends DynamicObject {
 	private int score;
+	private float jitter;
 	private boolean facingRight;
 	
 
     public Player(float x, float y, float width, float height)
     {
 		score = 0;
-		setSpeed(5);
+		setSpeed(2f);
+		setJitter(2f);
 		Texture playerTexture = new Texture("Chef_Still_Image.png");
 		setTexture(playerTexture);
 
@@ -29,7 +31,7 @@ public class Player extends DynamicObject {
 		playerSprite.setPosition(x, y);
 		setSprite(playerSprite);
 
-		setHitbox(new Rectangle(x + width + 22, y, width, height));
+		setHitbox(new Rectangle(x + width + 14, y, width, height));
 		facingRight = false;
     }
 	
@@ -42,9 +44,17 @@ public class Player extends DynamicObject {
 			facingRight = newDirection;
 	}
 
+	public float getJitter() {
+		return jitter;
+	}
+
+	public void setJitter(float jitter) {
+		this.jitter = jitter;
+	}
+
 	/*
-		Renders the player
-	 */
+            Renders the player
+         */
 	public void render()
 	{
 		float previousX = this.getSprite().getX();
@@ -80,20 +90,20 @@ public class Player extends DynamicObject {
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());//moves the player back to previous position
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
 				//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
-				move(0, 1);
+				move(0, jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				move(1, 0);
+				move(jitter, 0);
 			}
 		}
 
 		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, this.getHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				move(0, 1);
+				move(0, jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				move(-1, 0);
+				move(-jitter, 0);
 			}
 		}
 
@@ -104,23 +114,23 @@ public class Player extends DynamicObject {
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 		}
 
-		if (Intersector.intersectSegmentRectangle(1230, 480, 685, 700, this.getHitbox())){
+		if (Intersector.intersectSegmentRectangle(1230, 445, 685, 665, this.getHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				move(0, -1);
+				move(0, -jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				move(-1, 0);
+				move(-jitter, 0);
 			}
 		}
 
-		if (Intersector.intersectSegmentRectangle(85, 460, 685, 700, this.getHitbox())){
+		if (Intersector.intersectSegmentRectangle(85, 425, 685, 665, this.getHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
-				move(0, -1);
+				move(0, -jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				move(1, 0);
+				move(jitter, 0);
 			}
 		}
 	}
