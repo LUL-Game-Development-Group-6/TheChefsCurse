@@ -150,14 +150,4 @@ public class Player extends DynamicObject {
 		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
-	
-	// more rectangle stuff
-	// Outline hitbox for testing
-	public void renderHitbox(ShapeRenderer shapeRenderer){
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.rect(hitbox.getX(), hitbox.getY(), hitbox.getWidth(), hitbox.getHeight());
-		shapeRenderer.end();
-	}
-	
 }

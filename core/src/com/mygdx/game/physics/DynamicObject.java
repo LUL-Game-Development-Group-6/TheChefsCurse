@@ -1,7 +1,9 @@
 package com.mygdx.game.physics;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.misc.Coords;
 
@@ -86,5 +88,14 @@ public abstract class DynamicObject {
 
     public void setTexture(Texture texture) {
         this.texture = texture;
+    }
+
+    // more rectangle stuff
+    // Outline hitbox for testing
+    public void renderHitbox(ShapeRenderer shapeRenderer){
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(hitbox.getX(), hitbox.getY(), hitbox.getWidth(), hitbox.getHeight());
+        shapeRenderer.end();
     }
 }
