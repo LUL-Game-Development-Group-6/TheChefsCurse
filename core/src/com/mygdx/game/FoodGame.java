@@ -1,159 +1,55 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Gdx;
-import com.mygdx.game.physics.Room;
+import com.mygdx.game.physics.Room.factories.KitchenRoomFactory;
+import com.mygdx.game.physics.Room.Room;
 import com.mygdx.game.physics.Player;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Intersector;
-
-//testing stuff for the rectangle goes here
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.mygdx.game.physics.Enemy;
+import com.badlogic.gdx.math.Vector2;
 
 public class FoodGame extends ApplicationAdapter 
 {
-	private Room kitchen1;
+	private Room currentRoom;
 	private SpriteBatch batch;
 	private Player player1;
-	private ShapeRenderer shapeRenderer;//remove this later
+	private Enemy enemy;
 	private float playerSize;
+	private float timeBetweenRenderCalls;
 	
 	@Override
 	public void create () 
 	{
-		shapeRenderer = new ShapeRenderer();//remove this later
-		kitchen1 = new Room(Room.RoomType.KITCHEN_DEMO, false, 0);
+		currentRoom = new KitchenRoomFactory().createRoomBuilder().build();
 		batch = new SpriteBatch();
-		player1 = new Player(400, 400, 56, 185);//first two are position. second two are for size of the hitbox
+		player1 = new Player(400, 400, 56, 185);
+		enemy = new Enemy(new Vector2(300,300), 56, 185, Enemy.EnemyType.POPCORN);
 		playerSize = 200;
-		
 	}
-	
-	
 	
 	@Override
 	public void render ()
 	{
-		float previousX = player1.getSprite().getX();
-		float previousY = player1.getSprite().getY();
-		
-		float speed = 5;
-		
-		
-		
-		
-		
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.A)){
-			player1.testMove(-speed, 0);
-			if (player1.getFace()){
-				player1.getSprite().flip(true, false);
-				player1.setFace(false);
-			}
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.D)){
-			player1.testMove(speed, 0);
-			if (!player1.getFace()){
-				player1.getSprite().flip(true, false);
-				player1.setFace(true);
-			}
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.W)){
-			player1.testMove(0, speed);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.S)){
-			player1.testMove(0, -speed);
-		}
-		
-		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, player1.getHitbox())){//this could all be much neater, but it will work for now.
-			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());//moves the player back to previous position
-			if (Gdx.input.isKeyPressed(Input.Keys.A)){//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
-				player1.testMove(0, 1);
-			}
-			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				player1.testMove(1, 0);
-			}
-		}
-		
-		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, player1.getHitbox())){
-			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
-			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				player1.testMove(0, 1);
-			}
-			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				player1.testMove(-1, 0);
-			}
-		}
-		
-		if (Intersector.intersectSegmentRectangle(1230, 0, 1230, 720, player1.getHitbox())){
-			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
-		}
-		if (Intersector.intersectSegmentRectangle(85, 0, 85, 720, player1.getHitbox())){
-			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
-		}
-		
-		if (Intersector.intersectSegmentRectangle(1230, 480, 685, 700, player1.getHitbox())){
-			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
-			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				player1.testMove(0, -1);
-			}
-			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				player1.testMove(-1, 0);
-			}
-		}
-		
-		if (Intersector.intersectSegmentRectangle(85, 460, 685, 700, player1.getHitbox())){
-			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
-			if (Gdx.input.isKeyPressed(Input.Keys.A)){
-				player1.testMove(0, -1);
-			}
-			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				player1.testMove(1, 0);
-			}
-		}
-		
-		
-		
-		
-		
+		// This is passed to render() so that it can calculate position
+		timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
 		batch.begin();
+		player1.render();
 		ScreenUtils.clear(0, 0, 0, 0);
-		kitchen1.render(batch);
-		batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
-		batch.end();
+		currentRoom.render(batch);
 		
-		
-		/*
-		//rectangle stuff. remove it all later.
-		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-		shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
-		player1.renderHitbox(shapeRenderer);
-		
-		//stuff for working out where the lines are
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(1, 0, 0, 1);
-		//shapeRenderer.line(85, 270, 1230, 270);
-		//shapeRenderer.line(685, 0, 685, 720);
-		//shapeRenderer.line(0, 45, 1280, 45);
-		shapeRenderer.line(85, 270, 630, 45);//bottom left
-		shapeRenderer.line(1230, 290, 630, 45);//bottom right
-		shapeRenderer.line(85, 460, 685, 700);//top left
-		shapeRenderer.line(1230, 480, 685, 700);//top right
-		shapeRenderer.end();
-		*/
 
+		batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
+		Vector2 playerPosition = new Vector2(player1.getSprite().getX(), player1.getSprite().getY());
+		batch.draw(enemy.getSprite(), enemy.getSprite().getX(), enemy.getSprite().getY(), playerSize, playerSize);
+		enemy.render(timeBetweenRenderCalls, playerPosition);
+		batch.end();
 	}
+
 	@Override
 	public void dispose()
 	{
 		batch.dispose();
-		//shapeRenderer.dispose();//remove this later
 	}
-
-
 }
