@@ -6,24 +6,28 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-//testing stuff for the rectangle goes here
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-
+import com.badlogic.gdx.graphics.GL20;
 public class Player extends DynamicObject {
-	private int score;
-	private float jitter;
+
+	// Player variables
+    private int score;
+    private float jitter;
 	private boolean facingRight;
-	
+
+	// Animation
+	private TextureAtlas walkingAtlas;
+	private Animation<Sprite> animation;
 
     public Player(float x, float y, float width, float height)
     {
 		score = 0;
 		setSpeed(2f);
 		setJitter(2f);
-		Texture playerTexture = new Texture("Chef_Still_Image.png");
+		Texture playerTexture = new Texture("cheff/Chef_Still_Image.png");
 		setTexture(playerTexture);
 
 		Sprite playerSprite = new Sprite(playerTexture);
@@ -34,14 +38,48 @@ public class Player extends DynamicObject {
 		setHitbox(new Rectangle(x + width + 14, y, width, height));
 		facingRight = false;
     }
-	
+
+	public void create() {
+		walkingAtlas = new TextureAtlas(Gdx.files.internal("cheff/cheff_spritesheet.atlas"));
+
+		animation = new Animation<Sprite>(
+			1/15f,
+			walkingAtlas.createSprite("Left1"),
+			walkingAtlas.createSprite("Left2"),
+			walkingAtlas.createSprite("Left3"),
+			walkingAtlas.createSprite("Left4"),
+			walkingAtlas.createSprite("Left5"),
+			walkingAtlas.createSprite("Left6"),
+			walkingAtlas.createSprite("Left7"),
+			walkingAtlas.createSprite("Left8"));
+
+		flipAnimation();
+	}
+
+	public void flipAnimation() {
+		for (TextureRegion frame : animation.getKeyFrames()) {
+			frame.flip(true, false);
+		}
+	}
+
+	public void dispose() {
+		walkingAtlas.dispose();
+	}
+
+	public Animation<Sprite> getAnimation() {
+		return animation;
+	}
+	public TextureAtlas getAtlas() {
+		return walkingAtlas;
+	}
+
 	public boolean getFace()
 	{
-			return facingRight;
+		return facingRight;
 	}
 	public void setFace(boolean newDirection)
 	{
-			facingRight = newDirection;
+		facingRight = newDirection;
 	}
 
 	public float getJitter() {
@@ -145,11 +183,11 @@ public class Player extends DynamicObject {
 			this.getSprite().flip(true, false);
 			this.setFace(!this.getFace()); // Toggle face direction
 		}
-		
+
 		this.move((speedDirection ? -speed : speed), 0);
 	}
 	
-	
+
 	/*
 		Moves a player's texture with it's hitbox
 		@Param float x - distance to move player horizontally

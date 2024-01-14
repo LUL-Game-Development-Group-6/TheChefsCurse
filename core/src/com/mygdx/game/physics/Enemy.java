@@ -31,7 +31,7 @@ public class Enemy extends DynamicObject{
         enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
         break;
       case POPCORN:
-        enemyTexture = new Texture("enemies/Popcorn/popcorn.png");
+        enemyTexture = new Texture("enemies/Popcorn/Popcorn.png");
         break;
       case SODA:
         enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
