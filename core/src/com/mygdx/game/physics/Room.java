@@ -1,4 +1,3 @@
-package com.mygdx.game.physics;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,8 +26,11 @@ public class Room
 		
 		if (roomType == RoomType.KITCHEN_DEMO){
 			//background = new Texture("kitchen_size1.png");
-			background = new Texture("rooms/kitchens/Kitchen_size1/kitchen_size1.png");	
+			background = new Texture("kitchen_size1_With_Objects.png");
+			
 		}
+	
+		
 	}
 	
 	public void render(SpriteBatch batch)
