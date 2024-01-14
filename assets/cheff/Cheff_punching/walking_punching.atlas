@@ -1,0 +1,15 @@
+walking_punching.png
+size:2048,2048
+repeat:none
+Chef_walking_punching1
+bounds:2,2,640,640
+Chef_walking_punching2
+bounds:2,644,640,640
+Chef_walking_punching3
+bounds:1286,1286,640,640
+Chef_walking_punching4
+bounds:644,1286,640,640
+Chef_walking_punching5
+bounds:2,1286,640,640
+Chef_walking_punching6
+bounds:644,644,640,640

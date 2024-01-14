@@ -6,53 +6,93 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-//testing stuff for the rectangle goes here
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-
+import com.badlogic.gdx.graphics.GL20;
 public class Player extends DynamicObject {
+
+	// Player variables
     private int score;
-	private Rectangle playerHitbox;
-	private Sprite playerSprite;
-	private Texture playerTexture;
+    private float jitter;
 	private boolean facingRight;
-	private static float speed = 5;
+
+	// Animation
+	private TextureAtlas walkingAtlas;
+	private Animation<Sprite> animation;
 
     public Player(float x, float y, float width, float height)
     {
 		score = 0;
-		playerTexture = new Texture("Chef_Still_Image.png");
-		playerSprite = new Sprite(playerTexture);
+		setSpeed(2f);
+		setJitter(2f);
+		Texture playerTexture = new Texture("cheff/Chef_Still_Image.png");
+		setTexture(playerTexture);
+
+		Sprite playerSprite = new Sprite(playerTexture);
 		playerSprite.setSize(width, height);
 		playerSprite.setPosition(x, y);
-		playerHitbox = new Rectangle(x + width + 22, y, width, height);
-		facingRight = true;
+		setSprite(playerSprite);
+
+		setHitbox(new Rectangle(x + width + 14, y, width, height));
+		facingRight = false;
     }
-	
-	public Sprite getSprite()
-	{
-		return playerSprite;
+
+	public void create() {
+		walkingAtlas = new TextureAtlas(Gdx.files.internal("cheff/cheff_spritesheet.atlas"));
+
+		animation = new Animation<Sprite>(
+			1/15f,
+			walkingAtlas.createSprite("Left1"),
+			walkingAtlas.createSprite("Left2"),
+			walkingAtlas.createSprite("Left3"),
+			walkingAtlas.createSprite("Left4"),
+			walkingAtlas.createSprite("Left5"),
+			walkingAtlas.createSprite("Left6"),
+			walkingAtlas.createSprite("Left7"),
+			walkingAtlas.createSprite("Left8"));
+
+		flipAnimation();
 	}
-	
-	public Rectangle getHitbox()
-	{
-			return playerHitbox;
+
+	public void flipAnimation() {
+		for (TextureRegion frame : animation.getKeyFrames()) {
+			frame.flip(true, false);
+		}
 	}
-	
+
+	public void dispose() {
+		walkingAtlas.dispose();
+	}
+
+	public Animation<Sprite> getAnimation() {
+		return animation;
+	}
+	public TextureAtlas getAtlas() {
+		return walkingAtlas;
+	}
+
 	public boolean getFace()
 	{
-			return facingRight;
+		return facingRight;
 	}
 	public void setFace(boolean newDirection)
 	{
-			facingRight = newDirection;
+		facingRight = newDirection;
+	}
+
+	public float getJitter() {
+		return jitter;
+	}
+
+	public void setJitter(float jitter) {
+		this.jitter = jitter;
 	}
 
 	/*
-		Renders the player
-	 */
+            Renders the player
+         */
 	public void render()
 	{
 		float previousX = this.getSprite().getX();
@@ -88,20 +128,20 @@ public class Player extends DynamicObject {
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());//moves the player back to previous position
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
 				//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
-				move(0, 1);
+				move(0, jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				move(1, 0);
+				move(jitter, 0);
 			}
 		}
 
 		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, this.getHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				move(0, 1);
+				move(0, jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				move(-1, 0);
+				move(-jitter, 0);
 			}
 		}
 
@@ -112,23 +152,23 @@ public class Player extends DynamicObject {
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 		}
 
-		if (Intersector.intersectSegmentRectangle(1230, 480, 685, 700, this.getHitbox())){
+		if (Intersector.intersectSegmentRectangle(1230, 445, 685, 665, this.getHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				move(0, -1);
+				move(0, -jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				move(-1, 0);
+				move(-jitter, 0);
 			}
 		}
 
-		if (Intersector.intersectSegmentRectangle(85, 460, 685, 700, this.getHitbox())){
+		if (Intersector.intersectSegmentRectangle(85, 425, 685, 665, this.getHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
-				move(0, -1);
+				move(0, -jitter);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				move(1, 0);
+				move(jitter, 0);
 			}
 		}
 	}
@@ -138,18 +178,16 @@ public class Player extends DynamicObject {
 		@Param float speed - numerical speed
 		@Param boolean speedDirection - if true the speed is negative, if false positive
 	 */
-	private void updateFace(float speed, boolean speedDirection)
-	{
-		this.move((speedDirection ? -speed : speed), 0);
-		if (this.getFace()) {
+	private void updateFace(float speed, boolean speedDirection) {
+		if (speedDirection != this.getFace()) {
 			this.getSprite().flip(true, false);
-			this.setFace(false);
-		} else {
-			this.getSprite().flip(true, false);
-			this.setFace(true);
+			this.setFace(!this.getFace()); // Toggle face direction
 		}
+
+		this.move((speedDirection ? -speed : speed), 0);
 	}
 	
+
 	/*
 		Moves a player's texture with it's hitbox
 		@Param float x - distance to move player horizontally
@@ -157,16 +195,7 @@ public class Player extends DynamicObject {
 	 */
 	private void move(float x, float y)
 	{
-		playerSprite.setPosition(playerSprite.getX() + x, playerSprite.getY() + y);
-		playerHitbox.setPosition(playerHitbox.getX() + x, playerHitbox.getY() + y);
+		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
+		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
-	
-	//more rectangle stuff
-	public void renderHitbox(ShapeRenderer shapeRenderer){
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.rect(playerHitbox.getX(), playerHitbox.getY(), playerHitbox.getWidth(), playerHitbox.getHeight());
-		shapeRenderer.end();
-	}
-	
 }
