@@ -16,21 +16,18 @@ public class Player extends DynamicObject {
 	// Player variables
     private int score;
     private float jitter;
-	private Rectangle playerHitbox;
 	private boolean facingRight;
 
 	// Animation
-	private Sprite playerSprite;
 	private TextureAtlas walkingAtlas;
 	private Animation<Sprite> animation;
-	private Texture playerTexture;
 
     public Player(float x, float y, float width, float height)
     {
 		score = 0;
 		setSpeed(2f);
 		setJitter(2f);
-		Texture playerTexture = new Texture("Chef_Still_Image.png");
+		Texture playerTexture = new Texture("cheff/Chef_Still_Image.png");
 		setTexture(playerTexture);
 
 		Sprite playerSprite = new Sprite(playerTexture);
@@ -39,11 +36,10 @@ public class Player extends DynamicObject {
 		setSprite(playerSprite);
 
 		setHitbox(new Rectangle(x + width + 14, y, width, height));
-		facingRight = true;
+		facingRight = false;
     }
 
 	public void create() {
-
 		walkingAtlas = new TextureAtlas(Gdx.files.internal("cheff/cheff_spritesheet.atlas"));
 
 		animation = new Animation<Sprite>(
@@ -75,17 +71,6 @@ public class Player extends DynamicObject {
 	}
 	public TextureAtlas getAtlas() {
 		return walkingAtlas;
-	}
-
-	// Roddy's classes
-	public Sprite getSprite()
-	{
-		return playerSprite;
-	}
-
-	public Rectangle getHitbox()
-	{
-		return playerHitbox;
 	}
 
 	public boolean getFace()

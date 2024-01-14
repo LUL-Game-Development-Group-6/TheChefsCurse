@@ -68,7 +68,7 @@ public class Cover implements Screen
         font = new BitmapFont();
 
         background = new Texture("cover/Cheffs_Curse_Cover.png");
-        logo = new Texture("cover/logo.png");
+        logo = new Texture("cover/logo_static.png");
 
         start = new TextButtonStyle();
         start.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Start_NotClicked.png")));
@@ -139,7 +139,6 @@ public class Cover implements Screen
     }
 
     public void render(float delta) {
-
         stage.act();
         game.batch.begin();
         ScreenUtils.clear(1, 0, 0, 1);

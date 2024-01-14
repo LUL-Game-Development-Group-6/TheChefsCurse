@@ -5,6 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 public class KitchenRoom extends Room{
 
     public KitchenRoom() {
-        super.background = new Texture("kitchen_size1_With_Objects.png");
+        super.background = new Texture("rooms/kitchens/Kitchen_size1/kitchen_1.png");
     }
 }
