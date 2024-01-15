@@ -1,71 +1,197 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Gdx;
-import com.mygdx.game.physics.Room.factories.KitchenRoomFactory;
-import com.mygdx.game.physics.Room.Room;
+import com.mygdx.game.physics.Room;
 import com.mygdx.game.physics.Player;
-import com.badlogic.gdx.Screen;
-import com.mygdx.game.physics.Enemy;
-import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.physics.Bullet;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Intersector;
 
-public class FoodGame implements Screen
+import java.util.LinkedList;
+
+//testing stuff for the rectangle goes here
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+
+public class FoodGame extends ApplicationAdapter 
 {
-	private Room currentRoom;
+	private Room kitchen1;
 	private SpriteBatch batch;
 	private Player player1;
-	private Enemy enemy;
+	private ShapeRenderer shapeRenderer;//remove this later
 	private float playerSize;
-	private float timePassed;
-    private float timeBetweenRenderCalls;
-
-	final Menu game;
-	public FoodGame(final Menu game) {
-        this.game = game;
-    }
-
-    public void pause() {}
-    public void resume() {}
-    public void resize(int width, int height) {}
-    public void hide() {}
-
+	private LinkedList<Bullet> ammunition;
+	private float offset;
+	
 	@Override
-	public void show ()
+	public void create () 
 	{
-		currentRoom = new KitchenRoomFactory().createRoomBuilder().build();
+		shapeRenderer = new ShapeRenderer();//remove this later
+		kitchen1 = new Room(Room.RoomType.KITCHEN_DEMO, false, 0);
 		batch = new SpriteBatch();
-		player1 = new Player(400, 400, 48, 150);
-		enemy = new Enemy(new Vector2(300,300), 56, 185, Enemy.EnemyType.POPCORN);
-		playerSize = 165;
+		player1 = new Player(400, 400, 56, 185);//first two are position. second two are for size of the hitbox
+		playerSize = 200;
+		ammunition = new LinkedList<Bullet>();
+		offset = 75;
+		
 	}
-
+	
+	
+	
 	@Override
-	public void render (float delta)
+	public void render ()
 	{
-        // This is passed to render() so that it can calculate position
-        timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
-        batch.begin();
-        player1.render();
-        ScreenUtils.clear(0, 0, 0, 0);
-        currentRoom.render(batch);
+		float previousX = player1.getSprite().getX();
+		float previousY = player1.getSprite().getY();
+		
+		float speed = 5;
+		
+		
+		if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){//stops the player from holding in the key
+			Bullet nextBullet = new Bullet(6, 0, player1.getSprite().getX() + offset, player1.getSprite().getY() + offset);
+			ammunition.add(nextBullet);
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
+			Bullet nextBullet = new Bullet(-6, 0, player1.getSprite().getX() + offset, player1.getSprite().getY() + offset);
+			ammunition.add(nextBullet);
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+			Bullet nextBullet = new Bullet(0, 6, player1.getSprite().getX() + offset, player1.getSprite().getY() + offset);
+			ammunition.add(nextBullet);
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+			Bullet nextBullet = new Bullet(0, -6, player1.getSprite().getX() + offset, player1.getSprite().getY() + offset);
+			ammunition.add(nextBullet);
+		}
+		for (Bullet current : ammunition){
+			current.update();
+			if (current.getXPosition() < 0 || current.getXPosition() > 1280 || current.getYPosition() < 0 || current.getYPosition() > 720){
+				current.setVisibility(false);
+			}
+		}
+		for (int i = ammunition.size() - 1; i >= 0; i--){
+			if (ammunition.get(i).getVisibility() == false){
+				ammunition.remove(i);
+			}
+		}
+		
+		
+		if (Gdx.input.isKeyPressed(Input.Keys.A)){
+			player1.testMove(-speed, 0);
+			if (player1.getFace()){
+				player1.getSprite().flip(true, false);
+				player1.setFace(false);
+			}
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.D)){
+			player1.testMove(speed, 0);
+			if (!player1.getFace()){
+				player1.getSprite().flip(true, false);
+				player1.setFace(true);
+			}
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.W)){
+			player1.testMove(0, speed);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.S)){
+			player1.testMove(0, -speed);
+		}
+		
+		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, player1.getHitbox())){//this could all be much neater, but it will work for now.
+			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());//moves the player back to previous position
+			if (Gdx.input.isKeyPressed(Input.Keys.A)){//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
+				player1.testMove(0, 1);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.S)){
+				player1.testMove(1, 0);
+			}
+		}
+		
+		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, player1.getHitbox())){
+			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
+			if (Gdx.input.isKeyPressed(Input.Keys.D)){
+				player1.testMove(0, 1);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.S)){
+				player1.testMove(-1, 0);
+			}
+		}
+		
+		if (Intersector.intersectSegmentRectangle(1230, 0, 1230, 720, player1.getHitbox())){
+			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
+		}
+		if (Intersector.intersectSegmentRectangle(85, 0, 85, 720, player1.getHitbox())){
+			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
+		}
+		
+		if (Intersector.intersectSegmentRectangle(1230, 480, 685, 700, player1.getHitbox())){
+			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
+			if (Gdx.input.isKeyPressed(Input.Keys.D)){
+				player1.testMove(0, -1);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.W)){
+				player1.testMove(-1, 0);
+			}
+		}
+		
+		if (Intersector.intersectSegmentRectangle(85, 460, 685, 700, player1.getHitbox())){
+			player1.testMove(previousX - player1.getSprite().getX(), previousY - player1.getSprite().getY());
+			if (Gdx.input.isKeyPressed(Input.Keys.A)){
+				player1.testMove(0, -1);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.W)){
+				player1.testMove(1, 0);
+			}
+		}
+		
+		
+		
+		
+		
+		batch.begin();
+		ScreenUtils.clear(0, 0, 0, 0);
+		kitchen1.render(batch);
+		for (Bullet current : ammunition){
+			current.render(batch);
+		}
+		batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
+		batch.end();
+		
+		
+		/*
+		//rectangle stuff. remove it all later.
+		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+		shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
+		player1.renderHitbox(shapeRenderer);
+		
+		//stuff for working out where the lines are
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(1, 0, 0, 1);
+		//shapeRenderer.line(85, 270, 1230, 270);
+		//shapeRenderer.line(685, 0, 685, 720);
+		//shapeRenderer.line(0, 45, 1280, 45);
+		shapeRenderer.line(85, 270, 630, 45);//bottom left
+		shapeRenderer.line(1230, 290, 630, 45);//bottom right
+		shapeRenderer.line(85, 460, 685, 700);//top left
+		shapeRenderer.line(1230, 480, 685, 700);//top right
+		shapeRenderer.end();
+		*/
 
-        timePassed += Gdx.graphics.getDeltaTime();
-        delta += Gdx.graphics.getDeltaTime();
-
-        batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
-        Vector2 playerPosition = new Vector2(player1.getSprite().getX(), player1.getSprite().getY());
-        batch.draw(enemy.getSprite(), enemy.getSprite().getX(), enemy.getSprite().getY(), playerSize, playerSize);
-        enemy.render(timeBetweenRenderCalls, playerPosition);
-        batch.end();
 	}
-
-
+	
+	
+	
+	@Override
 	public void dispose()
 	{
-		game.batch.dispose();
-		player1.dispose();
-
+		batch.dispose();
+		//shapeRenderer.dispose();//remove this later
 	}
+
+
 }
