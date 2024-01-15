@@ -9,6 +9,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.mygdx.game.physics.Bullet;
+
+import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.GL20;
 public class Player extends DynamicObject {
@@ -17,6 +20,8 @@ public class Player extends DynamicObject {
     private int score;
     private float jitter;
 	private boolean facingRight;
+	private LinkedList<Bullet> ammunition;
+	private float offset;
 
 	// Animation
 	private TextureAtlas walkingAtlas;
@@ -37,6 +42,9 @@ public class Player extends DynamicObject {
 
 		setHitbox(new Rectangle(x + width + 14, y, width, height));
 		facingRight = false;
+		
+		ammunition = new LinkedList<Bullet>();
+		offset = 75;
     }
 
 	public void create() {
@@ -97,6 +105,37 @@ public class Player extends DynamicObject {
 	{
 		float previousX = this.getSprite().getX();
 		float previousY = this.getSprite().getY();
+		
+		if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){//stops the player from holding in the key
+			Bullet nextBullet = new Bullet(6, 0, sprite.getX() + offset, sprite.getY() + offset);
+			ammunition.add(nextBullet);
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
+			Bullet nextBullet = new Bullet(-6, 0, sprite.getX() + offset, sprite.getY() + offset);
+			ammunition.add(nextBullet);
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+			Bullet nextBullet = new Bullet(0, 6, sprite.getX() + offset, sprite.getY() + offset);
+			ammunition.add(nextBullet);
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+			Bullet nextBullet = new Bullet(0, -6, sprite.getX() + offset, sprite.getY() + offset);
+			ammunition.add(nextBullet);
+		}
+		for (Bullet current : ammunition){
+			current.update();
+			if (current.getXPosition() < 0 || current.getXPosition() > 1280 || current.getYPosition() < 0 || current.getYPosition() > 720){
+				current.setVisibility(false);
+			}
+		}
+		for (int i = ammunition.size() - 1; i >= 0; i--){
+			if (ammunition.get(i).getVisibility() == false){
+				ammunition.remove(i);
+			}
+		}
+		
+		
+		
 
 		if (Gdx.input.isKeyPressed(Input.Keys.A)){
 			updateFace(speed, true);
@@ -198,4 +237,11 @@ public class Player extends DynamicObject {
 		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
+	
+	public LinkedList<Bullet> getAmmunition()
+	{
+		return ammunition;
+	}
+	
+	
 }
