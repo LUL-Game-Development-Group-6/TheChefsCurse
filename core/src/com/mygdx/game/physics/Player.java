@@ -1,76 +1,172 @@
 package com.mygdx.game.physics;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.game.FoodGame;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import java.util.ArrayList;
 
-import com.badlogic.gdx.graphics.GL20;
+
 public class Player extends DynamicObject {
 
 	// Player variables
     private int score;
     private float jitter;
+	private float playerSize;
 	private boolean facingRight;
+	private Sprite playerSprite;
+	private Texture playerTexture;
+	private Texture playerTexture_RedGunDOWN;
+	private Texture playerTexture_RedGunUP;
+	private Texture playerTexture_Standing;
+
 
 	// Animation
-	private TextureAtlas walkingAtlas;
-	private Animation<Sprite> animation;
+	private TextureAtlas currentAtlas;
+	private Animation<Sprite> currentAnimation;
+	private Animation<Sprite> walkingAnimation;
+	private Animation<Sprite> RedGunAnimation_DOWN;
+	private Animation<Sprite> RedGunAnimation_UP;
+	private ArrayList<Animation<Sprite>> allAnimations;
 
     public Player(float x, float y, float width, float height)
     {
+		allAnimations = new ArrayList<Animation<Sprite>>();
 		score = 0;
 		setSpeed(2f);
 		setJitter(2f);
-		Texture playerTexture = new Texture("cheff/Chef_Still_Image.png");
+
+		playerTexture_Standing = new Texture("cheff/Chef_Still_Image.png");
+		playerTexture_RedGunDOWN = new Texture("cheff/RedGun/RedGun_standing_DOWN.png");
+		playerTexture_RedGunUP = new Texture("cheff/RedGun/RedGun_standing_UP.png");
+		playerTexture = playerTexture_Standing;
 		setTexture(playerTexture);
 
-		Sprite playerSprite = new Sprite(playerTexture);
+		playerSize = 165;
+
+		playerSprite = new Sprite(playerTexture);
 		playerSprite.setSize(width, height);
 		playerSprite.setPosition(x, y);
 		setSprite(playerSprite);
 
 		setHitbox(new Rectangle(x + width + 14, y, width, height));
-		facingRight = false;
+		facingRight = true;
+		create();
     }
 
 	public void create() {
-		walkingAtlas = new TextureAtlas(Gdx.files.internal("cheff/cheff_spritesheet.atlas"));
 
-		animation = new Animation<Sprite>(
+		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/RedGun/RedGun_DOWN.atlas"));
+		RedGunAnimation_DOWN = new Animation<Sprite>(
 			1/15f,
-			walkingAtlas.createSprite("Left1"),
-			walkingAtlas.createSprite("Left2"),
-			walkingAtlas.createSprite("Left3"),
-			walkingAtlas.createSprite("Left4"),
-			walkingAtlas.createSprite("Left5"),
-			walkingAtlas.createSprite("Left6"),
-			walkingAtlas.createSprite("Left7"),
-			walkingAtlas.createSprite("Left8"));
+			currentAtlas.createSprite("Chef_Still_RedGun_DOWN1"),
+			currentAtlas.createSprite("Chef_Still_RedGun_DOWN2"),
+			currentAtlas.createSprite("Chef_Still_RedGun_DOWN3"),
+			currentAtlas.createSprite("Chef_Still_RedGun_DOWN4"),
+			currentAtlas.createSprite("Chef_Still_RedGun_DOWN5"),
+			currentAtlas.createSprite("Chef_Still_RedGun_DOWN6"),
+			currentAtlas.createSprite("Chef_Still_RedGun_DOWN7"),
+			currentAtlas.createSprite("Chef_Still_RedGun_DOWN8"));
 
-		flipAnimation();
+		allAnimations.add(RedGunAnimation_DOWN);
+
+		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/RedGun/RedGun_UP.atlas"));
+		RedGunAnimation_UP = new Animation<Sprite>(
+			1/15f,
+			currentAtlas.createSprite("Chef_Still_RedGun_UP1"),
+			currentAtlas.createSprite("Chef_Still_RedGun_UP2"),
+			currentAtlas.createSprite("Chef_Still_RedGun_UP3"),
+			currentAtlas.createSprite("Chef_Still_RedGun_UP4"),
+			currentAtlas.createSprite("Chef_Still_RedGun_UP5"),
+			currentAtlas.createSprite("Chef_Still_RedGun_UP6"),
+			currentAtlas.createSprite("Chef_Still_RedGun_UP7"),
+			currentAtlas.createSprite("Chef_Still_RedGun_UP8"));
+
+		allAnimations.add(RedGunAnimation_UP);
+
+		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/cheff_spritesheet.atlas"));
+		walkingAnimation = new Animation<Sprite>(
+			1/15f,
+			currentAtlas.createSprite("Left1"),
+			currentAtlas.createSprite("Left2"),
+			currentAtlas.createSprite("Left3"),
+			currentAtlas.createSprite("Left4"),
+			currentAtlas.createSprite("Left5"),
+			currentAtlas.createSprite("Left6"),
+			currentAtlas.createSprite("Left7"),
+			currentAtlas.createSprite("Left8"));	
+		
+		allAnimations.add(walkingAnimation);
+
+		currentAnimation = RedGunAnimation_UP;
 	}
 
 	public void flipAnimation() {
-		for (TextureRegion frame : animation.getKeyFrames()) {
-			frame.flip(true, false);
+		for (Animation<Sprite> animation : allAnimations) {
+			for (TextureRegion frame : animation.getKeyFrames()) {
+				frame.flip(true, false);
+			}
 		}
 	}
 
+	public void flipAnimationDynamic (float cursorY, SpriteBatch batch) {
+		// Added 80 to match the middle of the sprite of the player
+		if (cursorY >= sprite.getY() + 80) {
+			currentAnimation = RedGunAnimation_UP;
+			playerTexture = playerTexture_RedGunUP;
+			setTexture(playerTexture);
+			playerSprite = new Sprite(playerTexture);
+			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
+			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
+			setSprite(playerSprite);
+
+		}
+		if (cursorY < sprite.getY() + 80) {
+			currentAnimation = RedGunAnimation_DOWN;
+			playerTexture = playerTexture_RedGunDOWN;
+			setTexture(playerTexture);
+			playerSprite = new Sprite(playerTexture);
+			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
+			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
+			setSprite(playerSprite);
+		}
+
+		if (Gdx.input.getX() >= hitbox.getX()) {
+
+			if(!this.facingRight) {
+				flipAnimation();
+				this.getSprite().flip(true, false);
+				this.setFace(true);
+			}
+			
+		}
+		if (Gdx.input.getX() < hitbox.getX()) {
+			if(this.facingRight) {
+				flipAnimation();
+				this.getSprite().flip(true, false);
+				this.setFace(false);
+				
+			}
+		}
+
+	}
+
 	public void dispose() {
-		walkingAtlas.dispose();
+		currentAtlas.dispose();
 	}
 
 	public Animation<Sprite> getAnimation() {
-		return animation;
+		return currentAnimation;
 	}
 	public TextureAtlas getAtlas() {
-		return walkingAtlas;
+		return currentAtlas;
 	}
 
 	public boolean getFace()
@@ -91,29 +187,42 @@ public class Player extends DynamicObject {
 	}
 
 	/*
-            Renders the player
-         */
-	public void render()
+	 * Renders the player
+	 */
+	public void render(SpriteBatch batch, FoodGame game)
 	{
 		float previousX = this.getSprite().getX();
 		float previousY = this.getSprite().getY();
+		float cursorY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+		flipAnimationDynamic(cursorY, batch);
+
+		if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
+		|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+			batch.draw(this.getAnimation().getKeyFrame(game.getTimePassed(), true),
+			getSprite().getX(), getSprite().getY(), playerSize, playerSize);
+		} else {
+			batch.draw(getSprite(), getSprite().getX(), getSprite().getY(), playerSize, playerSize);
+		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.A)){
-			updateFace(speed, true);
+			move(-speed, 0);
 		}
-
 		if (Gdx.input.isKeyPressed(Input.Keys.D)){
-			updateFace(speed, false);
+			move(speed, 0);
 		}
-
 		if (Gdx.input.isKeyPressed(Input.Keys.W)){
 			move(0, speed);
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.S)){
+		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
 			move(0, -speed);
 		}
-
+		/*
+		 * Change the sprite if the player is pointing up or down
+		 * Adding 80 to switch between animations when pointing + or - at the middle of the sprite
+		 * I had to do it manually fo find the propper coordinates (may change later)
+		 */
 		staticInterceptors(previousX, previousY);
 	}
 
@@ -172,22 +281,6 @@ public class Player extends DynamicObject {
 			}
 		}
 	}
-
-	/*
-		Updated player's face direction (cap direction?)
-		@Param float speed - numerical speed
-		@Param boolean speedDirection - if true the speed is negative, if false positive
-	 */
-	private void updateFace(float speed, boolean speedDirection) {
-		if (speedDirection != this.getFace()) {
-			this.getSprite().flip(true, false);
-			this.setFace(!this.getFace()); // Toggle face direction
-		}
-
-		this.move((speedDirection ? -speed : speed), 0);
-	}
-	
-
 	/*
 		Moves a player's texture with it's hitbox
 		@Param float x - distance to move player horizontally
@@ -198,4 +291,6 @@ public class Player extends DynamicObject {
 		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
+
+	
 }

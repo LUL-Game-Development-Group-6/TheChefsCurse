@@ -44,28 +44,33 @@ public class FoodGame implements Screen
 	@Override
 	public void render (float delta)
 	{
+
+		ScreenUtils.clear(0, 0, 0, 0);
+		
         // This is passed to render() so that it can calculate position
-        timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
+        
         batch.begin();
-        player1.render();
-        ScreenUtils.clear(0, 0, 0, 0);
-        currentRoom.render(batch);
-
+		currentRoom.render(batch);
+        player1.render(batch, this);
+        
+        
+		timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
         timePassed += Gdx.graphics.getDeltaTime();
-        delta += Gdx.graphics.getDeltaTime();
 
-        batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
+        //batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
         Vector2 playerPosition = new Vector2(player1.getSprite().getX(), player1.getSprite().getY());
         batch.draw(enemy.getSprite(), enemy.getSprite().getX(), enemy.getSprite().getY(), playerSize, playerSize);
         enemy.render(timeBetweenRenderCalls, playerPosition);
         batch.end();
 	}
 
+	public float getTimePassed() {
+		return timePassed;
+	}
 
 	public void dispose()
 	{
 		game.batch.dispose();
 		player1.dispose();
-
 	}
 }
