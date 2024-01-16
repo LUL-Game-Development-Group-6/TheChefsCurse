@@ -21,14 +21,22 @@ public class Player extends DynamicObject {
     private float jitter;
 	private float playerSize;
 	private boolean facingRight;
+
+	// Player static textures
 	private Sprite playerSprite;
 	private Texture playerTexture;
+	private Sprite player_Standing_Sprite;
 	private Texture playerTexture_RedGunDOWN;
+	private Sprite player_RedGunDOWN_Sprite;
 	private Texture playerTexture_RedGunUP;
+	private Sprite player_RedGunUP_Sprite;
+
 	private Texture playerTexture_Standing;
+	
+	private ArrayList<Sprite> allStatics;
 
 
-	// Animation
+	// Animation (different animation spritesheets with different weapons)
 	private TextureAtlas currentAtlas;
 	private Animation<Sprite> currentAnimation;
 	private Animation<Sprite> walkingAnimation;
@@ -39,15 +47,25 @@ public class Player extends DynamicObject {
     public Player(float x, float y, float width, float height)
     {
 		allAnimations = new ArrayList<Animation<Sprite>>();
+		allStatics = new ArrayList<Sprite>();
 		score = 0;
 		setSpeed(2f);
 		setJitter(2f);
 
 		playerTexture_Standing = new Texture("cheff/Chef_Still_Image.png");
+		player_Standing_Sprite = new Sprite(playerTexture_Standing);
+		allStatics.add(player_Standing_Sprite);
+
 		playerTexture_RedGunDOWN = new Texture("cheff/RedGun/RedGun_standing_DOWN.png");
+		player_RedGunDOWN_Sprite = new Sprite(playerTexture_RedGunDOWN);
+		allStatics.add(player_RedGunDOWN_Sprite);
+
 		playerTexture_RedGunUP = new Texture("cheff/RedGun/RedGun_standing_UP.png");
+		player_RedGunUP_Sprite = new Sprite(playerTexture_RedGunUP);
+		allStatics.add(player_RedGunUP_Sprite);
+
+
 		playerTexture = playerTexture_Standing;
-		setTexture(playerTexture);
 
 		playerSize = 165;
 
@@ -116,13 +134,19 @@ public class Player extends DynamicObject {
 		}
 	}
 
+	public void flipTextures() {
+		for (Sprite sprite : allStatics) {
+			sprite.flip(true, false);
+		}
+	}
+
 	public void flipAnimationDynamic (float cursorY, SpriteBatch batch) {
 		// Added 80 to match the middle of the sprite of the player
 		if (cursorY >= sprite.getY() + 80) {
 			currentAnimation = RedGunAnimation_UP;
 			playerTexture = playerTexture_RedGunUP;
-			setTexture(playerTexture);
-			playerSprite = new Sprite(playerTexture);
+			//setTexture(playerTexture);
+			playerSprite = player_RedGunUP_Sprite;
 			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
 			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
 			setSprite(playerSprite);
@@ -131,31 +155,27 @@ public class Player extends DynamicObject {
 		if (cursorY < sprite.getY() + 80) {
 			currentAnimation = RedGunAnimation_DOWN;
 			playerTexture = playerTexture_RedGunDOWN;
-			setTexture(playerTexture);
-			playerSprite = new Sprite(playerTexture);
+			//setTexture(playerTexture);
+			playerSprite = player_RedGunDOWN_Sprite;
 			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
 			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
 			setSprite(playerSprite);
 		}
 
 		if (Gdx.input.getX() >= hitbox.getX()) {
-
 			if(!this.facingRight) {
 				flipAnimation();
-				this.getSprite().flip(true, false);
+				flipTextures();
 				this.setFace(true);
 			}
-			
 		}
 		if (Gdx.input.getX() < hitbox.getX()) {
 			if(this.facingRight) {
 				flipAnimation();
-				this.getSprite().flip(true, false);
+				flipTextures();
 				this.setFace(false);
-				
 			}
 		}
-
 	}
 
 	public void dispose() {
@@ -196,14 +216,7 @@ public class Player extends DynamicObject {
 		float cursorY = Gdx.graphics.getHeight() - Gdx.input.getY();
 
 		flipAnimationDynamic(cursorY, batch);
-
-		if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
-		|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-			batch.draw(this.getAnimation().getKeyFrame(game.getTimePassed(), true),
-			getSprite().getX(), getSprite().getY(), playerSize, playerSize);
-		} else {
-			batch.draw(getSprite(), getSprite().getX(), getSprite().getY(), playerSize, playerSize);
-		}
+		
 
 		if (Gdx.input.isKeyPressed(Input.Keys.A)){
 			move(-speed, 0);
@@ -218,14 +231,17 @@ public class Player extends DynamicObject {
 		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
 			move(0, -speed);
 		}
-		/*
-		 * Change the sprite if the player is pointing up or down
-		 * Adding 80 to switch between animations when pointing + or - at the middle of the sprite
-		 * I had to do it manually fo find the propper coordinates (may change later)
-		 */
+
+		if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
+		|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+			batch.draw(this.getAnimation().getKeyFrame(game.getTimePassed(), true),
+			getSprite().getX(), getSprite().getY(), playerSize, playerSize);
+		} else {
+			batch.draw(getSprite(), getSprite().getX(), getSprite().getY(), playerSize, playerSize);
+		}
+
 		staticInterceptors(previousX, previousY);
 	}
-
 	/*
 		Checks player's position for obstacles and prevents movement beyond them
 		@Param float previuosX - previous player position in X dimension
