@@ -21,28 +21,81 @@ public class Player extends DynamicObject {
     private float jitter;
 	private float playerSize;
 	private boolean facingRight;
+	private Texture OverlayTexture;
+	private Sprite OverlaySprite;
+	// Change this to ENUM eventually
+	private int weaponType;
+	private Texture RedGunTexture;
+	private Sprite RedGunSprite;
 
+	private Texture ShotGunTexture;
+	private Sprite ShotGunSprite;
+
+	private Texture HandTexture;
+	private Sprite HandSprite;
+
+	/*
+	 * 
+	 * 
+	 * 
+	 */
+	// PLAYER TEXTURES
 	// Player static textures
+	// Current sprite is the one used in the methods
 	private Sprite playerSprite;
 	private Texture playerTexture;
+	private Sprite Sprite_UP;
+	private Sprite Sprite_DOWN;
+
+	private Texture currentTexture_UP;
+	private Texture currentTexture_DOWN;
+
 	private Sprite player_Standing_Sprite;
+	private Texture playerTexture_Standing;
+
+	// Red gun textures (Static Cheff with the Red Gun)
 	private Texture playerTexture_RedGunDOWN;
 	private Sprite player_RedGunDOWN_Sprite;
+	
 	private Texture playerTexture_RedGunUP;
 	private Sprite player_RedGunUP_Sprite;
-
-	private Texture playerTexture_Standing;
+	//
+	// Shotgun Textures (Static Cheff with the Shotgun)
+	private Texture playerTexture_ShotgunDOWN;
+	private Sprite player_ShotgunDOWN_Sprite;
 	
+	private Texture playerTexture_ShotgunUP;
+	private Sprite player_ShotgunUP_Sprite;
+	//
+	// List that stores all static sprites
 	private ArrayList<Sprite> allStatics;
-
-
-	// Animation (different animation spritesheets with different weapons)
+	/*
+	 * 
+	 * 
+	 * 
+	 */
+	// PLAYER ANIMATIONS
+	// Current Animation (Variable will change)
 	private TextureAtlas currentAtlas;
 	private Animation<Sprite> currentAnimation;
+	private Animation<Sprite> currentAnimation_UP;
+	private Animation<Sprite> currentAnimation_DOWN;
+
+	// Unarmed Animation Set
 	private Animation<Sprite> walkingAnimation;
+	// Punching animation set
+	private Animation<Sprite> walkingAnimation_PUNCHING;
+	private Animation<Sprite> standingAnimation_PUNCHING;
+	// Red Gun Animation Set
 	private Animation<Sprite> RedGunAnimation_DOWN;
 	private Animation<Sprite> RedGunAnimation_UP;
+	// Shotgun animation set
+	private Animation<Sprite> ShotgunAnimation_DOWN;
+	private Animation<Sprite> ShotgunAnimation_UP;
+
 	private ArrayList<Animation<Sprite>> allAnimations;
+
+	// Shotgun animation set
 
     public Player(float x, float y, float width, float height)
     {
@@ -52,6 +105,20 @@ public class Player extends DynamicObject {
 		setSpeed(2f);
 		setJitter(2f);
 
+		// Overlay
+		OverlayTexture = new Texture("cheff/Weapon_Overlay.png");
+		OverlaySprite = new Sprite(OverlayTexture);
+
+		RedGunTexture = new Texture("cheff/weapons/RedGun.png");
+		RedGunSprite = new Sprite(RedGunTexture);
+		
+		ShotGunTexture = new Texture("cheff/weapons/Shotgun.png");
+		ShotGunSprite = new Sprite(ShotGunTexture);
+
+		HandTexture = new Texture("cheff/weapons/Hand.png");
+		HandSprite = new Sprite(HandTexture);
+
+		// Chef sprites
 		playerTexture_Standing = new Texture("cheff/Chef_Still_Image.png");
 		player_Standing_Sprite = new Sprite(playerTexture_Standing);
 		allStatics.add(player_Standing_Sprite);
@@ -64,6 +131,13 @@ public class Player extends DynamicObject {
 		player_RedGunUP_Sprite = new Sprite(playerTexture_RedGunUP);
 		allStatics.add(player_RedGunUP_Sprite);
 
+		playerTexture_ShotgunUP = new Texture("cheff/Shotgun/Chef_with_shtopgun_standing_UP.png");
+		player_ShotgunUP_Sprite = new Sprite(playerTexture_ShotgunUP);
+		allStatics.add(player_ShotgunUP_Sprite);
+
+		playerTexture_ShotgunDOWN = new Texture("cheff/Shotgun/Chef_with_shotgungun_standing_DOWN.png");
+		player_ShotgunDOWN_Sprite = new Sprite(playerTexture_ShotgunDOWN);
+		allStatics.add(player_ShotgunDOWN_Sprite);
 
 		playerTexture = playerTexture_Standing;
 
@@ -77,9 +151,64 @@ public class Player extends DynamicObject {
 		setHitbox(new Rectangle(x + width + 14, y, width, height));
 		facingRight = true;
 		create();
+		setUnarmed();
+		flipAnimationStanding(walkingAnimation);
     }
 
 	public void create() {
+
+		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Cheff_punching/standing_punching.atlas"));
+		standingAnimation_PUNCHING = new Animation<Sprite>(
+			1/15f,
+			currentAtlas.createSprite("Chef_standing_punching1"),
+			currentAtlas.createSprite("Chef_standing_punching2"),
+			currentAtlas.createSprite("Chef_standing_punching3"),
+			currentAtlas.createSprite("Chef_standing_punching4"),
+			currentAtlas.createSprite("Chef_standing_punching5"),
+			currentAtlas.createSprite("Chef_standing_punching6"));
+
+		allAnimations.add(standingAnimation_PUNCHING);
+
+
+		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Cheff_punching/walking_punching.atlas"));
+		walkingAnimation_PUNCHING = new Animation<Sprite>(
+			1/15f,
+			currentAtlas.createSprite("Chef_walking_punching1"),
+			currentAtlas.createSprite("Chef_walking_punching2"),
+			currentAtlas.createSprite("Chef_walking_punching3"),
+			currentAtlas.createSprite("Chef_walking_punching4"),
+			currentAtlas.createSprite("Chef_walking_punching5"),
+			currentAtlas.createSprite("Chef_walking_punching6"));
+
+		allAnimations.add(walkingAnimation_PUNCHING);
+
+		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Shotgun/shotgun_up.atlas"));
+		ShotgunAnimation_UP = new Animation<Sprite>(
+			1/15f,
+			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP1"),
+			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP2"),
+			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP3"),
+			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP4"),
+			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP5"),
+			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP6"),
+			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP7"),
+			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP8"));
+
+		allAnimations.add(ShotgunAnimation_UP);
+
+		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Shotgun/shotgun_down.atlas"));
+		ShotgunAnimation_DOWN = new Animation<Sprite>(
+			1/15f,
+			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN1"),
+			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN2"),
+			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN3"),
+			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN4"),
+			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN5"),
+			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN6"),
+			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN7"),
+			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN8"));
+
+		allAnimations.add(ShotgunAnimation_DOWN);
 
 		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/RedGun/RedGun_DOWN.atlas"));
 		RedGunAnimation_DOWN = new Animation<Sprite>(
@@ -94,6 +223,7 @@ public class Player extends DynamicObject {
 			currentAtlas.createSprite("Chef_Still_RedGun_DOWN8"));
 
 		allAnimations.add(RedGunAnimation_DOWN);
+
 
 		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/RedGun/RedGun_UP.atlas"));
 		RedGunAnimation_UP = new Animation<Sprite>(
@@ -134,6 +264,12 @@ public class Player extends DynamicObject {
 		}
 	}
 
+	public void flipAnimationStanding(Animation<Sprite> animation) {
+		for (TextureRegion frame : animation.getKeyFrames()) {
+			frame.flip(true, false);
+		}
+	}
+
 	public void flipTextures() {
 		for (Sprite sprite : allStatics) {
 			sprite.flip(true, false);
@@ -143,20 +279,18 @@ public class Player extends DynamicObject {
 	public void flipAnimationDynamic (float cursorY, SpriteBatch batch) {
 		// Added 80 to match the middle of the sprite of the player
 		if (cursorY >= sprite.getY() + 80) {
-			currentAnimation = RedGunAnimation_UP;
-			playerTexture = playerTexture_RedGunUP;
-			//setTexture(playerTexture);
-			playerSprite = player_RedGunUP_Sprite;
+			currentAnimation = currentAnimation_UP;
+	
+			playerSprite = Sprite_UP;
 			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
 			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
 			setSprite(playerSprite);
 
 		}
 		if (cursorY < sprite.getY() + 80) {
-			currentAnimation = RedGunAnimation_DOWN;
-			playerTexture = playerTexture_RedGunDOWN;
-			//setTexture(playerTexture);
-			playerSprite = player_RedGunDOWN_Sprite;
+			currentAnimation = currentAnimation_DOWN;
+			
+			playerSprite = Sprite_DOWN;
 			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
 			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
 			setSprite(playerSprite);
@@ -214,9 +348,27 @@ public class Player extends DynamicObject {
 		float previousX = this.getSprite().getX();
 		float previousY = this.getSprite().getY();
 		float cursorY = Gdx.graphics.getHeight() - Gdx.input.getY();
+		batch.draw(OverlaySprite, 20, 530, OverlaySprite.getWidth()/2, OverlaySprite.getHeight()/2);
+		renderWeapon(batch);
 
 		flipAnimationDynamic(cursorY, batch);
 		
+		// Change weapon
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+			setUnarmed();
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+			setRedGun();
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+			setShotgun();
+		}
+
+		// Shoot or punch handlere
+		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            shoot(batch);
+        }
+
 
 		if (Gdx.input.isKeyPressed(Input.Keys.A)){
 			move(-speed, 0);
@@ -307,6 +459,60 @@ public class Player extends DynamicObject {
 		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
-
 	
+	public void setShotgun() {
+		weaponType = 3;
+		setSpeed(2f - 1);
+		currentAnimation_UP = ShotgunAnimation_UP;
+		currentAnimation_DOWN = ShotgunAnimation_DOWN;
+		currentTexture_UP = playerTexture_ShotgunUP;
+		currentTexture_DOWN = playerTexture_ShotgunDOWN;
+		Sprite_UP = player_ShotgunUP_Sprite;
+		Sprite_DOWN = player_ShotgunDOWN_Sprite;
+	}
+	public void setRedGun() {
+		weaponType = 2;
+		setSpeed(2f);
+		currentAnimation_UP = RedGunAnimation_UP;
+		currentAnimation_DOWN = RedGunAnimation_DOWN;
+		currentTexture_UP = playerTexture_RedGunUP;
+		currentTexture_DOWN = playerTexture_RedGunDOWN;
+		Sprite_UP = player_RedGunUP_Sprite;
+		Sprite_DOWN = player_RedGunDOWN_Sprite;
+	}
+	public void setUnarmed() {
+		weaponType = 1;
+		setSpeed(2f + 1);
+		currentAnimation_UP = walkingAnimation;
+		currentAnimation_DOWN = walkingAnimation;
+		currentTexture_UP = playerTexture_Standing;
+		currentTexture_DOWN = playerTexture_Standing;
+		Sprite_UP = player_Standing_Sprite;
+		Sprite_DOWN = player_Standing_Sprite;
+	}
+
+	public void shoot(SpriteBatch batch) {
+
+		if(weaponType == 1) {
+		}
+		if(weaponType == 2) {
+			
+		}
+		if(weaponType == 3) {	
+		}
+	}
+	public void renderWeapon(SpriteBatch batch) {
+		if(weaponType == 1) {
+			batch.draw(HandSprite, 65, 565, HandSprite.getWidth()/2, HandSprite.getHeight()/2);
+		}
+		if(weaponType == 2) {
+			batch.draw(RedGunSprite, 45, 570, RedGunSprite.getWidth()/2, RedGunSprite.getHeight()/2);
+			
+		}
+		if(weaponType == 3) {	
+			batch.draw(ShotGunSprite, 40, 585, ShotGunSprite.getWidth()/3, ShotGunSprite.getHeight()/3);
+		}
+	}
+
 }
+
