@@ -153,6 +153,7 @@ public class Player extends DynamicObject {
 		create();
 		setUnarmed();
 		flipAnimationStanding(walkingAnimation);
+		setCurrentHealth(100);
     }
 
 	public void create() {
