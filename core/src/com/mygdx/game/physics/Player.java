@@ -36,6 +36,7 @@ public class Player extends DynamicObject {
 		setSprite(playerSprite);
 
 		setHitbox(new Rectangle(x + width + 14, y, width, height));
+		setPerspectiveHitbox(new Rectangle(x + width + 14, y, width, height/20));
 		facingRight = false;
     }
 
@@ -124,7 +125,7 @@ public class Player extends DynamicObject {
 	 */
 	private void staticInterceptors(float previousX, float previousY)
 	{
-		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, this.getHitbox())){//this could all be much neater, but it will work for now.
+		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, this.getPerspectiveHitbox())){//this could all be much neater, but it will work for now.
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());//moves the player back to previous position
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
 				//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
@@ -135,7 +136,7 @@ public class Player extends DynamicObject {
 			}
 		}
 
-		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, this.getHitbox())){
+		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, this.getPerspectiveHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
 				move(0, jitter);
@@ -145,14 +146,9 @@ public class Player extends DynamicObject {
 			}
 		}
 
-		if (Intersector.intersectSegmentRectangle(1230, 0, 1230, 720, this.getHitbox())){
-			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
-		}
-		if (Intersector.intersectSegmentRectangle(85, 0, 85, 720, this.getHitbox())){
-			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
-		}
+		
 
-		if (Intersector.intersectSegmentRectangle(1230, 445, 685, 665, this.getHitbox())){
+		if (Intersector.intersectSegmentRectangle(1230, 290, 685, 520, this.getPerspectiveHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
 				move(0, -jitter);
@@ -162,7 +158,7 @@ public class Player extends DynamicObject {
 			}
 		}
 
-		if (Intersector.intersectSegmentRectangle(85, 425, 685, 665, this.getHitbox())){
+		if (Intersector.intersectSegmentRectangle(85, 270, 685, 520, this.getPerspectiveHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
 				move(0, -jitter);
@@ -197,5 +193,6 @@ public class Player extends DynamicObject {
 	{
 		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
+		perspectiveHitbox.setPosition(perspectiveHitbox.getX() + x, perspectiveHitbox.getY() + y);
 	}
 }

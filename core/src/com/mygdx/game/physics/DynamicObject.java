@@ -17,6 +17,8 @@ public abstract class DynamicObject {
     protected Rectangle hitbox;
     protected Sprite sprite;
     protected Texture texture;
+	
+	protected Rectangle perspectiveHitbox;
 
     public void move(Coords to) {
 
@@ -73,6 +75,16 @@ public abstract class DynamicObject {
     public void setHitbox(Rectangle hitbox) {
         this.hitbox = hitbox;
     }
+	
+	public Rectangle getPerspectiveHitbox()
+	{
+		return perspectiveHitbox;
+	}
+	
+	public void setPerspectiveHitbox(Rectangle hitbox)
+	{
+		this.perspectiveHitbox = hitbox;
+	}
 
     public Sprite getSprite() {
         return sprite;
