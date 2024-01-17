@@ -23,21 +23,26 @@ public class Enemy extends DynamicObject{
 
   public Enemy(Vector2 position, float width, float height, EnemyType enemyType){
     Texture enemyTexture;
-    switch(enemyType){
+    switch(enemyType){//I remember we are giving enemies different amounts of health, I don't remember which ones were more or less though so I am setting them all the same for now. Change it later
       case HAMBURGER:
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
+		setCurrentHealth(50);
         break;
       case HOTDOG:
         enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
+		setCurrentHealth(50);
         break;
       case POPCORN:
         enemyTexture = new Texture("enemies/Popcorn/Popcorn.png");
+		setCurrentHealth(50);
         break;
       case SODA:
         enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
+		setCurrentHealth(50);
         break;
       default:
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
+		setCurrentHealth(50);
         break;
     }
       this.position = position;

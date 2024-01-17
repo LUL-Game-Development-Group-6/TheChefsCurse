@@ -37,6 +37,8 @@ public class Player extends DynamicObject {
 
 		setHitbox(new Rectangle(x + width + 14, y, width, height));
 		facingRight = false;
+		
+		setCurrentHealth(100);
     }
 
 	public void create() {
