@@ -21,6 +21,12 @@ public class Player extends DynamicObject {
 	// Animation
 	private TextureAtlas walkingAtlas;
 	private Animation<Sprite> animation;
+	
+	//collision
+	private static final int[] KITCHEN1LEFTCORNER = {85, 270};
+	private static final int[] KITCHEN1TOPCORNER = {685, 520};
+	private static final int[] KITCHEN1BOTTOMCORNER = {630, 45};
+	private static final int[] KITCHEN1RIGHTCORNER = {1230, 290};
 
     public Player(float x, float y, float width, float height)
     {
@@ -125,7 +131,7 @@ public class Player extends DynamicObject {
 	 */
 	private void staticInterceptors(float previousX, float previousY)
 	{
-		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, this.getPerspectiveHitbox())){//this could all be much neater, but it will work for now.
+		if (Intersector.intersectSegmentRectangle(KITCHEN1LEFTCORNER[0], KITCHEN1LEFTCORNER[1], KITCHEN1BOTTOMCORNER[0], KITCHEN1BOTTOMCORNER[1], this.getPerspectiveHitbox())){//this could all be much neater, but it will work for now.
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());//moves the player back to previous position
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
 				//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
@@ -136,7 +142,7 @@ public class Player extends DynamicObject {
 			}
 		}
 
-		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, this.getPerspectiveHitbox())){
+		if (Intersector.intersectSegmentRectangle(KITCHEN1RIGHTCORNER[0], KITCHEN1RIGHTCORNER[1], KITCHEN1BOTTOMCORNER[0], KITCHEN1BOTTOMCORNER[1], this.getPerspectiveHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
 				move(0, jitter);
@@ -148,7 +154,7 @@ public class Player extends DynamicObject {
 
 		
 
-		if (Intersector.intersectSegmentRectangle(1230, 290, 685, 520, this.getPerspectiveHitbox())){
+		if (Intersector.intersectSegmentRectangle(KITCHEN1RIGHTCORNER[0], KITCHEN1RIGHTCORNER[1], KITCHEN1TOPCORNER[0], KITCHEN1TOPCORNER[1], this.getPerspectiveHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
 				move(0, -jitter);
@@ -158,7 +164,7 @@ public class Player extends DynamicObject {
 			}
 		}
 
-		if (Intersector.intersectSegmentRectangle(85, 270, 685, 520, this.getPerspectiveHitbox())){
+		if (Intersector.intersectSegmentRectangle(KITCHEN1LEFTCORNER[0], KITCHEN1LEFTCORNER[1], KITCHEN1TOPCORNER[0], KITCHEN1TOPCORNER[1], this.getPerspectiveHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.A)){
 				move(0, -jitter);
