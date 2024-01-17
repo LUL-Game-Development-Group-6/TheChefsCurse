@@ -50,6 +50,7 @@ public class Enemy extends DynamicObject{
       setSprite(enemySprite);
 
       setHitbox(new Rectangle(position.x + width + 22, position.y, width, height));
+	  setPerspectiveHitbox(new Rectangle(position.x + width + 22, position.y, width, height/20));
   }
 
 
@@ -86,6 +87,7 @@ public class Enemy extends DynamicObject{
 
 		sprite.setPosition(x, y);
 		hitbox.setPosition(x, y);
+		perspectiveHitbox.setPosition(x, y);
 	}
 
 
