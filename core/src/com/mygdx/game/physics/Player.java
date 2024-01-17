@@ -83,12 +83,12 @@ public class Player extends DynamicObject {
 
 	// Unarmed Animation Set
 	private Animation<Sprite> walkingAnimation;
-	// Punching animation set
-	private Animation<Sprite> walkingAnimation_PUNCHING;
 	private Animation<Sprite> standingAnimation_PUNCHING;
+
 	// Red Gun Animation Set
 	private Animation<Sprite> RedGunAnimation_DOWN;
 	private Animation<Sprite> RedGunAnimation_UP;
+
 	// Shotgun animation set
 	private Animation<Sprite> ShotgunAnimation_DOWN;
 	private Animation<Sprite> ShotgunAnimation_UP;
@@ -159,28 +159,10 @@ public class Player extends DynamicObject {
 
 		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Cheff_punching/standing_punching.atlas"));
 		standingAnimation_PUNCHING = new Animation<Sprite>(
-			1/15f,
-			currentAtlas.createSprite("Chef_standing_punching1"),
-			currentAtlas.createSprite("Chef_standing_punching2"),
-			currentAtlas.createSprite("Chef_standing_punching3"),
-			currentAtlas.createSprite("Chef_standing_punching4"),
-			currentAtlas.createSprite("Chef_standing_punching5"),
-			currentAtlas.createSprite("Chef_standing_punching6"));
+			1/7f,
+			currentAtlas.createSprite("Chef_standing_punching5"));
 
 		allAnimations.add(standingAnimation_PUNCHING);
-
-
-		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Cheff_punching/walking_punching.atlas"));
-		walkingAnimation_PUNCHING = new Animation<Sprite>(
-			1/15f,
-			currentAtlas.createSprite("Chef_walking_punching1"),
-			currentAtlas.createSprite("Chef_walking_punching2"),
-			currentAtlas.createSprite("Chef_walking_punching3"),
-			currentAtlas.createSprite("Chef_walking_punching4"),
-			currentAtlas.createSprite("Chef_walking_punching5"),
-			currentAtlas.createSprite("Chef_walking_punching6"));
-
-		allAnimations.add(walkingAnimation_PUNCHING);
 
 		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Shotgun/shotgun_up.atlas"));
 		ShotgunAnimation_UP = new Animation<Sprite>(
@@ -351,9 +333,12 @@ public class Player extends DynamicObject {
 		batch.draw(OverlaySprite, 20, 530, OverlaySprite.getWidth()/2, OverlaySprite.getHeight()/2);
 		renderWeapon(batch);
 
+		// Boolean to display punching animation instead of standing
+		boolean isPunching = false;
+
 		flipAnimationDynamic(cursorY, batch);
-		
-		// Change weapon
+
+		// Change weapon with number keys 1, 2 & 3
 		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
 			setUnarmed();
 		}
@@ -366,9 +351,8 @@ public class Player extends DynamicObject {
 
 		// Shoot or punch handlere
 		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            shoot(batch);
+            isPunching = shoot(batch, game);
         }
-
 
 		if (Gdx.input.isKeyPressed(Input.Keys.A)){
 			move(-speed, 0);
@@ -386,9 +370,11 @@ public class Player extends DynamicObject {
 
 		if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
 		|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+
 			batch.draw(this.getAnimation().getKeyFrame(game.getTimePassed(), true),
 			getSprite().getX(), getSprite().getY(), playerSize, playerSize);
-		} else {
+
+		} else if(!isPunching) {
 			batch.draw(getSprite(), getSprite().getX(), getSprite().getY(), playerSize, playerSize);
 		}
 
@@ -460,6 +446,7 @@ public class Player extends DynamicObject {
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
 	
+	// Change weapon type methods
 	public void setShotgun() {
 		weaponType = 3;
 		setSpeed(2f - 1);
@@ -491,28 +478,43 @@ public class Player extends DynamicObject {
 		Sprite_DOWN = player_Standing_Sprite;
 	}
 
-	public void shoot(SpriteBatch batch) {
+
+	// Methods that handle the player shooting/punching
+	public boolean shoot(SpriteBatch batch, FoodGame game) {
 
 		if(weaponType == 1) {
+			if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
+			|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+				return false;
+			} else {
+				batch.draw(standingAnimation_PUNCHING.getKeyFrame(game.getTimePassed(), true),
+				getSprite().getX(), getSprite().getY(), playerSize, playerSize);
+				return true;
+			}
 		}
 		if(weaponType == 2) {
-			
+			return false;
 		}
-		if(weaponType == 3) {	
+		if(weaponType == 3) {
+			return false;	
 		}
+
+		return false;
 	}
+
+	// This method is for displaying the weapon in the top left overlay
 	public void renderWeapon(SpriteBatch batch) {
 		if(weaponType == 1) {
 			batch.draw(HandSprite, 65, 565, HandSprite.getWidth()/2, HandSprite.getHeight()/2);
 		}
 		if(weaponType == 2) {
 			batch.draw(RedGunSprite, 45, 570, RedGunSprite.getWidth()/2, RedGunSprite.getHeight()/2);
-			
 		}
 		if(weaponType == 3) {	
 			batch.draw(ShotGunSprite, 40, 585, ShotGunSprite.getWidth()/3, ShotGunSprite.getHeight()/3);
 		}
 	}
 
-}
+
+} // End of Player class
 
