@@ -137,12 +137,13 @@ public class FoodGame implements Screen
 		batch.draw(nine, 1150, 610, nine.getWidth()/3, nine.getHeight()/3);
 
 		shapeRenderer.end();
-		// AI Generated code to remove the bullets
+		
 
-
+		// Player's bullets
 		for (Bullet current : player1.getAmmunition()){
 			current.render(batch);
 			if (current.getHitbox().overlaps(enemy.getHitbox())) {
+				current.setVisibility(false);
 				System.out.println("Done");
 			}
 		}

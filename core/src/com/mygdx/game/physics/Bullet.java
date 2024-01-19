@@ -100,7 +100,7 @@ public class Bullet extends DynamicObject
 		xPosition = xPosition + (xSpeed * speedModifier);
 		yPosition = yPosition + (ySpeed * speedModifier);
 
-		hitbox.setPosition(xPosition, yPosition);
+		bulletHitbox.setPosition(xPosition, yPosition);
 	}
 	
 	public void render(SpriteBatch batch)
