@@ -549,7 +549,7 @@ public class Player extends DynamicObject {
 			ammunition.add(nextBullet);
 		}
 
-		
+
 	}
 
 	// This method is for displaying the weapon in the top left overlay

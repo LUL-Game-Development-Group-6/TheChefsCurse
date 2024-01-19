@@ -140,12 +140,10 @@ public class FoodGame implements Screen
 		// AI Generated code to remove the bullets
 
 
-
-		for (int i = player1.getAmmunition().size() - 1; i >= 0; i--) {
-			Bullet bullet = player1.getAmmunition().get(i);
-			bullet.render(batch);
-			if (bullet.getHitbox().overlaps(enemy.getHitbox())) {
-				System.out.println("bullet collapsed");
+		for (Bullet current : player1.getAmmunition()){
+			current.render(batch);
+			if (current.getHitbox().overlaps(enemy.getHitbox())) {
+				System.out.println("Done");
 			}
 		}
         batch.end();

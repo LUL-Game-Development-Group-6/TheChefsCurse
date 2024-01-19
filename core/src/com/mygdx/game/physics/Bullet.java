@@ -32,7 +32,7 @@ public class Bullet extends DynamicObject
 		//bulletTexture = new Texture("bullet_sprite.png");
 		bulletTexture = new Texture("objects/bullet/bullet.png");
 		bulletSprite = new Sprite(bulletTexture);
-		bulletHitbox = new Rectangle();
+		bulletHitbox = new Rectangle(xPos, yPos, 10, 10);
 		visible = true;
 		speedModifier = 2f;
 		damage = 10;
@@ -42,6 +42,7 @@ public class Bullet extends DynamicObject
 	{
 		return bulletSprite;
 	}
+	
 	
 	public Rectangle getHitbox()
 	{
@@ -98,6 +99,8 @@ public class Bullet extends DynamicObject
 	{
 		xPosition = xPosition + (xSpeed * speedModifier);
 		yPosition = yPosition + (ySpeed * speedModifier);
+
+		hitbox.setPosition(xPosition, yPosition);
 	}
 	
 	public void render(SpriteBatch batch)
@@ -108,7 +111,5 @@ public class Bullet extends DynamicObject
 	public int getDamage()
 	{
 		return damage;
-	}
-	
-	
+	}	
 }
