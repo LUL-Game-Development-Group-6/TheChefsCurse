@@ -94,7 +94,7 @@ public class FoodGame implements Screen
 		currentRoom = new KitchenRoomFactory().createRoomBuilder().build();
 		batch = new SpriteBatch();
 		player1 = new Player(400, 400, 48, 150);
-		enemy = new Enemy(new Vector2(300,300), 56, 185, Enemy.EnemyType.POPCORN);
+		enemy = new Enemy(new Vector2(300,300), 56, 100, Enemy.EnemyType.POPCORN);
 		playerSize = 165;
 	}
 
@@ -121,8 +121,8 @@ public class FoodGame implements Screen
         timePassed += Gdx.graphics.getDeltaTime();
 
         //batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
-        Vector2 playerPosition = new Vector2(player1.getSprite().getX(), player1.getSprite().getY());
-        batch.draw(enemy.getSprite(), enemy.getSprite().getX(), enemy.getSprite().getY(), playerSize, playerSize);
+        Vector2 playerPosition = new Vector2(player1.getHitbox().getX(), player1.getHitbox().getY());
+        batch.draw(enemy.getSprite(), enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
         enemy.render(timeBetweenRenderCalls, playerPosition);
 		player1.render(batch, this);
 
