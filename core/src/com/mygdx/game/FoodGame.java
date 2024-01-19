@@ -2,14 +2,19 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.SortedIntList.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.mygdx.game.physics.Room.factories.KitchenRoomFactory;
 import com.mygdx.game.physics.Room.Room;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.physics.Bullet;
 import com.mygdx.game.physics.Enemy;
 import com.badlogic.gdx.math.Vector2;
 
@@ -82,6 +87,7 @@ public class FoodGame implements Screen
 		enemiesLeftTexture = new Texture("buttons/Enemies_left_text.png");
 		enemiesLeftSprite = new Sprite(enemiesLeftTexture);
 
+
 		createNumbers();
 
 		// Room and player creation
@@ -102,9 +108,15 @@ public class FoodGame implements Screen
         
         batch.begin();
 		currentRoom.render(batch);
-        player1.render(batch, this);
+
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(Color.RED);
         
+        shapeRenderer.rect(enemy.getHitbox().x, enemy.getHitbox().y, enemy.getHitbox().width, enemy.getHitbox().height);
+		shapeRenderer.rect(player1.getHitbox().x, player1.getHitbox().y, player1.getHitbox().width, player1.getHitbox().height);
         
+
 		timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
         timePassed += Gdx.graphics.getDeltaTime();
 
@@ -112,6 +124,9 @@ public class FoodGame implements Screen
         Vector2 playerPosition = new Vector2(player1.getSprite().getX(), player1.getSprite().getY());
         batch.draw(enemy.getSprite(), enemy.getSprite().getX(), enemy.getSprite().getY(), playerSize, playerSize);
         enemy.render(timeBetweenRenderCalls, playerPosition);
+		player1.render(batch, this);
+
+		// Render bullet
 
 		// Render things related to the overlay
 		batch.draw(overlaySprite, 820, 570, overlaySprite.getWidth()/2 - 25, overlaySprite.getHeight()/2 - 10);
@@ -121,6 +136,18 @@ public class FoodGame implements Screen
 		batch.draw(zero, 1125, 610, zero.getWidth()/3, zero.getHeight()/3);
 		batch.draw(nine, 1150, 610, nine.getWidth()/3, nine.getHeight()/3);
 
+		shapeRenderer.end();
+		// AI Generated code to remove the bullets
+
+
+
+		for (int i = player1.getAmmunition().size() - 1; i >= 0; i--) {
+			Bullet bullet = player1.getAmmunition().get(i);
+			bullet.render(batch);
+			if (bullet.getHitbox().overlaps(enemy.getHitbox())) {
+				System.out.println("bullet collapsed");
+			}
+		}
         batch.end();
 	}
 

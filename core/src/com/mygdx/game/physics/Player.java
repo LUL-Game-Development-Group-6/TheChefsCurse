@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 public class Player extends DynamicObject {
@@ -20,7 +21,10 @@ public class Player extends DynamicObject {
     private int score;
     private float jitter;
 	private float playerSize;
+
 	private boolean facingRight;
+	public boolean facingUp;
+
 	private Texture OverlayTexture;
 	private Sprite OverlaySprite;
 	// Change this to ENUM eventually
@@ -33,7 +37,6 @@ public class Player extends DynamicObject {
 
 	private Texture HandTexture;
 	private Sprite HandSprite;
-
 	/*
 	 * 
 	 * 
@@ -95,7 +98,9 @@ public class Player extends DynamicObject {
 
 	private ArrayList<Animation<Sprite>> allAnimations;
 
-	// Shotgun animation set
+	// Bullet code
+	private LinkedList<Bullet> ammunition;
+	
 
     public Player(float x, float y, float width, float height)
     {
@@ -150,24 +155,28 @@ public class Player extends DynamicObject {
 
 		setHitbox(new Rectangle(x + width + 14, y, width, height));
 		facingRight = true;
+		facingUp = false;
 		create();
 		setUnarmed();
 		flipAnimationStanding(walkingAnimation);
 		setCurrentHealth(100);
+
+		// Bullet code 
+		ammunition = new LinkedList<Bullet>();
     }
 
 	public void create() {
 
 		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Cheff_punching/standing_punching.atlas"));
 		standingAnimation_PUNCHING = new Animation<Sprite>(
-			1/7f,
+			1f,
 			currentAtlas.createSprite("Chef_standing_punching5"));
 
 		allAnimations.add(standingAnimation_PUNCHING);
 
 		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Shotgun/shotgun_up.atlas"));
 		ShotgunAnimation_UP = new Animation<Sprite>(
-			1/15f,
+			1/10f,
 			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP1"),
 			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP2"),
 			currentAtlas.createSprite("Chef_with_shtopgun_standing_UP3"),
@@ -181,7 +190,7 @@ public class Player extends DynamicObject {
 
 		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Shotgun/shotgun_down.atlas"));
 		ShotgunAnimation_DOWN = new Animation<Sprite>(
-			1/15f,
+			1/10f,
 			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN1"),
 			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN2"),
 			currentAtlas.createSprite("Chef_with_shotgungun_standing_DOWN3"),
@@ -268,6 +277,7 @@ public class Player extends DynamicObject {
 			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
 			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
 			setSprite(playerSprite);
+			facingUp = true;
 
 		}
 		if (cursorY < sprite.getY() + 80) {
@@ -277,6 +287,7 @@ public class Player extends DynamicObject {
 			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
 			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
 			setSprite(playerSprite);
+			facingUp = false;
 		}
 
 		if (Gdx.input.getX() >= hitbox.getX()) {
@@ -350,11 +361,6 @@ public class Player extends DynamicObject {
 			setShotgun();
 		}
 
-		// Shoot or punch handlere
-		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            isPunching = shoot(batch, game);
-        }
-
 		if (Gdx.input.isKeyPressed(Input.Keys.A)){
 			move(-speed, 0);
 		}
@@ -366,8 +372,13 @@ public class Player extends DynamicObject {
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			move(0, -speed);
+			move(0, -speed);	
 		}
+
+		// Shoot or punch handlere
+		if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            isPunching = shoot(batch, game);
+        }
 
 		if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
 		|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -379,6 +390,18 @@ public class Player extends DynamicObject {
 			batch.draw(getSprite(), getSprite().getX(), getSprite().getY(), playerSize, playerSize);
 		}
 
+		// Roddy's code for the animation
+		for (Bullet current : ammunition){
+			current.update();
+			if (current.getXPosition() < 0 || current.getXPosition() > 1280 || current.getYPosition() < 0 || current.getYPosition() > 720){
+				current.setVisibility(false);
+			}
+		}
+		for (int i = ammunition.size() - 1; i >= 0; i--){
+			if (ammunition.get(i).getVisibility() == false){
+				ammunition.remove(i);
+			}
+		}
 		staticInterceptors(previousX, previousY);
 	}
 	/*
@@ -398,7 +421,6 @@ public class Player extends DynamicObject {
 				move(jitter, 0);
 			}
 		}
-
 		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, this.getHitbox())){
 			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
 			if (Gdx.input.isKeyPressed(Input.Keys.D)){
@@ -479,7 +501,6 @@ public class Player extends DynamicObject {
 		Sprite_DOWN = player_Standing_Sprite;
 	}
 
-
 	// Methods that handle the player shooting/punching
 	public boolean shoot(SpriteBatch batch, FoodGame game) {
 
@@ -494,13 +515,41 @@ public class Player extends DynamicObject {
 			}
 		}
 		if(weaponType == 2) {
+			bulletDirection(90);
 			return false;
 		}
 		if(weaponType == 3) {
+			bulletDirection(95);
 			return false;	
 		}
 
 		return false;
+	}
+
+	// Method that launches bullets
+	public void bulletDirection(float offset) {
+		if(facingRight && facingUp) {
+
+			Bullet nextBullet = new Bullet(9, 6, sprite.getX() + offset + 33, sprite.getY() + offset + 30);
+			ammunition.add(nextBullet);
+
+		} else if (facingRight && !facingUp) {
+
+			Bullet nextBullet = new Bullet(9, -6, sprite.getX() + offset + 35, sprite.getY() + offset - 5);
+			ammunition.add(nextBullet);
+
+		} else if (!facingRight && facingUp) {
+
+			Bullet nextBullet = new Bullet(-9, 6, sprite.getX() + offset - 55, sprite.getY() + offset + 28);
+			ammunition.add(nextBullet);
+			
+		} else if (!facingRight && !facingUp) {
+
+			Bullet nextBullet = new Bullet(-9, -6, sprite.getX() + offset - 57, sprite.getY() + offset - 2);
+			ammunition.add(nextBullet);
+		}
+
+		
 	}
 
 	// This method is for displaying the weapon in the top left overlay
@@ -516,6 +565,8 @@ public class Player extends DynamicObject {
 		}
 	}
 
+	public LinkedList<Bullet> getAmmunition() {
+		return ammunition;
+	}
 
 } // End of Player class
-

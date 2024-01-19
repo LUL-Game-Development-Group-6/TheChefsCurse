@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.misc.Coords;
 
 public abstract class DynamicObject {
+    
     protected final static int MAX_HEALTH = 100;
     private int currentHealth;
     protected float speed;
