@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.game.misc.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Animation;
 
 public class Bullet extends DynamicObject
 {
@@ -20,30 +21,51 @@ public class Bullet extends DynamicObject
 	
 	private Sprite bulletSprite;
 	private Texture bulletTexture;
+	private Texture shotgunTexture_UP_RIGHT;
+	private Texture shotgunTexture_UP_LEFT;
+	private Texture shotgunTexture_DOWN_RIGHT;
+	private Texture shotgunTexture_DOWN_LEFT;
+	private Texture shotGunTexture;
 	
 	private int damage;
+	private int weaponType;
+	private long timeToDespawn;
+
+	private float initialX;
+	private float initialY;
+
+	private Animation<Sprite> bulletAnimation;
+	private long animationStart;
 	
-	public Bullet(float xS, float yS, float xPos, float yPos)
+	public Bullet(float xS, float yS, float xPos, float yPos, int weaponType)
 	{
 		xSpeed = xS;
 		ySpeed = yS;
 		xPosition = xPos;
 		yPosition = yPos;
+
+		initialX = xPosition;
+		initialY = yPosition;
 		//bulletTexture = new Texture("bullet_sprite.png");
 		bulletTexture = new Texture("objects/bullet/bullet.png");
+		shotgunTexture_UP_RIGHT = new Texture("cheff/Shotgun/shotgun_bullet_UP_RIGHTt.png");
+		shotgunTexture_UP_LEFT = new Texture("cheff/Shotgun/shotgun_bullet_UP_LEFT.png");
+		shotgunTexture_DOWN_RIGHT = new Texture("cheff/Shotgun/shotgun_bullet_DOWN_RIGHT.png");
+		shotgunTexture_DOWN_LEFT = new Texture("cheff/Shotgun/shotgun_bullet_DOWN_LEFT.png");
 		bulletSprite = new Sprite(bulletTexture);
 		bulletHitbox = new Rectangle(xPos, yPos, 10, 10);
 		visible = true;
 		speedModifier = 2f;
 		damage = 10;
+		this.weaponType = weaponType;
+		
 	}
 	
 	public Sprite getSprite()
 	{
 		return bulletSprite;
 	}
-	
-	
+
 	public Rectangle getHitbox()
 	{
 		return bulletHitbox;
@@ -105,11 +127,78 @@ public class Bullet extends DynamicObject
 	
 	public void render(SpriteBatch batch)
 	{
-		batch.draw(bulletSprite, xPosition, yPosition, 10, 10);
+		if(weaponType == 2) {
+			batch.draw(bulletSprite, xPosition, yPosition, 10, 10);
+		}
+		if(weaponType == 3) {
+			batch.draw(shotGunTexture, xPosition, yPosition, 15, 10);
+		}
 	}
 	
 	public int getDamage()
 	{
 		return damage;
 	}	
+
+	// Different range for different bullets
+	public long getDespawnTime() {
+		return this.timeToDespawn;
+	}
+
+	public void setDespawnTime(int weaponType) {
+		switch (weaponType) {
+			case 1:
+				break;
+			case 2:
+				this.timeToDespawn = System.currentTimeMillis() + 200;
+				break;
+			case 3:
+				this.timeToDespawn = System.currentTimeMillis() + 100;
+				break;
+			default:
+				break;
+		}
+	}
+
+	public int getWeapontype() {
+		return this.weaponType;
+	}
+	public void setBulletAnimation(Animation<Sprite> anim) {
+		this.bulletAnimation = anim;
+	}
+
+	public Animation<Sprite> getBulletAnimation() {
+		return this.bulletAnimation;
+	}
+
+	public float getInitialX() {
+		return this.initialX;
+	}
+
+	public float getInitialY() {
+		return this.initialY;
+	}
+
+	public void setShotgunUP(boolean isUp, boolean isLeft) {
+		if (isUp && isLeft) {
+			shotGunTexture = shotgunTexture_UP_LEFT;
+		} 
+		if (isUp && !isLeft) {
+			shotGunTexture = shotgunTexture_UP_RIGHT;
+		}
+		if (!isUp && isLeft) {
+			shotGunTexture = shotgunTexture_DOWN_LEFT;
+		}
+		if (!isUp && !isLeft) {
+			shotGunTexture = shotgunTexture_DOWN_RIGHT;
+		}
+	}
+
+	public void setAnimationStart(long mins) {
+		this.animationStart = mins;
+	}
+
+	public long getAnimationStart() {
+		return this.animationStart;
+	}
 }

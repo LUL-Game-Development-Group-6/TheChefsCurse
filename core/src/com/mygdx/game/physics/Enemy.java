@@ -15,6 +15,8 @@ public class Enemy extends DynamicObject{
   private float height;
   private float width;
   private Texture enemyTexture;
+
+  
   public static enum EnemyType{
     HAMBURGER,
     HOTDOG,
@@ -107,6 +109,8 @@ public class Enemy extends DynamicObject{
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x, y);
 	}
+
+
 
 
     

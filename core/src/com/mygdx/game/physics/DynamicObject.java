@@ -27,7 +27,6 @@ public abstract class DynamicObject {
 		this.currentHealth = this.currentHealth - damage;
 		if (this.currentHealth <= 0){
 			System.out.println("Delta Echo Alpha Delta");
-			//placeholder until I work out how we handle dying. Maybe this shouldn't be in dynamic object as it will be handled very differently for players and enemies.
 		}
     }
 

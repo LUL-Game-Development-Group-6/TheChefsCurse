@@ -2,11 +2,11 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.SortedIntList.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.mygdx.game.physics.Room.factories.KitchenRoomFactory;
 import com.mygdx.game.physics.Room.Room;
@@ -109,12 +109,12 @@ public class FoodGame implements Screen
         batch.begin();
 		currentRoom.render(batch);
 
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		/*ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
         
         shapeRenderer.rect(enemy.getHitbox().x, enemy.getHitbox().y, enemy.getHitbox().width, enemy.getHitbox().height);
-		shapeRenderer.rect(player1.getHitbox().x, player1.getHitbox().y, player1.getHitbox().width, player1.getHitbox().height);
+		shapeRenderer.rect(player1.getHitbox().x, player1.getHitbox().y, player1.getHitbox().width, player1.getHitbox().height);*/
         
 
 		timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
@@ -136,7 +136,7 @@ public class FoodGame implements Screen
 		batch.draw(zero, 1125, 610, zero.getWidth()/3, zero.getHeight()/3);
 		batch.draw(nine, 1150, 610, nine.getWidth()/3, nine.getHeight()/3);
 
-		shapeRenderer.end();
+		//shapeRenderer.end();
 		
 
 		// Player's bullets
@@ -145,6 +145,9 @@ public class FoodGame implements Screen
 			if (current.getHitbox().overlaps(enemy.getHitbox())) {
 				current.setVisibility(false);
 				System.out.println("Done");
+			}
+			if(current.getDespawnTime() < System.currentTimeMillis()) {
+				current.setVisibility(false); 	
 			}
 		}
         batch.end();
