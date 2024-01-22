@@ -21,5 +21,4 @@ public class Room
 	{
 			return background;
 	}
-	
 }

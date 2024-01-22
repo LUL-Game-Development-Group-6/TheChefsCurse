@@ -12,6 +12,11 @@ public class Enemy extends DynamicObject{
   
   private Vector2 position;
   private Vector2 velocity;
+  private float height;
+  private float width;
+  private Texture enemyTexture;
+
+  
   public static enum EnemyType{
     HAMBURGER,
     HOTDOG,
@@ -22,34 +27,49 @@ public class Enemy extends DynamicObject{
   private EnemyType enemyType;
 
   public Enemy(Vector2 position, float width, float height, EnemyType enemyType){
-    Texture enemyTexture;
-    switch(enemyType){
+
+
+    switch(enemyType){//I remember we are giving enemies different amounts of health, I don't remember which ones were more or less though so I am setting them all the same for now. Change it later
       case HAMBURGER:
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
+		    setCurrentHealth(50);
+        setSpeed(40);
         break;
       case HOTDOG:
         enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
+		    setCurrentHealth(50);
+        setSpeed(30);
         break;
       case POPCORN:
         enemyTexture = new Texture("enemies/Popcorn/Popcorn.png");
+		    setCurrentHealth(50);
+        setSpeed(65);
         break;
       case SODA:
         enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
+		    setCurrentHealth(50);
+        setSpeed(60);
         break;
       default:
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
+        setCurrentHealth(50);
+        setSpeed(50);
+
         break;
     }
-      this.position = position;
-      this.velocity = new Vector2(1, 1);
-      setSpeed(50);
 
-      Sprite enemySprite = new Sprite(enemyTexture);
-      enemySprite.setSize(width, height);
-      enemySprite.setPosition(position.x, position.y);
-      setSprite(enemySprite);
+    this.position = position;
+    this.height = enemyTexture.getHeight()/5;
+    this.width = enemyTexture.getWidth()/5;
+    this.velocity = new Vector2(1, 1);
 
-      setHitbox(new Rectangle(position.x + width + 22, position.y, width, height));
+    Sprite enemySprite = new Sprite(enemyTexture);
+    enemySprite.setSize(width, height);
+    enemySprite.setPosition(position.x + 100, position.y);
+    
+    setSprite(enemySprite);
+
+    setHitbox(new Rectangle(position.x, position.y, width, height));
   }
 
 
@@ -78,20 +98,27 @@ public class Enemy extends DynamicObject{
       return position;
   }
 
+  public float getHeight() {
+      return this.height;
+  }
+  public float getWidth() {
+      return this.width;
+  }
+
 
   private void move(float x, float y)
 	{
     // This works, but the sprite is not updated
     //System.out.println("Enemy position (x = " + x + " , y = " + y + ")");
 
-		sprite.setPosition(x, y);
+		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x, y);
 	}
+
+
 
 
     
     // make enemy move towards player, but ranged enemy should stop at a certain distance
     // note to juozas 
-
-    
 }

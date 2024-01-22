@@ -1,0 +1,11 @@
+fire_DOWN.png
+size:1024,256
+repeat:none
+shotgun_shooting_UP1
+bounds:154,2,150,140
+shotgun_shooting_UP2
+bounds:458,2,150,140
+shotgun_shooting_UP3
+bounds:306,2,150,140
+shotgun_shooting_UP4
+bounds:2,2,150,140
