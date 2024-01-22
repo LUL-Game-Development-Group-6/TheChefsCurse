@@ -514,7 +514,7 @@ public class Player extends DynamicObject {
 		@Param float x - distance to move player horizontally
 		@Param float y - distance to move player vertically
 	 */
-	private void move(float x, float y)
+	public void move(float x, float y)
 	{
 		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
