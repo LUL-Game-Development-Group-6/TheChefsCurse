@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Gdx;
+import com.mygdx.game.physics.EnemiesGenerator;
 import com.mygdx.game.physics.Room.factories.KitchenRoomFactory;
 import com.mygdx.game.physics.Room.Room;
 import com.mygdx.game.physics.Player;
@@ -20,6 +21,7 @@ public class FoodGame implements Screen
 	private float playerSize;
 	private float timePassed;
     private float timeBetweenRenderCalls;
+	private EnemiesGenerator enemiesGenerator;
 
 	final Menu game;
 	public FoodGame(final Menu game) {
@@ -37,7 +39,10 @@ public class FoodGame implements Screen
 		currentRoom = new KitchenRoomFactory().createRoomBuilder().build();
 		batch = new SpriteBatch();
 		player1 = new Player(400, 400, 48, 150);
-		enemy = new Enemy(new Vector2(300,300), 56, 185, Enemy.EnemyType.POPCORN);
+
+//		enemy = new Enemy(new Vector2(300,300), 56, 185, Enemy.EnemyType.POPCORN);
+		enemiesGenerator = new EnemiesGenerator();
+		enemiesGenerator.generate(2);
 		playerSize = 165;
 	}
 
@@ -56,8 +61,8 @@ public class FoodGame implements Screen
 
         batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
         Vector2 playerPosition = new Vector2(player1.getSprite().getX(), player1.getSprite().getY());
-        batch.draw(enemy.getSprite(), enemy.getSprite().getX(), enemy.getSprite().getY(), playerSize, playerSize);
-        enemy.render(timeBetweenRenderCalls, playerPosition);
+//        enemy.render(timeBetweenRenderCalls, playerPosition);
+		enemiesGenerator.renderAllEnemies(timeBetweenRenderCalls, playerPosition, batch, playerSize);
         batch.end();
 	}
 
