@@ -9,7 +9,7 @@ import com.mygdx.game.misc.Coords;
 
 public abstract class DynamicObject {
     
-    protected final static int MAX_HEALTH = 100;
+    protected int MAX_HEALTH = 100;
     private int currentHealth;
     protected float speed;
     private double attack;
@@ -26,7 +26,7 @@ public abstract class DynamicObject {
     public void takeDamage(int damage){
 		this.currentHealth = this.currentHealth - damage;
 		if (this.currentHealth <= 0){
-			System.out.println("Delta Echo Alpha Delta");
+			System.out.println("Entity should die");
 		}
     }
 

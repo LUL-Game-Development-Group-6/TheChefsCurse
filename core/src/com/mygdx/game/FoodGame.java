@@ -1,17 +1,26 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
-import com.mygdx.game.physics.Bullet;
+import com.badlogic.gdx.Input;
 import com.mygdx.game.physics.Room.factories.KitchenRoomFactory;
 import com.mygdx.game.physics.Room.Room;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.physics.Bullet;
 import com.mygdx.game.physics.Enemy;
+import com.badlogic.gdx.math.Vector2;
 
 public class FoodGame implements Screen
 {
@@ -69,8 +78,14 @@ public class FoodGame implements Screen
 	private boolean pausedGameplay;
 
 	final Menu game;
+
+	private ArrayList<Enemy> enemyList;
+
 	public FoodGame(final Menu game) {
+
+
         this.game = game;
+		this.enemyList = new ArrayList<>();
 		// create stuff for the overlay
 		overlayTexture = new Texture("buttons/Rectangle_enemies_left.png");
 		overlaySprite = new Sprite(overlayTexture);
@@ -90,8 +105,7 @@ public class FoodGame implements Screen
 
 		player1 = new Player(400, 400, 48, 150);
 
-		enemy = new Enemy(new Vector2(300,300), 56, 100, Enemy.EnemyType.POPCORN);
-		enemy2 = new Enemy(new Vector2(300,300), 56, 100, Enemy.EnemyType.HOTDOG);
+		createEnemies();
 
 		playerSize = 165;
 		pausedGameplay = false;
@@ -99,19 +113,18 @@ public class FoodGame implements Screen
     }
 
     public void pause() {
+
 		pausedGameplay = !pausedGameplay;
 		if(pausedGameplay == false) {return;}
 		game.setScreen(new Pause(game, this));
+
 	}
-    public void resume() {
-	}
+
+    public void resume() {}
     public void resize(int width, int height) {}
     public void hide() {}
-
 	@Override
-	public void show ()
-	{
-	}
+	public void show () {}
 
 	@Override
 	public void render (float delta)
@@ -119,18 +132,17 @@ public class FoodGame implements Screen
 		// Handle Pausing the Game and showing Pause Screen
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) pause();
 		if(pausedGameplay) return;
-
 		ScreenUtils.clear(0, 0, 0, 0);
         batch.begin();
 		currentRoom.render(batch);
 
-		/*ShapeRenderer shapeRenderer = new ShapeRenderer();
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
-
-        shapeRenderer.rect(enemy.getHitbox().x, enemy.getHitbox().y, enemy.getHitbox().width, enemy.getHitbox().height);
-		shapeRenderer.rect(player1.getHitbox().x, player1.getHitbox().y, player1.getHitbox().width, player1.getHitbox().height);*/
-
+        
+        shapeRenderer.rect(enemy2.getHitbox().x, enemy2.getHitbox().y, enemy2.getHitbox().width, enemy2.getHitbox().height);
+		shapeRenderer.rect(player1.getHitbox().x, player1.getHitbox().y, player1.getHitbox().width, player1.getHitbox().height);
+        
 
 		// Times to get time passed and to follow the player vector
 		timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
@@ -138,14 +150,9 @@ public class FoodGame implements Screen
 
         Vector2 playerPosition = new Vector2(player1.getHitbox().getX(), player1.getHitbox().getY());
 
-		// Draw enemies
-        batch.draw(enemy.getSprite(), enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
-		batch.draw(enemy2.getSprite(), enemy2.getSprite().getX(), enemy2.getSprite().getY(), enemy2.getWidth(), enemy2.getHeight());
-
-		// Handle player and enemies logic movement
-        enemy.render(timeBetweenRenderCalls, playerPosition);
-		enemy2.render(timeBetweenRenderCalls, playerPosition);
+		renderEnemies(playerPosition, timePassed, timeBetweenRenderCalls);
 		player1.render(batch, this);
+
 
 		// Render things related to the overlay
 		batch.draw(overlaySprite, 820, 570, overlaySprite.getWidth()/2 - 25, overlaySprite.getHeight()/2 - 10);
@@ -154,15 +161,20 @@ public class FoodGame implements Screen
 		batch.draw(zero, 1125, 610, zero.getWidth()/3, zero.getHeight()/3);
 		batch.draw(nine, 1150, 610, nine.getWidth()/3, nine.getHeight()/3);
 
-		//shapeRenderer.end();
+		shapeRenderer.end();
 
 		// Player's bullets
 		for (Bullet current : player1.getAmmunition()){
 			current.render(batch);
-			if (current.getHitbox().overlaps(enemy.getHitbox())) {
-				current.setVisibility(false);
-				System.out.println("Done");
+			for (Enemy currentEnemy : enemyList) {
+
+				if (current.getHitbox().overlaps(currentEnemy.getHitbox())) {
+					hitEnemy(enemy);
+					current.setVisibility(false);
+					System.out.println("Enemy Shot");
+				}
 			}
+
 			if(current.getDespawnTime() < System.currentTimeMillis()) {
 				current.setVisibility(false);
 			}
@@ -212,8 +224,8 @@ public class FoodGame implements Screen
 		nine = new Sprite(nineTexture);
 	}
 
-	public void drawPause() {
-
+	public void hitEnemy(Enemy enemy) {
+		enemy.getSprite().setColor(Color.WHITE);
 	}
 
 	public boolean getPaused() {
@@ -222,5 +234,28 @@ public class FoodGame implements Screen
 
 	public void setPaused(boolean flag) {
 		this.pausedGameplay = flag;
+	}
+
+	public void createEnemies() {
+
+		enemy = new Enemy(new Vector2(300,300), 36, 80, Enemy.EnemyType.HAMBURGER);
+		enemy2 = new Enemy(new Vector2(700,300), 100, 50, Enemy.EnemyType.HOTDOG);
+
+		enemyList.add(enemy);
+		enemyList.add(enemy2);
+
+	}
+
+	public void renderEnemies(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
+
+		for (Enemy enemy : enemyList) {
+
+			batch.draw(enemy.getEnemyAnimation().getKeyFrame(timePassed, true),
+			enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
+
+			enemy.render(timeBetweenRenderCalls, playerPosition);
+			enemy.enemyHit(playerPosition, player1);
+		}
+
 	}
 }
