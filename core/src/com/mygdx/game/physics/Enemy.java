@@ -17,7 +17,6 @@ public class Enemy extends DynamicObject{
   private float height;
   private float width;
   private Texture enemyTexture;
-  private int health;
   private int damage;
 
   private long lastShot;
@@ -27,7 +26,7 @@ public class Enemy extends DynamicObject{
 
   private TextureAtlas enemyAtlas;
   private Animation<Sprite> enemyAnimation;
-
+  
 
   
   public static enum EnemyType{
@@ -48,7 +47,7 @@ public class Enemy extends DynamicObject{
       case HAMBURGER:
         this.damage = 20;
         this.hitDistance = 10;
-        this.cooldown = 1500;
+        this.cooldown = 2000;
         enemyAtlas = new TextureAtlas("enemies/Hamburguer/hamburguer.atlas");
         enemyAnimation = new Animation<>(
         1/15f,
@@ -65,9 +64,8 @@ public class Enemy extends DynamicObject{
 
 
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
-		    setCurrentHealth(50);
+        setCurrentHealth(100);
         setSpeed(40);
-        this.health = 100;
         break;
 
       case HOTDOG:
@@ -83,36 +81,34 @@ public class Enemy extends DynamicObject{
         enemyAtlas.createSprite("hotdog4"));
 
         enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
-        setCurrentHealth(50);
+        setCurrentHealth(60);
         setSpeed(20);
-        this.health = 60;
         break;
 
       case POPCORN:
         this.damage = 10;
         enemyTexture = new Texture("enemies/Popcorn/Popcorn.png");
-		    setCurrentHealth(50);
+        setCurrentHealth(40);
         setSpeed(65);
-        this.health = 40;
         break;
 
       case SODA:
         this.damage = 15;
         enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
-		    setCurrentHealth(50);
+        setCurrentHealth(70);
         setSpeed(60);
-        this.health = 70;
         break;
 
       default:
         this.damage = 20;
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
-        setCurrentHealth(50);
+        setCurrentHealth(100);
         setSpeed(50);
 
         break;
     }
 
+    this.setMaxHealth(this.getCurrentHealth());
     this.position = position;
     this.height = enemyTexture.getHeight()/6;
     this.width = enemyTexture.getWidth()/6;
@@ -169,9 +165,9 @@ public class Enemy extends DynamicObject{
 
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x, y);
-	}
+	} 
     // make enemy move towards player, but ranged enemy should stop at a certain distance
-    // note to juozas
+    // note to juozas 
 
   public Animation<Sprite> getEnemyAnimation() {
     return this.enemyAnimation;

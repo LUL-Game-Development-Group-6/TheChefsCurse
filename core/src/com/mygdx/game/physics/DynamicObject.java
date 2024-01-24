@@ -8,7 +8,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.misc.Coords;
 
 public abstract class DynamicObject {
-        
+    
+    private int MAX_HEALTH;
     private int currentHealth;
     protected float speed;
     private double attack;
@@ -131,40 +132,36 @@ public abstract class DynamicObject {
 
     public void healthPercentage() {
 
-        int threshold = currentHealth / 10 * 10;
+        int threshold = (100 * currentHealth) / MAX_HEALTH;
 
-        switch (threshold) {
-            case 0:
-                currentEntityHealth = health_0;
-                break;
-            case 10:
-                currentEntityHealth = health_10;
-                break;
-            case 20:
-                currentEntityHealth = health_25;
-                break;
-            case 30:
-                currentEntityHealth = health_40;
-                break;
-            case 40:
-                currentEntityHealth = health_50;
-                break;
-            case 50:
-                currentEntityHealth = health_60;
-                break;
-            case 60:
-                currentEntityHealth = health_75;
-                break;
-            case 70:
-                currentEntityHealth = health_80;
-                break;
-            default:
-                currentEntityHealth = health_100;
-                break;
+        if (threshold <= 0) {
+            currentEntityHealth = health_0;
+        } else if (threshold > 0 && threshold <= 10) {
+            currentEntityHealth = health_10;
+        } else if (threshold > 10 && threshold <= 25) {
+            currentEntityHealth = health_25;
+        } else if (threshold > 25 && threshold <= 40) {
+            currentEntityHealth = health_40;
+        } else if (threshold > 40 && threshold <= 50) {
+            currentEntityHealth = health_50;
+        } else if (threshold > 50 && threshold <= 60) {
+            currentEntityHealth = health_60;
+        } else if (threshold > 60 && threshold <= 75) {
+            currentEntityHealth = health_75;
+        } else if (threshold > 75 && threshold <= 80) {
+            currentEntityHealth = health_80;
+        } else if (threshold > 80 && threshold <= 100) {
+            currentEntityHealth = health_100;
         }
+        
     }
 
     public Texture getHealthSprite() {
         return currentEntityHealth;
     }
+
+    public void setMaxHealth(int health) {
+        this.MAX_HEALTH = health;
+    }
+
 }
