@@ -22,9 +22,8 @@ public class Enemy extends DynamicObject{
 
   private long lastShot;
   private long cooldown;
-  
+
   private int hitDistance;
-  private Vector2 enemyPosition;
 
   private TextureAtlas enemyAtlas;
   private Animation<Sprite> enemyAnimation;
@@ -42,11 +41,14 @@ public class Enemy extends DynamicObject{
 
   public Enemy(Vector2 position, float width, float height, EnemyType enemyType){
 
+    super.createHealth();
+
     switch(enemyType){
 
       case HAMBURGER:
         this.damage = 20;
         this.hitDistance = 10;
+        this.cooldown = 1500;
         enemyAtlas = new TextureAtlas("enemies/Hamburguer/hamburguer.atlas");
         enemyAnimation = new Animation<>(
         1/15f,
@@ -69,8 +71,9 @@ public class Enemy extends DynamicObject{
         break;
 
       case HOTDOG:
-        this.damage = 30;
+        this.damage = 25;
         this.hitDistance = 200;
+        this.cooldown = 5000;
         enemyAtlas = new TextureAtlas("enemies/Hotdog/hotdog.atlas");
         enemyAnimation = new Animation<>(
         1/8f,
@@ -115,6 +118,7 @@ public class Enemy extends DynamicObject{
     this.height = enemyTexture.getHeight()/6;
     this.width = enemyTexture.getWidth()/6;
     this.velocity = new Vector2(1, 1);
+    this.lastShot = 0;
 
     Sprite enemySprite = new Sprite(enemyTexture);
     enemySprite.setSize(width, height);
@@ -176,9 +180,17 @@ public class Enemy extends DynamicObject{
 
   public void enemyHit(Vector2 playerPosition, Player player) {
 
+    long currentTime = System.currentTimeMillis();
+
+    long timeSinceLastShot = currentTime - lastShot; 
+
     if(this.position.dst(playerPosition) <= this.hitDistance) {
-      player.takeDamage(this.damage);
-      System.out.println("gordo" + this.enemyType);
+
+      if(timeSinceLastShot >= this.cooldown) {
+        player.takeDamage(this.damage);
+        System.out.println("Player Hit by enemy");
+        lastShot = currentTime;
+      }
     }
   }
 }

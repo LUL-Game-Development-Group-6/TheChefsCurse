@@ -164,19 +164,20 @@ public class FoodGame implements Screen
 		shapeRenderer.end();
 
 		// Player's bullets
-		for (Bullet current : player1.getAmmunition()){
-			current.render(batch);
+		for (Bullet bullet : player1.getAmmunition()){
+			bullet.render(batch);
 			for (Enemy currentEnemy : enemyList) {
 
-				if (current.getHitbox().overlaps(currentEnemy.getHitbox())) {
+				if (bullet.getHitbox().overlaps(currentEnemy.getHitbox())) {
 					hitEnemy(enemy);
-					current.setVisibility(false);
+					bullet.setVisibility(false);
 					System.out.println("Enemy Shot");
+					currentEnemy.takeDamage(bullet.getDamage());
 				}
 			}
 
-			if(current.getDespawnTime() < System.currentTimeMillis()) {
-				current.setVisibility(false); 	
+			if(bullet.getDespawnTime() < System.currentTimeMillis()) {
+				bullet.setVisibility(false); 	
 			}
 		}
         batch.end();
@@ -250,6 +251,9 @@ public class FoodGame implements Screen
 	public void renderEnemies(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
 
 		for (Enemy enemy : enemyList) {
+
+			batch.draw(enemy.getHealthSprite(), enemy.getHitbox().x - 20, enemy.getHitbox().y + 80, enemy.getHealthSprite().getWidth()/5, enemy.getHealthSprite().getHeight()/5);
+			enemy.healthPercentage();
 
 			batch.draw(enemy.getEnemyAnimation().getKeyFrame(timePassed, true),
 			enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());

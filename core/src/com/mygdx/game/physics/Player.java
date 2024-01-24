@@ -116,6 +116,7 @@ public class Player extends DynamicObject {
 
     public Player(float x, float y, float width, float height)
     {
+		createHealth();
 		allAnimations = new ArrayList<Animation<Sprite>>();
 		allStatics = new ArrayList<Sprite>();
 		score = 0;
@@ -383,6 +384,10 @@ public class Player extends DynamicObject {
 		float cursorY = Gdx.graphics.getHeight() - Gdx.input.getY();
 		batch.draw(OverlaySprite, 20, 530, OverlaySprite.getWidth()/2, OverlaySprite.getHeight()/2);
 		renderWeapon(batch);
+
+		// Render player's health at the top left of the screen
+		batch.draw(this.getHealthSprite(), 170, 620, this.getHealthSprite().getWidth()/2 - 10, this.getHealthSprite().getHeight()/2 - 5);
+		this.healthPercentage();
 
 		// Boolean to display punching animation instead of standing
 		boolean isPunching = false;
