@@ -3,8 +3,10 @@ package com.mygdx.game.physics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -15,6 +17,18 @@ public class Enemy extends DynamicObject{
   private float height;
   private float width;
   private Texture enemyTexture;
+  private int health;
+  private int damage;
+
+  private long lastShot;
+  private long cooldown;
+  
+  private int hitDistance;
+  private Vector2 enemyPosition;
+
+  private TextureAtlas enemyAtlas;
+  private Animation<Sprite> enemyAnimation;
+  
 
   
   public static enum EnemyType{
@@ -28,39 +42,78 @@ public class Enemy extends DynamicObject{
 
   public Enemy(Vector2 position, float width, float height, EnemyType enemyType){
 
+    switch(enemyType){
 
-    switch(enemyType){//I remember we are giving enemies different amounts of health, I don't remember which ones were more or less though so I am setting them all the same for now. Change it later
       case HAMBURGER:
+        this.damage = 20;
+        this.hitDistance = 10;
+        enemyAtlas = new TextureAtlas("enemies/Hamburguer/hamburguer.atlas");
+        enemyAnimation = new Animation<>(
+        1/15f,
+        enemyAtlas.createSprite("Hamburguer_Sprite1"),
+        enemyAtlas.createSprite("Hamburguer_Sprite2"),
+        enemyAtlas.createSprite("Hamburguer_Sprite3"),
+        enemyAtlas.createSprite("Hamburguer_Sprite4"),
+        enemyAtlas.createSprite("Hamburguer_Sprite5"),
+        enemyAtlas.createSprite("Hamburguer_Sprite6"),
+        enemyAtlas.createSprite("Hamburguer_Sprite7"),
+        enemyAtlas.createSprite("Hamburguer_Sprite9"),
+        enemyAtlas.createSprite("Hamburguer_Sprite9"),
+        enemyAtlas.createSprite("Hamburguer_Sprite10"));
+
+
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
 		    setCurrentHealth(50);
         setSpeed(40);
+        this.health = 100;
         break;
+
       case HOTDOG:
+        this.damage = 30;
+        this.hitDistance = 200;
+        enemyAtlas = new TextureAtlas("enemies/Hotdog/hotdog.atlas");
+        enemyAnimation = new Animation<>(
+        1/8f,
+        enemyAtlas.createSprite("hotdog1"),
+        enemyAtlas.createSprite("hotdog2"),
+        enemyAtlas.createSprite("hotdog3"),
+        enemyAtlas.createSprite("hotdog4"));
+
         enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
 		    setCurrentHealth(50);
-        setSpeed(30);
+        setSpeed(20);
+        this.health = 60;
         break;
+
       case POPCORN:
+        this.damage = 10;
         enemyTexture = new Texture("enemies/Popcorn/Popcorn.png");
 		    setCurrentHealth(50);
         setSpeed(65);
+        this.health = 40;
         break;
+
       case SODA:
+        this.damage = 15;
         enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
 		    setCurrentHealth(50);
         setSpeed(60);
+        this.health = 70;
         break;
+
       default:
+        this.damage = 20;
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
         setCurrentHealth(50);
         setSpeed(50);
+        this.health = 100;
 
         break;
     }
 
     this.position = position;
-    this.height = enemyTexture.getHeight()/5;
-    this.width = enemyTexture.getWidth()/5;
+    this.height = enemyTexture.getHeight()/6;
+    this.width = enemyTexture.getWidth()/6;
     this.velocity = new Vector2(1, 1);
 
     Sprite enemySprite = new Sprite(enemyTexture);
@@ -68,8 +121,8 @@ public class Enemy extends DynamicObject{
     enemySprite.setPosition(position.x + 100, position.y);
     
     setSprite(enemySprite);
-
     setHitbox(new Rectangle(position.x, position.y, width, height));
+
   }
 
 
@@ -113,12 +166,19 @@ public class Enemy extends DynamicObject{
 
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x, y);
-	}
-
-
-
-
-    
+	} 
     // make enemy move towards player, but ranged enemy should stop at a certain distance
     // note to juozas 
+
+  public Animation<Sprite> getEnemyAnimation() {
+    return this.enemyAnimation;
+  }
+
+  public void enemyHit(Vector2 playerPosition, Player player) {
+
+    if(this.position.dst(playerPosition) <= this.hitDistance) {
+      player.takeDamage(this.damage);
+      System.out.println("gordo" + this.enemyType);
+    }
+  }
 }

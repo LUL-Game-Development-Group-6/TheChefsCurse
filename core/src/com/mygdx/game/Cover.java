@@ -30,7 +30,7 @@ public class Cover implements Screen
 
     // Variables for animation
     private TextureAtlas logoAtlas;
-	private Animation<Sprite> logo_animation;
+    private Animation<Sprite> logo_animation;
     private float timePassed;
 
     // Cover buttons
@@ -169,7 +169,7 @@ public class Cover implements Screen
     private void logoAnimated() {
 
         logoAtlas = new TextureAtlas(Gdx.files.internal("cover/Logo.atlas"));
-		logo_animation = new Animation<Sprite>(
+	logo_animation = new Animation<Sprite>(
 			1/15f,
 			logoAtlas.createSprite("logo1"),
 			logoAtlas.createSprite("logo2"),
@@ -178,10 +178,10 @@ public class Cover implements Screen
 			logoAtlas.createSprite("logo5"),
 			logoAtlas.createSprite("logo6"),
 			logoAtlas.createSprite("logo7"),
-            logoAtlas.createSprite("logo8"),
-            logoAtlas.createSprite("logo9"),
-            logoAtlas.createSprite("logo10"),
-            logoAtlas.createSprite("logo11"),
+            		logoAtlas.createSprite("logo8"),
+            		logoAtlas.createSprite("logo9"),
+            		logoAtlas.createSprite("logo10"),
+            		logoAtlas.createSprite("logo11"),
 			logoAtlas.createSprite("logo12"));
 
         // Prevent animation to show at runtime (opening the game)

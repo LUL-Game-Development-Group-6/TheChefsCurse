@@ -22,8 +22,9 @@ public class Player extends DynamicObject {
     private float jitter;
 	private float playerSize;
 
+	// Booleans to track player's current facing position
 	private boolean facingRight;
-	public boolean facingUp;
+	private boolean facingUp;
 
 	private Texture OverlayTexture;
 	private Sprite OverlaySprite;
