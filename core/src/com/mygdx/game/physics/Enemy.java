@@ -23,6 +23,7 @@ public class Enemy extends DynamicObject{
 
   public Enemy(Vector2 position, float width, float height, EnemyType enemyType){
     Texture enemyTexture;
+    this.enemyType = enemyType;
     switch(enemyType){
       case HAMBURGER:
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
@@ -40,6 +41,7 @@ public class Enemy extends DynamicObject{
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
         break;
     }
+      this.texture = enemyTexture;
       this.position = position;
       this.velocity = new Vector2(1, 1);
       setSpeed(50);
