@@ -151,9 +151,11 @@ public class Bullet extends DynamicObject
 				break;
 			case 2:
 				this.timeToDespawn = System.currentTimeMillis() + 200;
+				this.damage = 18;
 				break;
 			case 3:
 				this.timeToDespawn = System.currentTimeMillis() + 100;
+				this.damage = 40;
 				break;
 			default:
 				break;
