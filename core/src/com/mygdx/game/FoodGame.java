@@ -40,9 +40,8 @@ public class FoodGame implements Screen
 		batch = new SpriteBatch();
 		player1 = new Player(400, 400, 48, 150);
 
-//		enemy = new Enemy(new Vector2(300,300), 56, 185, Enemy.EnemyType.POPCORN);
 		enemiesGenerator = new EnemiesGenerator();
-		enemiesGenerator.generate(2);
+		enemiesGenerator.generate();
 		playerSize = 165;
 	}
 
@@ -61,8 +60,8 @@ public class FoodGame implements Screen
 
         batch.draw(player1.getSprite(), player1.getSprite().getX(), player1.getSprite().getY(), playerSize, playerSize);
         Vector2 playerPosition = new Vector2(player1.getSprite().getX(), player1.getSprite().getY());
-//        enemy.render(timeBetweenRenderCalls, playerPosition);
-		enemiesGenerator.renderAllEnemies(timeBetweenRenderCalls, playerPosition, batch, playerSize);
+
+		enemiesGenerator.renderAllEnemies(timeBetweenRenderCalls, playerPosition, batch, playerSize, delta);
         batch.end();
 	}
 
