@@ -160,7 +160,7 @@ public class Player extends DynamicObject {
 		playerTexture = playerTexture_Standing;
 
 		playerSize = 165;
-
+		this.setMaxHealth(100);
 		playerSprite = new Sprite(playerTexture);
 		playerSprite.setSize(width, height);
 		playerSprite.setPosition(x, y);
