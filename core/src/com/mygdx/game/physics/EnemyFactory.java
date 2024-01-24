@@ -80,8 +80,14 @@ public class EnemyFactory {
         float x = ThreadLocalRandom.current().nextFloat(400, 800);
         float y = ThreadLocalRandom.current().nextFloat(100, 600);
 
+        int cornersX[] = {85, 630, 1230, 685};
+        int cornersY[] = {270, 45, 174, 370};
+
         for(Enemy enemy : enemies) {
-            if(areObjectsNear(enemy.getSprite().getX(), enemy.getSprite().getY(), x, y, 20)) {
+            float enemeyX = enemy.getSprite().getX();
+            float enemyY = enemy.getSprite().getY();
+            if(areObjectsNear(enemeyX, enemyY, x, y, 30)
+                    || isPointWithinRoom(enemeyX,enemyY,cornersX,cornersY)) {
                 generateRandomCoords();
             }
         }
@@ -95,5 +101,14 @@ public class EnemyFactory {
 
         // Check if the distance is less than or equal to the specified radius
         return distance <= radius;
+    }
+
+    // Method to check if a point is within the boundaries of the room
+    public static boolean isPointWithinRoom(float x, float y, int[] roomCornersX, int[] roomCornersY) {
+        // Check if the point is within the rectangular boundary defined by the four corner points
+        boolean isWithinXBounds = x >= Math.min(roomCornersX[0], roomCornersX[1]) && x <= Math.max(roomCornersX[2], roomCornersX[3]);
+        boolean isWithinYBounds = y >= Math.min(roomCornersY[0], roomCornersY[3]) && y <= Math.max(roomCornersY[1], roomCornersY[2]);
+
+        return isWithinXBounds && isWithinYBounds;
     }
 }
