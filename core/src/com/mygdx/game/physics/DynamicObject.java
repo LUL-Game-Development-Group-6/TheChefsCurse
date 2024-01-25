@@ -130,6 +130,7 @@ public abstract class DynamicObject {
         currentEntityHealth = health_100;
     }
 
+    // Can't do switch case with ranges, thats why I used this disposition
     public void healthPercentage() {
 
         int threshold = (100 * currentHealth) / MAX_HEALTH;
