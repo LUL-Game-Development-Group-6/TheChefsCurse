@@ -41,11 +41,12 @@ public class Enemy extends DynamicObject{
   public Enemy(Vector2 position, float width, float height, EnemyType enemyType){
 
     super.createHealth();
+    this.setPlayer(false);
 
     switch(enemyType){
 
       case HAMBURGER:
-        this.damage = 20;
+        this.damage = 10;
         this.hitDistance = 10;
         this.cooldown = 2000;
         enemyAtlas = new TextureAtlas("enemies/Hamburguer/hamburguer.atlas");
@@ -69,7 +70,7 @@ public class Enemy extends DynamicObject{
         break;
 
       case HOTDOG:
-        this.damage = 25;
+        this.damage = 20;
         this.hitDistance = 200;
         this.cooldown = 5000;
         enemyAtlas = new TextureAtlas("enemies/Hotdog/hotdog.atlas");
@@ -141,7 +142,8 @@ public class Enemy extends DynamicObject{
 
       move(position.x, position.y);
   }
-  
+
+  @Override
   public void render(float deltaTime, Vector2 playerPosition){
     update(deltaTime, playerPosition);
   }
@@ -150,9 +152,11 @@ public class Enemy extends DynamicObject{
       return position;
   }
 
+  @Override
   public float getHeight() {
       return this.height;
   }
+  @Override
   public float getWidth() {
       return this.width;
   }
@@ -169,10 +173,12 @@ public class Enemy extends DynamicObject{
     // make enemy move towards player, but ranged enemy should stop at a certain distance
     // note to juozas 
 
+  @Override
   public Animation<Sprite> getEnemyAnimation() {
     return this.enemyAnimation;
   }
 
+  @Override
   public void enemyHit(Vector2 playerPosition, Player player) {
 
     long currentTime = System.currentTimeMillis();

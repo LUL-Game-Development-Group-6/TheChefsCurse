@@ -178,10 +178,10 @@ public class Cover implements Screen
 			logoAtlas.createSprite("logo5"),
 			logoAtlas.createSprite("logo6"),
 			logoAtlas.createSprite("logo7"),
-            		logoAtlas.createSprite("logo8"),
-            		logoAtlas.createSprite("logo9"),
-            		logoAtlas.createSprite("logo10"),
-            		logoAtlas.createSprite("logo11"),
+            logoAtlas.createSprite("logo8"),
+            logoAtlas.createSprite("logo9"),
+            logoAtlas.createSprite("logo10"),
+            logoAtlas.createSprite("logo11"),
 			logoAtlas.createSprite("logo12"));
 
         // Prevent animation to show at runtime (opening the game)
