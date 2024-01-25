@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
-
 import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.physics.Room.factories.KitchenRoomFactory;
@@ -19,7 +17,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.physics.Bullet;
+import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.Enemy;
+import java.util.Collections;
+import java.util.Comparator;
+
 import com.badlogic.gdx.math.Vector2;
 
 public class FoodGame implements Screen
@@ -29,10 +31,9 @@ public class FoodGame implements Screen
 	private Player player1;
 	private Enemy enemy;
 	private Enemy enemy2;
-	private float playerSize;
+
 	private float timePassed;
     private float timeBetweenRenderCalls;
-
 
 	// Overlay
 	private Texture overlayTexture;
@@ -40,6 +41,9 @@ public class FoodGame implements Screen
 
 	private Texture pauseTexture;
 	private Sprite pauseSprite;
+
+	// Boolean to check if the game has been paused
+	private boolean pausedGameplay;
 
 	private Texture enemiesLeftTexture;
 	private Sprite enemiesLeftSprite;
@@ -75,17 +79,20 @@ public class FoodGame implements Screen
 	private Texture nineTexture;
 	private Sprite nine;
 
-	private boolean pausedGameplay;
-
+	// Game instance from Menu class to swtich between screens
 	final Menu game;
 
+	// List of all the current enemies
 	private ArrayList<Enemy> enemyList;
+	private ArrayList<DynamicObject> entityList;
 
 	public FoodGame(final Menu game) {
 
-
         this.game = game;
 		this.enemyList = new ArrayList<>();
+		this.entityList = new ArrayList<>();
+		pausedGameplay = false;
+
 		// create stuff for the overlay
 		overlayTexture = new Texture("buttons/Rectangle_enemies_left.png");
 		overlaySprite = new Sprite(overlayTexture);
@@ -93,10 +100,7 @@ public class FoodGame implements Screen
 		enemiesLeftTexture = new Texture("buttons/Enemies_left_text.png");
 		enemiesLeftSprite = new Sprite(enemiesLeftTexture);
 
-		pauseTexture = new Texture("cover/Paused_logo.png");
-		pauseSprite = new Sprite(pauseTexture);
-
-
+		// Create number sprites
 		createNumbers();
 
 		// Room and player creation
@@ -104,11 +108,8 @@ public class FoodGame implements Screen
 		batch = new SpriteBatch();
 
 		player1 = new Player(400, 400, 48, 150);
-
 		createEnemies();
-
-		playerSize = 165;
-		pausedGameplay = false;
+		entityList.add(player1);
 
     }
 
@@ -119,12 +120,18 @@ public class FoodGame implements Screen
 		game.setScreen(new Pause(game, this));
 
 	}
-
     public void resume() {}
     public void resize(int width, int height) {}
     public void hide() {}
-	@Override
 	public void show () {}
+
+	public boolean getPaused() {
+		return this.pausedGameplay;
+	}
+
+	public void setPaused(boolean flag) {
+		this.pausedGameplay = flag;
+	}
 
 	@Override
 	public void render (float delta)
@@ -133,23 +140,23 @@ public class FoodGame implements Screen
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) pause();
 		if(pausedGameplay) return;
 
-		// If player dies
+		// If player dies show death screen
 		if(player1.getCurrentHealth() <= 0) {
 			pausedGameplay = true;
 			game.setScreen(new GameOver(game, this));
 		}
 
-
+		// Start rendering
 		ScreenUtils.clear(0, 0, 0, 0);
         batch.begin();
 		currentRoom.render(batch);
 
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		/*ShapeRenderer shapeRenderer = new ShapeRenderer();
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
         
         shapeRenderer.rect(enemy2.getHitbox().x, enemy2.getHitbox().y, enemy2.getHitbox().width, enemy2.getHitbox().height);
-		shapeRenderer.rect(player1.getHitbox().x, player1.getHitbox().y, player1.getHitbox().width, player1.getHitbox().height);
+		shapeRenderer.rect(player1.getHitbox().x, player1.getHitbox().y, player1.getHitbox().width, player1.getHitbox().height);*/
         
 
 		// Times to get time passed and to follow the player vector
@@ -158,18 +165,16 @@ public class FoodGame implements Screen
 
         Vector2 playerPosition = new Vector2(player1.getHitbox().getX(), player1.getHitbox().getY());
 
-		renderEnemies(playerPosition, timePassed, timeBetweenRenderCalls);
-		player1.render(batch, this);
-		
+		renderEntities(playerPosition, timePassed, timeBetweenRenderCalls);
 
 		// Render things related to the overlay
 		batch.draw(overlaySprite, 820, 570, overlaySprite.getWidth()/2 - 25, overlaySprite.getHeight()/2 - 10);
 		batch.draw(enemiesLeftSprite, 843, 607, enemiesLeftSprite.getWidth()/3, enemiesLeftSprite.getHeight()/3);
 		// Render number of enemies left
 		batch.draw(zero, 1125, 610, zero.getWidth()/3, zero.getHeight()/3);
-		batch.draw(nine, 1150, 610, nine.getWidth()/3, nine.getHeight()/3);
+		batch.draw(two, 1150, 610, nine.getWidth()/3, nine.getHeight()/3);
 
-		shapeRenderer.end();
+		//shapeRenderer.end();
 
 		// Player's bullets
 		for (Bullet bullet : player1.getAmmunition()){
@@ -202,7 +207,61 @@ public class FoodGame implements Screen
 		player1.dispose();
 	}
 
+	public void hitEnemy(Enemy enemy) {
+		enemy.getSprite().setColor(Color.WHITE);
+	}
+
+	// Method to be modified by Juozas random implementation of enemies
+	public void createEnemies() {
+
+		enemy = new Enemy(new Vector2(300,300), 36, 80, Enemy.EnemyType.HAMBURGER);
+		enemy2 = new Enemy(new Vector2(700,300), 100, 50, Enemy.EnemyType.HOTDOG);
+
+		enemyList.add(enemy);
+		enemyList.add(enemy2);	
+
+		entityList.add(enemy);
+		entityList.add(enemy2);
+
+
+	}
+
+
+	// Method that renders all current entities w.r.t. their y position
+	public void renderEntities(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
+
+		Collections.sort(entityList, new Comparator<DynamicObject>() {
+
+			public int compare(DynamicObject entity1, DynamicObject entity2) {
+                return Double.compare(entity2.getSprite().getY(), entity1.getSprite().getY());
+            }
+		});
+
+		for (DynamicObject entity : entityList) {
+
+			if(entity.getPlayerBool()) {
+
+				player1.render(batch, this);
+
+			} else {
+
+				batch.draw(entity.getHealthSprite(), entity.getHitbox().x - 20, entity.getHitbox().y + 80, entity.getHealthSprite().getWidth()/5, entity.getHealthSprite().getHeight()/5);
+				entity.healthPercentage();
+	
+				batch.draw(entity.getEnemyAnimation().getKeyFrame(timePassed, true),
+				entity.getSprite().getX(), entity.getSprite().getY(), entity.getWidth(), entity.getHeight());
+	
+				entity.render(timeBetweenRenderCalls, playerPosition);
+				entity.enemyHit(playerPosition, player1);
+
+			}
+
+		}
+	}
+
+
 	public void createNumbers() {
+
 		zeroTexture = new Texture("buttons/0.png");
 		zero = new Sprite(zeroTexture);
 
@@ -232,43 +291,5 @@ public class FoodGame implements Screen
 
 		nineTexture = new Texture("buttons/9.png");
 		nine = new Sprite(nineTexture);
-	}
-
-	public void hitEnemy(Enemy enemy) {
-		enemy.getSprite().setColor(Color.WHITE);
-	}
-
-	public boolean getPaused() {
-		return this.pausedGameplay;
-	}
-
-	public void setPaused(boolean flag) {
-		this.pausedGameplay = flag;
-	}
-
-	public void createEnemies() {
-
-		enemy = new Enemy(new Vector2(300,300), 36, 80, Enemy.EnemyType.HAMBURGER);
-		enemy2 = new Enemy(new Vector2(700,300), 100, 50, Enemy.EnemyType.HOTDOG);
-
-		enemyList.add(enemy);
-		enemyList.add(enemy2);	
-
-	}
-
-	public void renderEnemies(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
-
-		for (Enemy enemy : enemyList) {
-
-			batch.draw(enemy.getHealthSprite(), enemy.getHitbox().x - 20, enemy.getHitbox().y + 80, enemy.getHealthSprite().getWidth()/5, enemy.getHealthSprite().getHeight()/5);
-			enemy.healthPercentage();
-
-			batch.draw(enemy.getEnemyAnimation().getKeyFrame(timePassed, true),
-			enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
-
-			enemy.render(timeBetweenRenderCalls, playerPosition);
-			enemy.enemyHit(playerPosition, player1);
-		}
-		
 	}
 }

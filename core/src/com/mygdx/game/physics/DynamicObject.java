@@ -2,9 +2,13 @@ package com.mygdx.game.physics;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.FoodGame;
 import com.mygdx.game.misc.Coords;
 
 public abstract class DynamicObject {
@@ -15,6 +19,8 @@ public abstract class DynamicObject {
     private double attack;
     private Coords coordinates;
     private int ID;
+    private boolean isPlayer;
+
     protected Rectangle hitbox;
     protected Sprite sprite;
     protected Texture texture;
@@ -106,6 +112,14 @@ public abstract class DynamicObject {
         this.texture = texture;
     }
 
+    public void setPlayer(boolean player) {
+        this.isPlayer = player;
+    }
+
+    public boolean getPlayerBool() {
+        return this.isPlayer;
+    }
+
     // more rectangle stuff
     // Outline hitbox for testing
     public void renderHitbox(ShapeRenderer shapeRenderer){
@@ -129,6 +143,14 @@ public abstract class DynamicObject {
 
         currentEntityHealth = health_100;
     }
+
+    // Methods to be overridden by child classes
+    public void render(SpriteBatch batch, FoodGame game) {}
+    public void render(float deltaTime, Vector2 playerPosition) {}
+    public Animation<Sprite> getEnemyAnimation() {return null;}
+    public void enemyHit(Vector2 playerPosition, Player player) {}
+    public float getHeight() {return 0;}
+    public float getWidth() {return 0;}
 
     // Can't do switch case with ranges, thats why I used this disposition
     public void healthPercentage() {
