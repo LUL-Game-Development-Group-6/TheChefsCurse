@@ -132,6 +132,14 @@ public class FoodGame implements Screen
 		// Handle Pausing the Game and showing Pause Screen
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) pause();
 		if(pausedGameplay) return;
+
+		// If player dies
+		if(player1.getCurrentHealth() <= 0) {
+			pausedGameplay = true;
+			game.setScreen(new GameOver(game, this));
+		}
+
+
 		ScreenUtils.clear(0, 0, 0, 0);
         batch.begin();
 		currentRoom.render(batch);
