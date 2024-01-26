@@ -47,7 +47,7 @@ public class Enemy extends DynamicObject{
 	
     switch(enemyType){
 
-      case HAMBURGER:
+      case HAMBURGER: // Mele enemy
         this.damage = 10;
         this.hitDistance = 10;
         this.cooldown = 2000;

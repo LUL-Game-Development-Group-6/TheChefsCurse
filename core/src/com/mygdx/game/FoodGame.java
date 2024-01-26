@@ -152,14 +152,6 @@ public class FoodGame implements Screen
         batch.begin();
 		currentRoom.render(batch);
 
-		ShapeRenderer shapeRenderer = new ShapeRenderer();
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.RED);
-        
-        shapeRenderer.rect(enemy2.getHitbox().x, enemy2.getHitbox().y, enemy2.getHitbox().width, enemy2.getHitbox().height);
-		shapeRenderer.rect(player1.getHitbox().x, player1.getHitbox().y, player1.getHitbox().width, player1.getHitbox().height);
-        
-
 		// Times to get time passed and to follow the player vector
 		timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
         timePassed += Gdx.graphics.getDeltaTime();
@@ -173,9 +165,7 @@ public class FoodGame implements Screen
 		batch.draw(enemiesLeftSprite, 843, 607, enemiesLeftSprite.getWidth()/3, enemiesLeftSprite.getHeight()/3);
 		// Render number of enemies left
 		batch.draw(zero, 1125, 610, zero.getWidth()/3, zero.getHeight()/3);
-		batch.draw(nine, 1150, 610, nine.getWidth()/3, nine.getHeight()/3);
-
-		shapeRenderer.end();
+		batch.draw(two, 1150, 610, nine.getWidth()/3, nine.getHeight()/3);
 
 		// Player's bullets
 		for (Bullet bullet : player1.getAmmunition()){
@@ -236,7 +226,7 @@ public class FoodGame implements Screen
 		enemy2 = new Enemy(new Vector2(700,300), 100, 50, Enemy.EnemyType.HOTDOG);
 
 		enemyList.add(enemy);
-		enemyList.add(enemy2);
+		enemyList.add(enemy2);	
 
 		entityList.add(enemy);
 		entityList.add(enemy2);
@@ -247,7 +237,6 @@ public class FoodGame implements Screen
 
 	// Method that renders all current entities w.r.t. their y position
 	public void renderEntities(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
-		
 		Collections.sort(entityList, new Comparator<DynamicObject>() {
 
 			public int compare(DynamicObject entity1, DynamicObject entity2) {
@@ -257,18 +246,20 @@ public class FoodGame implements Screen
 
 		for (DynamicObject entity : entityList) {
 
+			shapeRenderer.rect(entity.getHitbox().x, entity.getHitbox().y, entity.getHitbox().width, entity.getHitbox().height);
+
 			if(entity.getPlayerBool()) {
 
 				player1.render(batch, this);
 
 			} else {
 
-				batch.draw(entity.getHealthSprite(), entity.getHitbox().x - 20, entity.getHitbox().y + 80, entity.getHealthSprite().getWidth()/5, entity.getHealthSprite().getHeight()/5);
+				batch.draw(entity.getHealthSprite(), entity.getSprite().getX() - 10, entity.getSprite().getY() + 100, entity.getHealthSprite().getWidth()/5, entity.getHealthSprite().getHeight()/5);
 				entity.healthPercentage();
-
+	
 				batch.draw(entity.getEnemyAnimation().getKeyFrame(timePassed, true),
 				entity.getSprite().getX(), entity.getSprite().getY(), entity.getWidth(), entity.getHeight());
-
+	
 				entity.render(timeBetweenRenderCalls, playerPosition);
 				entity.enemyHit(playerPosition, player1);
 
