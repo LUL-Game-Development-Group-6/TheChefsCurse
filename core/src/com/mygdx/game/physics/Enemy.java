@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.FoodGame;
 
 public class Enemy extends DynamicObject{
   
@@ -27,7 +28,7 @@ public class Enemy extends DynamicObject{
   private TextureAtlas enemyAtlas;
   private Animation<Sprite> enemyAnimation;
   
-
+  private boolean isDead;
   
   public static enum EnemyType{
     HAMBURGER,
@@ -42,7 +43,8 @@ public class Enemy extends DynamicObject{
 
     super.createHealth();
     this.setPlayer(false);
-
+	
+	
     switch(enemyType){
 
       case HAMBURGER:
@@ -109,6 +111,7 @@ public class Enemy extends DynamicObject{
         break;
     }
 
+	this.isDead = false;
     this.setMaxHealth(this.getCurrentHealth());
     this.position = position;
     this.height = enemyTexture.getHeight()/6;
@@ -160,6 +163,25 @@ public class Enemy extends DynamicObject{
   public float getWidth() {
       return this.width;
   }
+  
+  @Override//had to move this into enemy because it was more trouble than it was worth to try and change the one in dynamic object
+  public void takeDamage(int damage)
+  {
+	  this.setCurrentHealth(this.getCurrentHealth() - damage);
+	  if(this.getCurrentHealth() <= 0){
+		  System.out.println("Enemy should die");
+		  isDead = true;
+	  }
+  }
+  
+  public void setIsDead(boolean isDead)
+  {
+	  this.isDead = isDead;
+  }
+  public boolean getIsDead()
+  {
+	  return isDead;
+  }
 
 
   private void move(float x, float y)
@@ -168,7 +190,7 @@ public class Enemy extends DynamicObject{
     //System.out.println("Enemy position (x = " + x + " , y = " + y + ")");
 
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
-		hitbox.setPosition(x, y);
+		hitbox.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 	} 
     // make enemy move towards player, but ranged enemy should stop at a certain distance
     // note to juozas 
@@ -188,7 +210,7 @@ public class Enemy extends DynamicObject{
     if(this.position.dst(playerPosition) <= this.hitDistance) {
 
       if(timeSinceLastShot >= this.cooldown) {
-        player.takeDamage(this.damage);
+        player.takeDamage(this.damage);	
         System.out.println("Player Hit by enemy");
         lastShot = currentTime;
       }
