@@ -112,6 +112,7 @@ public class FoodGame implements Screen
 		entityList.add(player1);
 
     }
+	
 
     public void pause() {
 
@@ -193,6 +194,23 @@ public class FoodGame implements Screen
 				bullet.setVisibility(false); 	
 			}
 		}
+		
+		//remove enemies from list
+		for (int i = enemyList.size() - 1; i >= 0; i--){
+			if (enemyList.get(i).getIsDead() == true){
+				enemyList.remove(i);
+			}
+		}
+		
+		for (int i = entityList.size() - 1; i >= 0; i--){
+			if (entityList.get(i) instanceof Enemy){
+				Enemy temp = (Enemy)entityList.get(i);
+				if (temp.getIsDead() == true){
+					entityList.remove(i);
+				}
+			}
+		}
+		
         batch.end();
 	}
 
@@ -229,7 +247,7 @@ public class FoodGame implements Screen
 
 	// Method that renders all current entities w.r.t. their y position
 	public void renderEntities(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
-
+		
 		Collections.sort(entityList, new Comparator<DynamicObject>() {
 
 			public int compare(DynamicObject entity1, DynamicObject entity2) {
