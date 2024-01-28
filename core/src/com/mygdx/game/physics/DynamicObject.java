@@ -10,9 +10,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.FoodGame;
 import com.mygdx.game.misc.Coords;
+import com.mygdx.game.misc.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class DynamicObject {
-    
+    private static int[] healthLevels = {0,10,25,40,50,60,75,80,100};
     private int MAX_HEALTH;
     private int currentHealth;
     protected float speed;
@@ -25,21 +29,9 @@ public abstract class DynamicObject {
     protected Sprite sprite;
     protected Texture texture;
 
-    private Texture health_0;
-    private Texture health_10;
-    private Texture health_25;
-    private Texture health_40;
-    private Texture health_50;
-    private Texture health_60;
-    private Texture health_75;
-    private Texture health_80;
-    private Texture health_100;
+    private List<Pair> healthTextures;
 
     private Texture currentEntityHealth;
-
-    public void move(Coords to) {
-
-    }
 
     public void takeDamage(int damage){
 		this.currentHealth = this.currentHealth - damage;
@@ -130,18 +122,13 @@ public abstract class DynamicObject {
     }
 
     public void createHealth() {
+        healthTextures = new ArrayList<>();
 
-        health_0 = new Texture("health/health_0.png");
-        health_10 = new Texture("health/health_10.png");
-        health_25 = new Texture("health/health_25.png");
-        health_40 = new Texture("health/health_40.png");
-        health_50 = new Texture("health/health_50.png");
-        health_60 = new Texture("health/health_60.png");
-        health_75 = new Texture("health/health_75.png");
-        health_80 = new Texture("health/health_80.png");
-        health_100 = new Texture("health/health_100.png");
+        for(int i = 0; i<healthLevels.length; i++) {
+            healthTextures.add(new Pair(i, new Texture("health/health_" + healthLevels[i] + ".png")));
+        }
 
-        currentEntityHealth = health_100;
+        currentEntityHealth = (Texture) healthTextures.get(healthLevels.length - 1).getSecond();
     }
 
     // Methods to be overridden by child classes
@@ -157,26 +144,12 @@ public abstract class DynamicObject {
 
         int threshold = (100 * currentHealth) / MAX_HEALTH;
 
-        if (threshold <= 0) {
-            currentEntityHealth = health_0;
-        } else if (threshold > 0 && threshold <= 10) {
-            currentEntityHealth = health_10;
-        } else if (threshold > 10 && threshold <= 25) {
-            currentEntityHealth = health_25;
-        } else if (threshold > 25 && threshold <= 40) {
-            currentEntityHealth = health_40;
-        } else if (threshold > 40 && threshold <= 50) {
-            currentEntityHealth = health_50;
-        } else if (threshold > 50 && threshold <= 60) {
-            currentEntityHealth = health_60;
-        } else if (threshold > 60 && threshold <= 75) {
-            currentEntityHealth = health_75;
-        } else if (threshold > 75 && threshold <= 80) {
-            currentEntityHealth = health_80;
-        } else if (threshold > 80 && threshold <= 100) {
-            currentEntityHealth = health_100;
+        for(int i = 0; i<healthLevels.length; i++) {
+            if(threshold <= healthLevels[i]) {
+                currentEntityHealth = (Texture) healthTextures.get(i).getSecond();
+                break;
+            }
         }
-        
     }
 
     public Texture getHealthSprite() {
