@@ -3,10 +3,13 @@ package com.mygdx.game.physics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.FoodGame;
 
 public class Enemy extends DynamicObject{
   
@@ -15,8 +18,18 @@ public class Enemy extends DynamicObject{
   private float height;
   private float width;
   private Texture enemyTexture;
+  private int damage;
 
-  
+  private long lastShot;
+  private long cooldown;
+
+  private int hitDistance;
+
+  private TextureAtlas enemyAtlas;
+  private Animation<Sprite> enemyAnimation;
+
+  private boolean isDead;
+
   public static enum EnemyType{
     HAMBURGER,
     HOTDOG,
@@ -28,43 +41,90 @@ public class Enemy extends DynamicObject{
 
   public Enemy(Vector2 position, float width, float height, EnemyType enemyType){
 
+    super.createHealth();
+    this.setPlayer(false);
 
-    switch(enemyType){//I remember we are giving enemies different amounts of health, I don't remember which ones were more or less though so I am setting them all the same for now. Change it later
-      case HAMBURGER:
+    switch(enemyType){
+
+      case HAMBURGER: // Mele enemy
+        this.damage = 10;
+        this.hitDistance = 10;
+        this.cooldown = 2000;
+        enemyAtlas = new TextureAtlas("enemies/Hamburguer/hamburguer.atlas");
+        enemyAnimation = new Animation<>(
+        1/15f,
+        enemyAtlas.createSprite("Hamburguer_Sprite1"),
+        enemyAtlas.createSprite("Hamburguer_Sprite2"),
+        enemyAtlas.createSprite("Hamburguer_Sprite3"),
+        enemyAtlas.createSprite("Hamburguer_Sprite4"),
+        enemyAtlas.createSprite("Hamburguer_Sprite5"),
+        enemyAtlas.createSprite("Hamburguer_Sprite6"),
+        enemyAtlas.createSprite("Hamburguer_Sprite7"),
+        enemyAtlas.createSprite("Hamburguer_Sprite9"),
+        enemyAtlas.createSprite("Hamburguer_Sprite9"),
+        enemyAtlas.createSprite("Hamburguer_Sprite10"));
+
+
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
-		setCurrentHealth(50);
+        setCurrentHealth(100);
+        setSpeed(40);
         break;
+
       case HOTDOG:
+        this.damage = 20;
+        this.hitDistance = 200;
+        this.cooldown = 5000;
+        enemyAtlas = new TextureAtlas("enemies/Hotdog/hotdog.atlas");
+        enemyAnimation = new Animation<>(
+        1/8f,
+        enemyAtlas.createSprite("hotdog1"),
+        enemyAtlas.createSprite("hotdog2"),
+        enemyAtlas.createSprite("hotdog3"),
+        enemyAtlas.createSprite("hotdog4"));
+
         enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
-		setCurrentHealth(50);
+        setCurrentHealth(60);
+        setSpeed(20);
         break;
+
       case POPCORN:
+        this.damage = 10;
         enemyTexture = new Texture("enemies/Popcorn/Popcorn.png");
-		setCurrentHealth(50);
+        setCurrentHealth(40);
+        setSpeed(65);
         break;
+
       case SODA:
+        this.damage = 15;
         enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
-		setCurrentHealth(50);
+        setCurrentHealth(70);
+        setSpeed(60);
         break;
+
       default:
+        this.damage = 20;
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
-		setCurrentHealth(50);
+        setCurrentHealth(100);
+        setSpeed(50);
+
         break;
     }
 
+	this.isDead = false;
+    this.setMaxHealth(this.getCurrentHealth());
     this.position = position;
-    this.height = enemyTexture.getHeight()/5;
-    this.width = enemyTexture.getWidth()/5;
+    this.height = enemyTexture.getHeight()/6;
+    this.width = enemyTexture.getWidth()/6;
     this.velocity = new Vector2(1, 1);
-    setSpeed(50);
+    this.lastShot = 0;
 
     Sprite enemySprite = new Sprite(enemyTexture);
     enemySprite.setSize(width, height);
     enemySprite.setPosition(position.x + 100, position.y);
-    
-    setSprite(enemySprite);
 
+    setSprite(enemySprite);
     setHitbox(new Rectangle(position.x, position.y, width, height));
+
   }
 
 
@@ -84,7 +144,8 @@ public class Enemy extends DynamicObject{
 
       move(position.x, position.y);
   }
-  
+
+  @Override
   public void render(float deltaTime, Vector2 playerPosition){
     update(deltaTime, playerPosition);
   }
@@ -93,11 +154,32 @@ public class Enemy extends DynamicObject{
       return position;
   }
 
+  @Override
   public float getHeight() {
       return this.height;
   }
+  @Override
   public float getWidth() {
       return this.width;
+  }
+
+  @Override//had to move this into enemy because it was more trouble than it was worth to try and change the one in dynamic object
+  public void takeDamage(int damage)
+  {
+	  this.setCurrentHealth(this.getCurrentHealth() - damage);
+	  if(this.getCurrentHealth() <= 0){
+		  System.out.println("Enemy should die");
+		  isDead = true;
+	  }
+  }
+
+  public void setIsDead(boolean isDead)
+  {
+	  this.isDead = isDead;
+  }
+  public boolean getIsDead()
+  {
+	  return isDead;
   }
 
 
@@ -107,13 +189,30 @@ public class Enemy extends DynamicObject{
     //System.out.println("Enemy position (x = " + x + " , y = " + y + ")");
 
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
-		hitbox.setPosition(x, y);
+		hitbox.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 	}
-
-
-
-
-    
     // make enemy move towards player, but ranged enemy should stop at a certain distance
     // note to juozas 
+
+  @Override
+  public Animation<Sprite> getEnemyAnimation() {
+    return this.enemyAnimation;
+  }
+
+  @Override
+  public void enemyHit(Vector2 playerPosition, Player player) {
+
+    long currentTime = System.currentTimeMillis();
+
+    long timeSinceLastShot = currentTime - lastShot;
+
+    if(this.position.dst(playerPosition) <= this.hitDistance) {
+
+      if(timeSinceLastShot >= this.cooldown) {
+        player.takeDamage(this.damage);
+        System.out.println("Player Hit by enemy");
+        lastShot = currentTime;
+      }
+    }
+  }
 }

@@ -22,8 +22,9 @@ public class Player extends DynamicObject {
     private float jitter;
 	private float playerSize;
 
+	// Booleans to track player's current facing position
 	private boolean facingRight;
-	public boolean facingUp;
+	private boolean facingUp;
 
 	private Texture OverlayTexture;
 	private Sprite OverlaySprite;
@@ -113,61 +114,28 @@ public class Player extends DynamicObject {
 	private long fireRate;
 	private boolean flag;
 
+	public static enum WeaponType{
+		SHOTGUN,
+		REDGUN,
+	}
+
     public Player(float x, float y, float width, float height)
     {
+		this.setPlayer(true);
+		createHealth();
 		allAnimations = new ArrayList<Animation<Sprite>>();
 		allStatics = new ArrayList<Sprite>();
 		score = 0;
 		setSpeed(2f);
 		setJitter(2f);
-
-		// Overlay
-		OverlayTexture = new Texture("cheff/Weapon_Overlay.png");
-		OverlaySprite = new Sprite(OverlayTexture);
-
-		RedGunTexture = new Texture("cheff/weapons/RedGun.png");
-		RedGunSprite = new Sprite(RedGunTexture);
-		
-		ShotGunTexture = new Texture("cheff/weapons/Shotgun.png");
-		ShotGunSprite = new Sprite(ShotGunTexture);
-
-		HandTexture = new Texture("cheff/weapons/Hand.png");
-		HandSprite = new Sprite(HandTexture);
-
-		// Chef sprites
-		playerTexture_Standing = new Texture("cheff/Chef_Still_Image.png");
-		player_Standing_Sprite = new Sprite(playerTexture_Standing);
-		allStatics.add(player_Standing_Sprite);
-
-		playerTexture_RedGunDOWN = new Texture("cheff/RedGun/RedGun_standing_DOWN.png");
-		player_RedGunDOWN_Sprite = new Sprite(playerTexture_RedGunDOWN);
-		allStatics.add(player_RedGunDOWN_Sprite);
-
-		playerTexture_RedGunUP = new Texture("cheff/RedGun/RedGun_standing_UP.png");
-		player_RedGunUP_Sprite = new Sprite(playerTexture_RedGunUP);
-		allStatics.add(player_RedGunUP_Sprite);
-
-		playerTexture_ShotgunUP = new Texture("cheff/Shotgun/Chef_with_shtopgun_standing_UP.png");
-		player_ShotgunUP_Sprite = new Sprite(playerTexture_ShotgunUP);
-		allStatics.add(player_ShotgunUP_Sprite);
-
-		playerTexture_ShotgunDOWN = new Texture("cheff/Shotgun/Chef_with_shotgungun_standing_DOWN.png");
-		player_ShotgunDOWN_Sprite = new Sprite(playerTexture_ShotgunDOWN);
-		allStatics.add(player_ShotgunDOWN_Sprite);
-
-		playerTexture = playerTexture_Standing;
-
 		playerSize = 165;
+		this.setMaxHealth(100);
 
-		playerSprite = new Sprite(playerTexture);
-		playerSprite.setSize(width, height);
-		playerSprite.setPosition(x, y);
-		setSprite(playerSprite);
-
+		// Player's Hitbox and Facing Directions
 		setHitbox(new Rectangle(x + width + 14, y, width, height));
 		facingRight = true;
 		facingUp = false;
-		create();
+		create(x, y, width, height);
 		setUnarmed();
 		flipAnimationStanding(walkingAnimation);
 		setCurrentHealth(100);
@@ -177,7 +145,7 @@ public class Player extends DynamicObject {
 		ammunition = new LinkedList<Bullet>();
     }
 
-	public void create() {
+	public void create(float x, float y, float width, float height) {
 
 		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Cheff_punching/standing_punching.atlas"));
 		standingAnimation_PUNCHING = new Animation<Sprite>(
@@ -277,6 +245,49 @@ public class Player extends DynamicObject {
 		allAnimations.add(fire_DOWN);
 
 		currentAnimation = RedGunAnimation_UP;
+
+
+		// Create Static Sprites
+		// Overlay
+		OverlayTexture = new Texture("cheff/Weapon_Overlay.png");
+		OverlaySprite = new Sprite(OverlayTexture);
+
+		RedGunTexture = new Texture("cheff/weapons/RedGun.png");
+		RedGunSprite = new Sprite(RedGunTexture);
+		
+		ShotGunTexture = new Texture("cheff/weapons/Shotgun.png");
+		ShotGunSprite = new Sprite(ShotGunTexture);
+
+		HandTexture = new Texture("cheff/weapons/Hand.png");
+		HandSprite = new Sprite(HandTexture);
+
+		// Chef sprites
+		playerTexture_Standing = new Texture("cheff/Chef_Still_Image.png");
+		player_Standing_Sprite = new Sprite(playerTexture_Standing);
+		allStatics.add(player_Standing_Sprite);
+
+		playerTexture_RedGunDOWN = new Texture("cheff/RedGun/RedGun_standing_DOWN.png");
+		player_RedGunDOWN_Sprite = new Sprite(playerTexture_RedGunDOWN);
+		allStatics.add(player_RedGunDOWN_Sprite);
+
+		playerTexture_RedGunUP = new Texture("cheff/RedGun/RedGun_standing_UP.png");
+		player_RedGunUP_Sprite = new Sprite(playerTexture_RedGunUP);
+		allStatics.add(player_RedGunUP_Sprite);
+
+		playerTexture_ShotgunUP = new Texture("cheff/Shotgun/Chef_with_shtopgun_standing_UP.png");
+		player_ShotgunUP_Sprite = new Sprite(playerTexture_ShotgunUP);
+		allStatics.add(player_ShotgunUP_Sprite);
+
+		playerTexture_ShotgunDOWN = new Texture("cheff/Shotgun/Chef_with_shotgungun_standing_DOWN.png");
+		player_ShotgunDOWN_Sprite = new Sprite(playerTexture_ShotgunDOWN);
+		allStatics.add(player_ShotgunDOWN_Sprite);
+
+		playerTexture = playerTexture_Standing;
+		playerSprite = new Sprite(playerTexture);
+		playerSprite.setSize(width, height);
+		playerSprite.setPosition(x, y);
+		setSprite(playerSprite);
+
 	}
 
 	public void flipAnimation() {
@@ -375,6 +386,7 @@ public class Player extends DynamicObject {
 	/*
 	 * Renders the player
 	 */
+	@Override
 	public void render(SpriteBatch batch, FoodGame game)
 	{
 		float previousX = this.getSprite().getX();
@@ -382,6 +394,10 @@ public class Player extends DynamicObject {
 		float cursorY = Gdx.graphics.getHeight() - Gdx.input.getY();
 		batch.draw(OverlaySprite, 20, 530, OverlaySprite.getWidth()/2, OverlaySprite.getHeight()/2);
 		renderWeapon(batch);
+
+		// Render player's health at the top left of the screen
+		batch.draw(this.getHealthSprite(), 170, 620, this.getHealthSprite().getWidth()/2 - 10, this.getHealthSprite().getHeight()/2 - 5);
+		this.healthPercentage();
 
 		// Boolean to display punching animation instead of standing
 		boolean isPunching = false;
@@ -514,7 +530,7 @@ public class Player extends DynamicObject {
 		@Param float x - distance to move player horizontally
 		@Param float y - distance to move player vertically
 	 */
-	private void move(float x, float y)
+	public void move(float x, float y)
 	{
 		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
@@ -561,17 +577,22 @@ public class Player extends DynamicObject {
 			return false;
 		}
 
-		// Handle punching
+		// Handle punching (for now this does nothing)
 		if(weaponType == 1) {
+
 			if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
 			|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+
 				return false;
+
 			} else {
+
 				batch.draw(standingAnimation_PUNCHING.getKeyFrame(game.getTimePassed(), true),
 				getSprite().getX(), getSprite().getY(), playerSize, playerSize);
 				return true;
 			}
 		}
+
 		// Hablde redgun's bullet
 		if(weaponType == 2) {
 			bulletDirection(90, batch, game);
@@ -588,7 +609,7 @@ public class Player extends DynamicObject {
 		return false;
 	}
 
-	// Method that launches bullets
+	// Method that launches bullets depending on what direction the player is facing
 	public void bulletDirection(float offset, SpriteBatch batch, FoodGame game) {
 		if(facingRight && facingUp) {
 

@@ -128,10 +128,10 @@ public class Bullet extends DynamicObject
 	public void render(SpriteBatch batch)
 	{
 		if(weaponType == 2) {
-			batch.draw(bulletSprite, xPosition, yPosition, 10, 10);
+			batch.draw(bulletSprite, xPosition, yPosition, 15, 15);
 		}
 		if(weaponType == 3) {
-			batch.draw(shotGunTexture, xPosition, yPosition, 15, 10);
+			batch.draw(shotGunTexture, xPosition, yPosition, 20, 15);
 		}
 	}
 	
@@ -151,9 +151,11 @@ public class Bullet extends DynamicObject
 				break;
 			case 2:
 				this.timeToDespawn = System.currentTimeMillis() + 200;
+				this.damage = 18;
 				break;
 			case 3:
 				this.timeToDespawn = System.currentTimeMillis() + 100;
+				this.damage = 40;
 				break;
 			default:
 				break;
