@@ -1,6 +1,7 @@
 package com.mygdx.game.physics;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -8,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.FoodGame;
+import com.mygdx.game.Screens.FoodGame;
 import com.mygdx.game.misc.Coords;
 import com.mygdx.game.misc.Pair;
 
@@ -131,8 +132,8 @@ public abstract class DynamicObject {
         currentEntityHealth = (Texture) healthTextures.get(healthLevels.length - 1).getSecond();
     }
 
-    // Methods to be overridden by child classes
-    public void render(SpriteBatch batch, FoodGame game) {}
+    // Methods to be overwritten
+    public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera) {}
     public void render(float deltaTime, Vector2 playerPosition) {}
     public Animation<Sprite> getEnemyAnimation() {return null;}
     public void enemyHit(Vector2 playerPosition, Player player) {}
