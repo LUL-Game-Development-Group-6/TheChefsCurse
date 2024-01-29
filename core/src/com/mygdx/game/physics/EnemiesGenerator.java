@@ -85,7 +85,11 @@ public class EnemiesGenerator {
         if(MAX_ENEMY_POOL_SIZE - enemiesSpawned > 0) {
             int maxBound = MAX_ENEMY_POOL_SIZE - enemiesSpawned;
             int minBound = 1;
-            return ThreadLocalRandom.current().nextInt(minBound, maxBound);
+            try {
+                return ThreadLocalRandom.current().nextInt(minBound, maxBound);
+            } catch (IllegalArgumentException e) {
+                return 0;
+            }
         }
         return -1;
     }
