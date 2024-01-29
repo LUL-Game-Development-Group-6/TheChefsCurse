@@ -2,9 +2,10 @@ package com.mygdx.game.physics;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygdx.game.FoodGame;
+import com.badlogic.gdx.math.Vector3;
+import com.mygdx.game.Screens.FoodGame;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Gdx;
@@ -20,25 +21,13 @@ public class Player extends DynamicObject {
 	// Player variables
     private int score;
     private float jitter;
-	private float playerSize;
+	private float height;
+	private float width;
+	private Vector3 cursorVector;
 
 	// Booleans to track player's current facing position
 	private boolean facingRight;
 	private boolean facingUp;
-
-	private Texture OverlayTexture;
-	private Sprite OverlaySprite;
-	
-	// Textures for standing sprites (3 weapons)
-	private int weaponType;						// Change this to ENUM eventually 
-	private Texture RedGunTexture;
-	private Sprite RedGunSprite;
-
-	private Texture ShotGunTexture;
-	private Sprite ShotGunSprite;
-
-	private Texture HandTexture;
-	private Sprite HandSprite;
 	/*
 	 * 
 	 * 
@@ -114,27 +103,35 @@ public class Player extends DynamicObject {
 	private long fireRate;
 	private boolean flag;
 
-	public static enum WeaponType{
+	public static enum WeaponType {
 		SHOTGUN,
 		REDGUN,
+		FIST,
 	}
+
+	private WeaponType weaponType;
 
     public Player(float x, float y, float width, float height)
     {
 		this.setPlayer(true);
-		createHealth();
+		this.width = width;
+		this.height = height;
+		
 		allAnimations = new ArrayList<Animation<Sprite>>();
 		allStatics = new ArrayList<Sprite>();
 		score = 0;
 		setSpeed(2f);
 		setJitter(2f);
-		playerSize = 165;
+
+		facingRight = true;
+		facingUp = false;
+
+		createHealth();
 		this.setMaxHealth(100);
 
 		// Player's Hitbox and Facing Directions
-		setHitbox(new Rectangle(x + width + 14, y, width, height));
-		facingRight = true;
-		facingUp = false;
+		setHitbox(new Rectangle(x, y, width/2, height));
+		
 		create(x, y, width, height);
 		setUnarmed();
 		flipAnimationStanding(walkingAnimation);
@@ -143,7 +140,349 @@ public class Player extends DynamicObject {
 
 		// Bullet code 
 		ammunition = new LinkedList<Bullet>();
+
+		// Cursor vector
+		cursorVector = new Vector3();
     }
+
+	public void flipAnimation() {
+		for (Animation<Sprite> animation : allAnimations) {
+			for (TextureRegion frame : animation.getKeyFrames()) {
+				frame.flip(true, false);
+			}
+		}
+	}
+
+	public void flipAnimationStanding(Animation<Sprite> animation) {
+		for (TextureRegion frame : animation.getKeyFrames()) {
+			frame.flip(true, false);
+		}
+	}
+
+	public Sprite flipUpsideDown(Sprite frame) {
+		frame.flip(false, true);
+		return frame;
+	}
+
+	public void flipTextures() {
+		for (Sprite sprite : allStatics) {
+			sprite.flip(true, false);
+		}
+	}
+
+	public void flipAnimationDynamic (Vector3 cursorvector, SpriteBatch batch) {
+		// Added 80 to match the middle of the sprite of the player
+		if (cursorvector.y >= sprite.getY() + 150) {
+			currentAnimation = currentAnimation_UP;
+	
+			playerSprite = Sprite_UP;
+			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
+			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
+			setSprite(playerSprite);
+			facingUp = true;
+			currentShotgunFire = fire_UP;
+
+		}
+		if (cursorvector.y < sprite.getY() + 150) {
+			currentAnimation = currentAnimation_DOWN;
+			
+			playerSprite = Sprite_DOWN;
+			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
+			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
+			setSprite(playerSprite);
+			facingUp = false;
+			currentShotgunFire = fire_DOWN;
+		}
+
+		if (cursorvector.x >= hitbox.getX()) {
+			if(!this.facingRight) {
+				flipAnimation();
+				flipTextures();
+				this.setFace(true);
+			}
+		}
+		if (cursorvector.x < hitbox.getX()) {
+			if(this.facingRight) {
+				flipAnimation();
+				flipTextures();
+				this.setFace(false);
+			}
+		}
+	}
+
+	public void dispose() {
+		currentAtlas.dispose();
+	}
+
+	public Animation<Sprite> getAnimation() {
+		return currentAnimation;
+	}
+	public TextureAtlas getAtlas() {
+		return currentAtlas;
+	}
+
+	public boolean getFace()
+	{
+		return facingRight;
+	}
+	public void setFace(boolean newDirection)
+	{
+		facingRight = newDirection;
+	}
+
+	public float getJitter() {
+		return jitter;
+	}
+
+	public void setJitter(float jitter) {
+		this.jitter = jitter;
+	}
+
+	/*
+	 * Renders the player
+	 */
+	@Override
+	public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera)
+	{
+
+		// Get cursor vector to match world's coordinates
+		cursorVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+		camera.unproject(cursorVector);
+
+
+		// Boolean to display punching animation instead of standing
+		boolean isPunching = false;
+
+		flipAnimationDynamic(cursorVector, batch);
+
+		// Change weapon with number keys 1, 2 & 3
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+			setUnarmed();
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+			setRedGun();
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+			setShotgun();
+		}
+
+		// Move the player
+		if (Gdx.input.isKeyPressed(Input.Keys.A)){
+			move(-speed, 0);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.D)){
+			move(speed, 0);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.W)){
+			move(0, speed);
+		}
+
+		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+			move(0, -speed);	
+		}
+
+		// Shoot or punch handler
+		if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            isPunching = shoot(batch, game);
+        }
+
+		// Handle the fire animation for the shotgun
+		if(this.getFlag()) {
+			if(animationStart == -1) {
+				animationStart = System.currentTimeMillis();
+			}
+			batch.draw(currentShotgunFire.getKeyFrame(game.getTimePassed(), true), getFireX(), getFireY(), 150, 150);
+		}
+		
+		if(animationStart != -1 && System.currentTimeMillis() - animationStart > 200) {
+			this.setFlag(false);
+			animationStart = -1; // Reset the animation start time
+		}
+
+
+		if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
+		|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+
+			batch.draw(this.getAnimation().getKeyFrame(game.getTimePassed(), true),
+			getSprite().getX(), getSprite().getY(), width, height);
+
+		} else if(!isPunching) {
+			batch.draw(getSprite(), getSprite().getX(), getSprite().getY(), width, height);
+		}
+
+		
+		// Roddy's code for the ammunition
+		for (Bullet current : ammunition){
+			current.update();
+			if (current.getXPosition() < 0 || current.getXPosition() > 1280 || current.getYPosition() < 0 || current.getYPosition() > 720){
+				current.setVisibility(false);
+			}
+		}
+		for (int i = ammunition.size() - 1; i >= 0; i--){
+			if (ammunition.get(i).getVisibility() == false){
+				ammunition.remove(i);
+			}
+		}
+	}
+	
+	public void move(float x, float y)
+	{
+		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
+		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
+	}
+	
+	// Change weapon type methods (sprite and animation)
+	public void setShotgun() {
+		this.weaponType = WeaponType.SHOTGUN;
+		this.fireRate = 700;
+		setSpeed(2f);
+		currentAnimation_UP = ShotgunAnimation_UP;
+		currentAnimation_DOWN = ShotgunAnimation_DOWN;
+		currentTexture_UP = playerTexture_ShotgunUP;
+		currentTexture_DOWN = playerTexture_ShotgunDOWN;
+		Sprite_UP = player_ShotgunUP_Sprite;
+		Sprite_DOWN = player_ShotgunDOWN_Sprite;
+	}
+	public void setRedGun() {
+		this.weaponType = WeaponType.REDGUN;
+		this.fireRate = 400;
+		setSpeed(2f + 3);
+		currentAnimation_UP = RedGunAnimation_UP;
+		currentAnimation_DOWN = RedGunAnimation_DOWN;
+		currentTexture_UP = playerTexture_RedGunUP;
+		currentTexture_DOWN = playerTexture_RedGunDOWN;
+		Sprite_UP = player_RedGunUP_Sprite;
+		Sprite_DOWN = player_RedGunDOWN_Sprite;
+	}
+	public void setUnarmed() {
+		this.weaponType = WeaponType.FIST;
+		setSpeed(2f + 7);
+		currentAnimation_UP = walkingAnimation;
+		currentAnimation_DOWN = walkingAnimation;
+		currentTexture_UP = playerTexture_Standing;
+		currentTexture_DOWN = playerTexture_Standing;
+		Sprite_UP = player_Standing_Sprite;
+		Sprite_DOWN = player_Standing_Sprite;
+	}
+
+	// Methods that handle the player shooting/punching
+	public boolean shoot(SpriteBatch batch, FoodGame game) {
+
+		// Check for gun cooldown to shoot
+		if(System.currentTimeMillis() - lastShot < fireRate) {
+			flag = false;
+			return false;
+		}
+
+		// Handle punching (for now this does nothing)
+		if(this.weaponType == WeaponType.FIST) {
+
+			if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
+			|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+
+				return false;
+
+			} else {
+				batch.draw(standingAnimation_PUNCHING.getKeyFrame(game.getTimePassed(), true),
+				getSprite().getX(), getSprite().getY(), width, height);
+				return true;
+			}
+		}
+
+		// Hablde redgun's bullet
+		if(this.weaponType == WeaponType.REDGUN) {
+			bulletDirection(90, batch, game);
+			lastShot = System.currentTimeMillis();
+			return false;
+		}
+		// Habndle shotgun
+		if(this.weaponType == WeaponType.SHOTGUN) {
+			bulletDirection(95, batch, game);
+			lastShot = System.currentTimeMillis();
+			flag = true;
+			return false;	
+		}
+		return false;
+	}
+
+	// Method that launches bullets depending on what direction the player is facing
+	public void bulletDirection(float offset, SpriteBatch batch, FoodGame game) {
+		if(facingRight && facingUp) {
+
+			currentShotgunFire = fire_UP;
+			Bullet nextBullet = new Bullet(9, 6, sprite.getX() + offset + 33, sprite.getY() + offset + 30, this.weaponType);
+			setFire_XY(nextBullet.getXPosition() + 300, nextBullet.getYPosition() + 250);
+			nextBullet.setDespawnTime(weaponType);
+			nextBullet.setBulletAnimation(currentShotgunFire);
+			nextBullet.setShotgunUP(true, false);
+			ammunition.add(nextBullet);
+		
+
+		} else if (facingRight && !facingUp) {
+
+			currentShotgunFire = fire_DOWN;
+
+			Bullet nextBullet = new Bullet(9, -6, sprite.getX() + offset + 35, sprite.getY() + offset - 5, this.weaponType);
+			setFire_XY(nextBullet.getXPosition() + 300, nextBullet.getYPosition() - 10);
+			nextBullet.setDespawnTime(weaponType);
+			nextBullet.setBulletAnimation(currentShotgunFire);
+			nextBullet.setShotgunUP(false, false);
+			ammunition.add(nextBullet);
+
+
+		} else if (!facingRight && facingUp) {
+
+			currentShotgunFire = fire_UP;
+
+			Bullet nextBullet = new Bullet(-9, 6, sprite.getX() + offset - 55, sprite.getY() + offset + 28, this.weaponType);
+			setFire_XY(nextBullet.getXPosition() - 180, nextBullet.getYPosition() + 270);
+			nextBullet.setDespawnTime(weaponType);
+			nextBullet.setBulletAnimation(currentShotgunFire);
+			nextBullet.setShotgunUP(true, true);
+			ammunition.add(nextBullet);
+			
+		} else if (!facingRight && !facingUp) {
+
+			currentShotgunFire = fire_DOWN;
+
+			Bullet nextBullet = new Bullet(-9, -6, sprite.getX() + offset - 57, sprite.getY() + offset - 2, this.weaponType);
+			setFire_XY(nextBullet.getXPosition() - 160, nextBullet.getYPosition() - 20);
+			nextBullet.setDespawnTime(weaponType);
+			nextBullet.setBulletAnimation(currentShotgunFire);
+			nextBullet.setShotgunUP(false, true);
+			ammunition.add(nextBullet);
+		}
+	}
+
+	// Ammunition getter
+	public LinkedList<Bullet> getAmmunition() {
+		return ammunition;
+	}
+
+	public boolean getFlag() {
+		return this.flag;
+	}
+
+	public void setFlag(boolean x) {
+		this.flag = x;
+	}
+
+	public void setFire_XY(float X, float Y) {
+		this.fireX = X;
+		this.fireY = Y;
+	}
+
+	public float getFireX() {
+		return this.fireX;
+	}
+
+	public float getFireY() {
+		return this.fireY;
+	}
+
+	public WeaponType getWeaponType() {
+		return this.weaponType;
+	}
 
 	public void create(float x, float y, float width, float height) {
 
@@ -246,21 +585,7 @@ public class Player extends DynamicObject {
 
 		currentAnimation = RedGunAnimation_UP;
 
-
 		// Create Static Sprites
-		// Overlay
-		OverlayTexture = new Texture("cheff/Weapon_Overlay.png");
-		OverlaySprite = new Sprite(OverlayTexture);
-
-		RedGunTexture = new Texture("cheff/weapons/RedGun.png");
-		RedGunSprite = new Sprite(RedGunTexture);
-		
-		ShotGunTexture = new Texture("cheff/weapons/Shotgun.png");
-		ShotGunSprite = new Sprite(ShotGunTexture);
-
-		HandTexture = new Texture("cheff/weapons/Hand.png");
-		HandSprite = new Sprite(HandTexture);
-
 		// Chef sprites
 		playerTexture_Standing = new Texture("cheff/Chef_Still_Image.png");
 		player_Standing_Sprite = new Sprite(playerTexture_Standing);
@@ -285,419 +610,8 @@ public class Player extends DynamicObject {
 		playerTexture = playerTexture_Standing;
 		playerSprite = new Sprite(playerTexture);
 		playerSprite.setSize(width, height);
-		playerSprite.setPosition(x, y);
+		playerSprite.setPosition(x - 100, y);
 		setSprite(playerSprite);
-
-	}
-
-	public void flipAnimation() {
-		for (Animation<Sprite> animation : allAnimations) {
-			for (TextureRegion frame : animation.getKeyFrames()) {
-				frame.flip(true, false);
-			}
-		}
-	}
-
-	public void flipAnimationStanding(Animation<Sprite> animation) {
-		for (TextureRegion frame : animation.getKeyFrames()) {
-			frame.flip(true, false);
-		}
-	}
-
-	public Sprite flipUpsideDown(Sprite frame) {
-		frame.flip(false, true);
-		return frame;
-	}
-
-	public void flipTextures() {
-		for (Sprite sprite : allStatics) {
-			sprite.flip(true, false);
-		}
-	}
-
-	public void flipAnimationDynamic (float cursorY, SpriteBatch batch) {
-		// Added 80 to match the middle of the sprite of the player
-		if (cursorY >= sprite.getY() + 80) {
-			currentAnimation = currentAnimation_UP;
-	
-			playerSprite = Sprite_UP;
-			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
-			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
-			setSprite(playerSprite);
-			facingUp = true;
-			currentShotgunFire = fire_UP;
-
-		}
-		if (cursorY < sprite.getY() + 80) {
-			currentAnimation = currentAnimation_DOWN;
-			
-			playerSprite = Sprite_DOWN;
-			playerSprite.setSize(getSprite().getWidth(), getSprite().getHeight());
-			playerSprite.setPosition(getSprite().getX(), getSprite().getY());
-			setSprite(playerSprite);
-			facingUp = false;
-			currentShotgunFire = fire_DOWN;
-		}
-
-		if (Gdx.input.getX() >= hitbox.getX()) {
-			if(!this.facingRight) {
-				flipAnimation();
-				flipTextures();
-				this.setFace(true);
-			}
-		}
-		if (Gdx.input.getX() < hitbox.getX()) {
-			if(this.facingRight) {
-				flipAnimation();
-				flipTextures();
-				this.setFace(false);
-			}
-		}
-	}
-
-	public void dispose() {
-		currentAtlas.dispose();
-	}
-
-	public Animation<Sprite> getAnimation() {
-		return currentAnimation;
-	}
-	public TextureAtlas getAtlas() {
-		return currentAtlas;
-	}
-
-	public boolean getFace()
-	{
-		return facingRight;
-	}
-	public void setFace(boolean newDirection)
-	{
-		facingRight = newDirection;
-	}
-
-	public float getJitter() {
-		return jitter;
-	}
-
-	public void setJitter(float jitter) {
-		this.jitter = jitter;
-	}
-
-	/*
-	 * Renders the player
-	 */
-	@Override
-	public void render(SpriteBatch batch, FoodGame game)
-	{
-		float previousX = this.getSprite().getX();
-		float previousY = this.getSprite().getY();
-		float cursorY = Gdx.graphics.getHeight() - Gdx.input.getY();
-		batch.draw(OverlaySprite, 20, 530, OverlaySprite.getWidth()/2, OverlaySprite.getHeight()/2);
-		renderWeapon(batch);
-
-		// Render player's health at the top left of the screen
-		batch.draw(this.getHealthSprite(), 170, 620, this.getHealthSprite().getWidth()/2 - 10, this.getHealthSprite().getHeight()/2 - 5);
-		this.healthPercentage();
-
-		// Boolean to display punching animation instead of standing
-		boolean isPunching = false;
-
-		flipAnimationDynamic(cursorY, batch);
-
-		// Change weapon with number keys 1, 2 & 3
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
-			setUnarmed();
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-			setRedGun();
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
-			setShotgun();
-		}
-
-		// Move the player
-		if (Gdx.input.isKeyPressed(Input.Keys.A)){
-			move(-speed, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.D)){
-			move(speed, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.W)){
-			move(0, speed);
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			move(0, -speed);	
-		}
-
-		// Shoot or punch handler
-		if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            isPunching = shoot(batch, game);
-        }
-
-		if(this.getFlag()) {
-			if(animationStart == -1) {
-				animationStart = System.currentTimeMillis();
-			}
-			batch.draw(currentShotgunFire.getKeyFrame(game.getTimePassed(), true), getFireX(), getFireY(), 50, 50);
-		}
-		
-		if(animationStart != -1 && System.currentTimeMillis() - animationStart > 200) {
-			this.setFlag(false);
-			animationStart = -1; // Reset the animation start time
-		}
-
-
-		if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
-		|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-
-			batch.draw(this.getAnimation().getKeyFrame(game.getTimePassed(), true),
-			getSprite().getX(), getSprite().getY(), playerSize, playerSize);
-
-		} else if(!isPunching) {
-			batch.draw(getSprite(), getSprite().getX(), getSprite().getY(), playerSize, playerSize);
-		}
-		// Roddy's code for the ammunition
-		for (Bullet current : ammunition){
-			current.update();
-			if (current.getXPosition() < 0 || current.getXPosition() > 1280 || current.getYPosition() < 0 || current.getYPosition() > 720){
-				current.setVisibility(false);
-			}
-		}
-		for (int i = ammunition.size() - 1; i >= 0; i--){
-			if (ammunition.get(i).getVisibility() == false){
-				ammunition.remove(i);
-			}
-		}
-		staticInterceptors(previousX, previousY);
-	}
-	/*
-		Checks player's position for obstacles and prevents movement beyond them
-		@Param float previuosX - previous player position in X dimension
-		@Param float previuosY - previous player position in Y dimension
-	 */
-	private void staticInterceptors(float previousX, float previousY)
-	{
-		if (Intersector.intersectSegmentRectangle(85, 270, 630, 45, this.getHitbox())){//this could all be much neater, but it will work for now.
-			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());//moves the player back to previous position
-			if (Gdx.input.isKeyPressed(Input.Keys.A)){
-				//these bits aren't really needed but it means the player slides a bit on the wall if they keep trying to walk into it.
-				move(0, jitter);
-			}
-			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				move(jitter, 0);
-			}
-		}
-		if (Intersector.intersectSegmentRectangle(1230, 290, 630, 45, this.getHitbox())){
-			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
-			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				move(0, jitter);
-			}
-			if (Gdx.input.isKeyPressed(Input.Keys.S)){
-				move(-jitter, 0);
-			}
-		}
-
-		if (Intersector.intersectSegmentRectangle(1230, 0, 1230, 720, this.getHitbox())){
-			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
-		}
-		if (Intersector.intersectSegmentRectangle(85, 0, 85, 720, this.getHitbox())){
-			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
-		}
-
-		if (Intersector.intersectSegmentRectangle(1230, 445, 685, 665, this.getHitbox())){
-			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
-			if (Gdx.input.isKeyPressed(Input.Keys.D)){
-				move(0, -jitter);
-			}
-			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				move(-jitter, 0);
-			}
-		}
-
-		if (Intersector.intersectSegmentRectangle(85, 425, 685, 665, this.getHitbox())){
-			move(previousX - this.getSprite().getX(), previousY - this.getSprite().getY());
-			if (Gdx.input.isKeyPressed(Input.Keys.A)){
-				move(0, -jitter);
-			}
-			if (Gdx.input.isKeyPressed(Input.Keys.W)){
-				move(jitter, 0);
-			}
-		}
-	}
-	/*
-		Moves a player's texture with it's hitbox
-		@Param float x - distance to move player horizontally
-		@Param float y - distance to move player vertically
-	 */
-	public void move(float x, float y)
-	{
-		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
-		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
-	}
-	
-	// Change weapon type methods (sprite and animation)
-	public void setShotgun() {
-		weaponType = 3;
-		setSpeed(2f - 1);
-		currentAnimation_UP = ShotgunAnimation_UP;
-		currentAnimation_DOWN = ShotgunAnimation_DOWN;
-		currentTexture_UP = playerTexture_ShotgunUP;
-		currentTexture_DOWN = playerTexture_ShotgunDOWN;
-		Sprite_UP = player_ShotgunUP_Sprite;
-		Sprite_DOWN = player_ShotgunDOWN_Sprite;
-	}
-	public void setRedGun() {
-		weaponType = 2;
-		setSpeed(2f);
-		currentAnimation_UP = RedGunAnimation_UP;
-		currentAnimation_DOWN = RedGunAnimation_DOWN;
-		currentTexture_UP = playerTexture_RedGunUP;
-		currentTexture_DOWN = playerTexture_RedGunDOWN;
-		Sprite_UP = player_RedGunUP_Sprite;
-		Sprite_DOWN = player_RedGunDOWN_Sprite;
-	}
-	public void setUnarmed() {
-		weaponType = 1;
-		setSpeed(2f + 1);
-		currentAnimation_UP = walkingAnimation;
-		currentAnimation_DOWN = walkingAnimation;
-		currentTexture_UP = playerTexture_Standing;
-		currentTexture_DOWN = playerTexture_Standing;
-		Sprite_UP = player_Standing_Sprite;
-		Sprite_DOWN = player_Standing_Sprite;
-	}
-
-	// Methods that handle the player shooting/punching
-	public boolean shoot(SpriteBatch batch, FoodGame game) {
-
-		// Check for gun cooldown to shoot
-		if(System.currentTimeMillis() - lastShot < fireRate) {
-			flag = false;
-			return false;
-		}
-
-		// Handle punching (for now this does nothing)
-		if(weaponType == 1) {
-
-			if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
-			|| Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-
-				return false;
-
-			} else {
-
-				batch.draw(standingAnimation_PUNCHING.getKeyFrame(game.getTimePassed(), true),
-				getSprite().getX(), getSprite().getY(), playerSize, playerSize);
-				return true;
-			}
-		}
-
-		// Hablde redgun's bullet
-		if(weaponType == 2) {
-			bulletDirection(90, batch, game);
-			lastShot = System.currentTimeMillis();
-			return false;
-		}
-		// Habndle shotgun
-		if(weaponType == 3) {
-			bulletDirection(95, batch, game);
-			lastShot = System.currentTimeMillis();
-			flag = true;
-			return false;	
-		}
-		return false;
-	}
-
-	// Method that launches bullets depending on what direction the player is facing
-	public void bulletDirection(float offset, SpriteBatch batch, FoodGame game) {
-		if(facingRight && facingUp) {
-
-			currentShotgunFire = fire_UP;
-			Bullet nextBullet = new Bullet(9, 6, sprite.getX() + offset + 33, sprite.getY() + offset + 30, this.weaponType);
-			setFire_XY(nextBullet.getXPosition() + 30, nextBullet.getYPosition());
-			nextBullet.setDespawnTime(weaponType);
-			nextBullet.setBulletAnimation(currentShotgunFire);
-			nextBullet.setShotgunUP(true, false);
-			ammunition.add(nextBullet);
-		
-
-		} else if (facingRight && !facingUp) {
-
-			currentShotgunFire = fire_DOWN;
-
-			Bullet nextBullet = new Bullet(9, -6, sprite.getX() + offset + 35, sprite.getY() + offset - 5, this.weaponType);
-			setFire_XY(nextBullet.getXPosition() + 30, nextBullet.getYPosition() - 65);
-			nextBullet.setDespawnTime(weaponType);
-			nextBullet.setBulletAnimation(currentShotgunFire);
-			nextBullet.setShotgunUP(false, false);
-			ammunition.add(nextBullet);
-
-
-		} else if (!facingRight && facingUp) {
-
-			currentShotgunFire = fire_UP;
-
-			Bullet nextBullet = new Bullet(-9, 6, sprite.getX() + offset - 55, sprite.getY() + offset + 28, this.weaponType);
-			setFire_XY(nextBullet.getXPosition() - 85, nextBullet.getYPosition() + 5);
-			nextBullet.setDespawnTime(weaponType);
-			nextBullet.setBulletAnimation(currentShotgunFire);
-			nextBullet.setShotgunUP(true, true);
-			ammunition.add(nextBullet);
-			
-		} else if (!facingRight && !facingUp) {
-
-			currentShotgunFire = fire_DOWN;
-
-			Bullet nextBullet = new Bullet(-9, -6, sprite.getX() + offset - 57, sprite.getY() + offset - 2, this.weaponType);
-			setFire_XY(nextBullet.getXPosition() - 85, nextBullet.getYPosition() - 65);
-			nextBullet.setDespawnTime(weaponType);
-			nextBullet.setBulletAnimation(currentShotgunFire);
-			nextBullet.setShotgunUP(false, true);
-			ammunition.add(nextBullet);
-		}
-	}
-
-
-	// This method is for displaying the weapon in the top left overlay
-	public void renderWeapon(SpriteBatch batch) {
-		if(weaponType == 1) {
-			batch.draw(HandSprite, 65, 565, HandSprite.getWidth()/2, HandSprite.getHeight()/2);
-		}
-		if(weaponType == 2) {
-			this.fireRate = 400;
-			batch.draw(RedGunSprite, 45, 570, RedGunSprite.getWidth()/2, RedGunSprite.getHeight()/2);
-		}
-		if(weaponType == 3) {	
-			this.fireRate = 700;
-			batch.draw(ShotGunSprite, 40, 585, ShotGunSprite.getWidth()/3, ShotGunSprite.getHeight()/3);	
-		}
-	}
-
-	// Ammunition getter
-	public LinkedList<Bullet> getAmmunition() {
-		return ammunition;
-	}
-
-	public boolean getFlag() {
-		return this.flag;
-	}
-
-	public void setFlag(boolean x) {
-		this.flag = x;
-	}
-
-	public void setFire_XY(float X, float Y) {
-		this.fireX = X;
-		this.fireY = Y;
-	}
-
-	public float getFireX() {
-		return this.fireX;
-	}
-
-	public float getFireY() {
-		return this.fireY;
 	}
 
 } // End of Player class

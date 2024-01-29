@@ -1,6 +1,6 @@
-package com.mygdx.game.physics.Room.builders;
+package com.mygdx.game.Room.builders;
 
-import com.mygdx.game.physics.Room.KitchenRoom;
+import com.mygdx.game.Room.KitchenRoom;
 
 public class KitchenRoomBuilder extends RoomBuilder{
     public KitchenRoom build()
