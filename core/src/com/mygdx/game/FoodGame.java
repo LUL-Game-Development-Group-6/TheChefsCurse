@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -87,7 +86,7 @@ public class FoodGame implements Screen
 		entityList.add(player1);
 
     }
-	
+
 
     public void pause() {
 
@@ -127,6 +126,7 @@ public class FoodGame implements Screen
         batch.begin();
 		currentRoom.render(batch);
 
+
 		// Times to get time passed and to follow the player vector
 		timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
         timePassed += Gdx.graphics.getDeltaTime();
@@ -156,17 +156,17 @@ public class FoodGame implements Screen
 			}
 
 			if(bullet.getDespawnTime() < System.currentTimeMillis()) {
-				bullet.setVisibility(false); 	
+				bullet.setVisibility(false);
 			}
 		}
-		
+
 		//remove enemies from list
 		for (int i = enemyList.size() - 1; i >= 0; i--){
 			if (enemyList.get(i).getIsDead() == true){
 				enemyList.remove(i);
 			}
 		}
-		
+
 		for (int i = entityList.size() - 1; i >= 0; i--){
 			if (entityList.get(i) instanceof Enemy){
 				Enemy temp = (Enemy)entityList.get(i);
@@ -175,7 +175,7 @@ public class FoodGame implements Screen
 				}
 			}
 		}
-		
+
         batch.end();
 	}
 
@@ -201,7 +201,7 @@ public class FoodGame implements Screen
 		enemy2 = new Enemy(new Vector2(700,300), 100, 50, Enemy.EnemyType.HOTDOG);
 
 		enemyList.add(enemy);
-		enemyList.add(enemy2);	
+		enemyList.add(enemy2);
 
 		entityList.add(enemy);
 		entityList.add(enemy2);
@@ -212,6 +212,12 @@ public class FoodGame implements Screen
 
 	// Method that renders all current entities w.r.t. their y position
 	public void renderEntities(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
+
+		ShapeRenderer shapeRenderer = new ShapeRenderer();
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(Color.RED);
+
+
 		Collections.sort(entityList, new Comparator<DynamicObject>() {
 
 			public int compare(DynamicObject entity1, DynamicObject entity2) {
@@ -228,16 +234,17 @@ public class FoodGame implements Screen
 
 				batch.draw(entity.getHealthSprite(), entity.getSprite().getX() - 10, entity.getSprite().getY() + 100, entity.getHealthSprite().getWidth()/5, entity.getHealthSprite().getHeight()/5);
 				entity.healthPercentage();
-	
+
 				batch.draw(entity.getEnemyAnimation().getKeyFrame(timePassed, true),
 				entity.getSprite().getX(), entity.getSprite().getY(), entity.getWidth(), entity.getHeight());
-	
+
 				entity.render(timeBetweenRenderCalls, playerPosition);
 				entity.enemyHit(playerPosition, player1);
 
 			}
 
 		}
+		shapeRenderer.end();
 	}
 
 	public void createNumbers() {

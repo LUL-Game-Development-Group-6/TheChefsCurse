@@ -27,9 +27,9 @@ public class Enemy extends DynamicObject{
 
   private TextureAtlas enemyAtlas;
   private Animation<Sprite> enemyAnimation;
-  
+
   private boolean isDead;
-  
+
   public static enum EnemyType{
     HAMBURGER,
     HOTDOG,
@@ -43,8 +43,7 @@ public class Enemy extends DynamicObject{
 
     super.createHealth();
     this.setPlayer(false);
-	
-	
+
     switch(enemyType){
 
       case HAMBURGER: // Mele enemy
@@ -122,7 +121,7 @@ public class Enemy extends DynamicObject{
     Sprite enemySprite = new Sprite(enemyTexture);
     enemySprite.setSize(width, height);
     enemySprite.setPosition(position.x + 100, position.y);
-    
+
     setSprite(enemySprite);
     setHitbox(new Rectangle(position.x, position.y, width, height));
 
@@ -163,7 +162,7 @@ public class Enemy extends DynamicObject{
   public float getWidth() {
       return this.width;
   }
-  
+
   @Override//had to move this into enemy because it was more trouble than it was worth to try and change the one in dynamic object
   public void takeDamage(int damage)
   {
@@ -173,7 +172,7 @@ public class Enemy extends DynamicObject{
 		  isDead = true;
 	  }
   }
-  
+
   public void setIsDead(boolean isDead)
   {
 	  this.isDead = isDead;
@@ -191,7 +190,7 @@ public class Enemy extends DynamicObject{
 
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
-	} 
+	}
     // make enemy move towards player, but ranged enemy should stop at a certain distance
     // note to juozas 
 
@@ -205,12 +204,12 @@ public class Enemy extends DynamicObject{
 
     long currentTime = System.currentTimeMillis();
 
-    long timeSinceLastShot = currentTime - lastShot; 
+    long timeSinceLastShot = currentTime - lastShot;
 
     if(this.position.dst(playerPosition) <= this.hitDistance) {
 
       if(timeSinceLastShot >= this.cooldown) {
-        player.takeDamage(this.damage);	
+        player.takeDamage(this.damage);
         System.out.println("Player Hit by enemy");
         lastShot = currentTime;
       }
