@@ -227,9 +227,6 @@ public class FoodGame implements Screen
 		});
 
 		for (DynamicObject entity : entityList) {
-
-			shapeRenderer.rect(entity.getHitbox().x, entity.getHitbox().y, entity.getHitbox().width, entity.getHitbox().height);
-
 			if(entity.getPlayerBool()) {
 
 				player1.render(batch, this);
