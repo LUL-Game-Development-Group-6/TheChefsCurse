@@ -3,6 +3,7 @@ package com.mygdx.game.physics;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.Screens.FoodGame;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,7 +24,11 @@ public class Player extends DynamicObject {
     private float jitter;
 	private float height;
 	private float width;
+
 	private Vector3 cursorVector;
+	private Vector2 previousSprite;
+	private Vector2 previousPos;
+
 
 	// Booleans to track player's current facing position
 	private boolean facingRight;
@@ -131,6 +136,8 @@ public class Player extends DynamicObject {
 
 		// Player's Hitbox and Facing Directions
 		setHitbox(new Rectangle(x, y, width/2, height));
+		previousPos = new Vector2(this.getHitbox().x, this.getHitbox().y);
+		previousSprite = new Vector2();
 		
 		create(x, y, width, height);
 		setUnarmed();
@@ -238,6 +245,13 @@ public class Player extends DynamicObject {
 		this.jitter = jitter;
 	}
 
+	public Vector2 getPreviousPos() {
+		return this.previousPos;
+	}
+
+	public Vector2 getPreviousSprite() {
+		return this.previousSprite;
+	}
 	/*
 	 * Renders the player
 	 */
@@ -245,6 +259,9 @@ public class Player extends DynamicObject {
 	public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera)
 	{
 
+		// Get previous position
+		previousPos.set(this.getHitbox().x, this.getHitbox().y);
+		previousSprite.set(this.getSprite().getX(), this.getSprite().getY());
 		// Get cursor vector to match world's coordinates
 		cursorVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 		camera.unproject(cursorVector);
@@ -330,7 +347,13 @@ public class Player extends DynamicObject {
 		sprite.setPosition(sprite.getX() + x, sprite.getY() + y);
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
-	
+
+	public void moveBack(Vector2 Hitbox, Vector2 spriteVector)
+	{
+		sprite.setPosition(spriteVector.x, spriteVector.y);
+		hitbox.setPosition(Hitbox.x, Hitbox.y);
+	}
+
 	// Change weapon type methods (sprite and animation)
 	public void setShotgun() {
 		this.weaponType = WeaponType.SHOTGUN;
@@ -611,7 +634,9 @@ public class Player extends DynamicObject {
 		playerSprite = new Sprite(playerTexture);
 		playerSprite.setSize(width, height);
 		playerSprite.setPosition(x - 100, y);
+		previousSprite.set(x - 100, y);
 		setSprite(playerSprite);
+		
 	}
 
 } // End of Player class

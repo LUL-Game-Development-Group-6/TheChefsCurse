@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="9">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="13">
  <imagelayer id="2" name="Image Layer 1" offsetx="16" offsety="32">
   <image source="kitchen_1.png" width="4330" height="3050"/>
  </imagelayer>
- <objectgroup id="3" name="Object Layer 1">
-  <object id="2" x="144" y="1128" width="152" height="890"/>
-  <object id="4" x="166.667" y="1854.55">
-   <polygon points="0,0 2196.97,1163.64 242.424,993.939"/>
-  </object>
-  <object id="5" x="4244" y="1776">
-   <polygon points="0,0 -2760,1464 -352,1264"/>
-  </object>
-  <object id="6" x="4180" y="1156" width="94" height="824"/>
-  <object id="7" x="2324.24" y="430.303">
-   <polygon points="0,0 -2145.45,1078.79 -1866.67,-127.273"/>
-  </object>
-  <object id="8" x="2157.58" y="360.606">
-   <polygon points="0,0 2430.3,1221.21 1787.88,-81.8182"/>
+ <objectgroup id="3" name="colliders">
+  <object id="12" x="287.879" y="1945.45">
+   <polygon points="0,0 1833.33,954.545 3896.97,-106.061 2024.24,-1084.85"/>
   </object>
  </objectgroup>
 </map>

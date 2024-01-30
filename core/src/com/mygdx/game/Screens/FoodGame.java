@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.physics.Player;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -29,6 +30,7 @@ import java.util.Comparator;
 
 public class FoodGame implements Screen
 {
+	private World world;
 	private Room currentRoom;
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -48,8 +50,8 @@ public class FoodGame implements Screen
 
 	private TiledMap map;
 	private TmxMapLoader mapLoader;
-	OrthogonalTiledMapRenderer renderer;
-	ShapeRenderer shapeRenderer;
+	private OrthogonalTiledMapRenderer renderer;
+	private ShapeRenderer shapeRenderer;
 
 
 	// List of all the current enemies
@@ -68,7 +70,7 @@ public class FoodGame implements Screen
 		currentRoom = new KitchenRoomFactory().createRoomBuilder().build();
 		batch = new SpriteBatch();
 
-		player1 = new Player(2077, 4015, 450, 500);
+		player1 = new Player(2077, 3000, 450, 500);
 		createEnemies();
 		entityList.add(player1);
 
@@ -78,8 +80,12 @@ public class FoodGame implements Screen
 		// Temporarily holds 1 map, this will be changed
 		map = new TiledMap();
 		mapLoader = new TmxMapLoader();
-		map = mapLoader.load("Tilemaps/Kitchens/Kitchen1/kitchen1.tmx");
+		//map = mapLoader.load("Tilemaps/Kitchens/Kitchen1/kitchen1.tmx");
+		map = mapLoader.load("Tilemaps/Restaurants/Restaurant2/restaurant2.tmx");
+		//map = mapLoader.load("Tilemaps/Kitchens/Kitchen3/kitchen3.tmx");
 		renderer = new OrthogonalTiledMapRenderer(null);
+
+
 
 		overlay = new Overlay();
 
@@ -131,7 +137,7 @@ public class FoodGame implements Screen
 		// Start rendering
 		ScreenUtils.clear(0, 0, 0, 0);
         batch.begin();
-		currentRoom.render(batch, Room.RoomType.KITCHEN_1, map, renderer);
+		currentRoom.render(player1, batch, Room.RoomType.KITCHEN_1, map, renderer);
 
 		float centerX = player1.getHitbox().getX() + player1.getHitbox().getWidth() / 2;
 		float centerY = player1.getHitbox().getY() + player1.getHitbox().getHeight() / 2;

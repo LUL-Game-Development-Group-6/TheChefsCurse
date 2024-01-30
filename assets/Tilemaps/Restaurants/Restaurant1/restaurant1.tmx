@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="2">
+ <imagelayer id="2" name="Image Layer 1">
+  <image source="restaurant_1.png" width="4310" height="3040"/>
+ </imagelayer>
+ <objectgroup id="3" name="colliders">
+  <object id="1" x="2310" y="822">
+   <polygon points="0,0 -38,-2 -2066,1060 -2056,1086 -230,2044 -204,2044 1854,988 1852,964"/>
+  </object>
+ </objectgroup>
+</map>
