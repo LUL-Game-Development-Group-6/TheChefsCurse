@@ -82,6 +82,7 @@ public class FoodGame implements Screen
 		mapLoader = new TmxMapLoader();
 		//map = mapLoader.load("Tilemaps/Kitchens/Kitchen1/kitchen1.tmx");
 		map = mapLoader.load("Tilemaps/Restaurants/Restaurant2/restaurant2.tmx");
+		//sdasdasd
 		//map = mapLoader.load("Tilemaps/Kitchens/Kitchen3/kitchen3.tmx");
 		renderer = new OrthogonalTiledMapRenderer(null);
 
