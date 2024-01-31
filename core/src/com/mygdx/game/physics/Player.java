@@ -259,9 +259,10 @@ public class Player extends DynamicObject {
 	public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera)
 	{
 
-		// Get previous position
+		// Get previous position for colliders
 		previousPos.set(this.getHitbox().x, this.getHitbox().y);
 		previousSprite.set(this.getSprite().getX(), this.getSprite().getY());
+
 		// Get cursor vector to match world's coordinates
 		cursorVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 		camera.unproject(cursorVector);
@@ -325,20 +326,6 @@ public class Player extends DynamicObject {
 
 		} else if(!isPunching) {
 			batch.draw(getSprite(), getSprite().getX(), getSprite().getY(), width, height);
-		}
-
-		
-		// Roddy's code for the ammunition
-		for (Bullet current : ammunition){
-			current.update();
-			if (current.getXPosition() < 0 || current.getXPosition() > 1280 || current.getYPosition() < 0 || current.getYPosition() > 720){
-				current.setVisibility(false);
-			}
-		}
-		for (int i = ammunition.size() - 1; i >= 0; i--){
-			if (ammunition.get(i).getVisibility() == false){
-				ammunition.remove(i);
-			}
 		}
 	}
 	
@@ -406,6 +393,7 @@ public class Player extends DynamicObject {
 				return false;
 
 			} else {
+
 				batch.draw(standingAnimation_PUNCHING.getKeyFrame(game.getTimePassed(), true),
 				getSprite().getX(), getSprite().getY(), width, height);
 				return true;
@@ -430,11 +418,12 @@ public class Player extends DynamicObject {
 
 	// Method that launches bullets depending on what direction the player is facing
 	public void bulletDirection(float offset, SpriteBatch batch, FoodGame game) {
+
 		if(facingRight && facingUp) {
 
 			currentShotgunFire = fire_UP;
-			Bullet nextBullet = new Bullet(9, 6, sprite.getX() + offset + 33, sprite.getY() + offset + 30, this.weaponType);
-			setFire_XY(nextBullet.getXPosition() + 300, nextBullet.getYPosition() + 250);
+			Bullet nextBullet = new Bullet(9, 6, sprite.getX() + offset + 210, sprite.getY() + offset + 250, this.weaponType);
+			setFire_XY(nextBullet.getXPosition() + 130, nextBullet.getYPosition() + 50);
 			nextBullet.setDespawnTime(weaponType);
 			nextBullet.setBulletAnimation(currentShotgunFire);
 			nextBullet.setShotgunUP(true, false);
@@ -445,21 +434,20 @@ public class Player extends DynamicObject {
 
 			currentShotgunFire = fire_DOWN;
 
-			Bullet nextBullet = new Bullet(9, -6, sprite.getX() + offset + 35, sprite.getY() + offset - 5, this.weaponType);
-			setFire_XY(nextBullet.getXPosition() + 300, nextBullet.getYPosition() - 10);
-			nextBullet.setDespawnTime(weaponType);
+			Bullet nextBullet = new Bullet(9, -6, sprite.getX() + offset + 250, sprite.getY() + offset + 130, this.weaponType);
+			setFire_XY(nextBullet.getXPosition() + 100, nextBullet.getYPosition() - 150);
+			nextBullet.setDespawnTime(this.weaponType);
 			nextBullet.setBulletAnimation(currentShotgunFire);
 			nextBullet.setShotgunUP(false, false);
 			ammunition.add(nextBullet);
-
 
 		} else if (!facingRight && facingUp) {
 
 			currentShotgunFire = fire_UP;
 
-			Bullet nextBullet = new Bullet(-9, 6, sprite.getX() + offset - 55, sprite.getY() + offset + 28, this.weaponType);
-			setFire_XY(nextBullet.getXPosition() - 180, nextBullet.getYPosition() + 270);
-			nextBullet.setDespawnTime(weaponType);
+			Bullet nextBullet = new Bullet(-9, 6, sprite.getX() + offset - 60, sprite.getY() + offset + 270, this.weaponType);
+			setFire_XY(nextBullet.getXPosition() - 150, nextBullet.getYPosition() + 20);
+			nextBullet.setDespawnTime(this.weaponType);
 			nextBullet.setBulletAnimation(currentShotgunFire);
 			nextBullet.setShotgunUP(true, true);
 			ammunition.add(nextBullet);
@@ -467,10 +455,9 @@ public class Player extends DynamicObject {
 		} else if (!facingRight && !facingUp) {
 
 			currentShotgunFire = fire_DOWN;
-
-			Bullet nextBullet = new Bullet(-9, -6, sprite.getX() + offset - 57, sprite.getY() + offset - 2, this.weaponType);
-			setFire_XY(nextBullet.getXPosition() - 160, nextBullet.getYPosition() - 20);
-			nextBullet.setDespawnTime(weaponType);
+			Bullet nextBullet = new Bullet(-9, -6, sprite.getX() + offset - 57, sprite.getY() + offset + 100, this.weaponType);
+			setFire_XY(nextBullet.getXPosition() - 160, nextBullet.getYPosition() - 110);
+			nextBullet.setDespawnTime(this.weaponType);
 			nextBullet.setBulletAnimation(currentShotgunFire);
 			nextBullet.setShotgunUP(false, true);
 			ammunition.add(nextBullet);
@@ -589,7 +576,7 @@ public class Player extends DynamicObject {
 
 		currentAtlas = new TextureAtlas(Gdx.files.internal("cheff/Shotgun/fire/fire_DOWN.atlas"));
 		fire_UP = new Animation<Sprite>(
-			1/10f,
+			1/15f,
 			currentAtlas.createSprite("shotgun_shooting_UP1"),
 			currentAtlas.createSprite("shotgun_shooting_UP2"),
 			currentAtlas.createSprite("shotgun_shooting_UP3"),
@@ -597,7 +584,7 @@ public class Player extends DynamicObject {
 		
 
 		fire_DOWN = new Animation<Sprite>(
-			1/10f,
+			1/15f,
 			flipUpsideDown(currentAtlas.createSprite("shotgun_shooting_UP1")),
 			flipUpsideDown(currentAtlas.createSprite("shotgun_shooting_UP2")),
 			flipUpsideDown(currentAtlas.createSprite("shotgun_shooting_UP3")),

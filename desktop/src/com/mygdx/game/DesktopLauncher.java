@@ -10,7 +10,11 @@ public class DesktopLauncher {
 		config.setTitle("The Chef's Curse");	
 		config.setWindowedMode(1280, 720);
 		config.setResizable(false);
-		new Lwjgl3Application(new Menu(), config);
+		try {
+			new Lwjgl3Application(new Menu(), config);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
 

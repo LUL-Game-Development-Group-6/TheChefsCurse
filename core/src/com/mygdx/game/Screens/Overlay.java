@@ -1,10 +1,15 @@
 package com.mygdx.game.Screens;
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.physics.Player;
 
 public class Overlay {
@@ -31,7 +36,8 @@ public class Overlay {
 	private Sprite overlaySprite;
 
     private BitmapFont font;
-
+    private TextButtonStyle nextRound;
+    private Stage stage;
 
     SpriteBatch batch;
 
@@ -62,6 +68,20 @@ public class Overlay {
 		font = new BitmapFont();
 		font.getData().setScale(3);
 		font.setColor(Color.BLACK);
+
+        // Next round button
+        stage = new Stage();
+        nextRound = new TextButtonStyle();
+        nextRound.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/next_round_NoClick.png")));
+        nextRound.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/next_round_Clicked.png")));
+        nextRound.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/next_round_Hover.png")));
+        nextRound.font = font;
+        TextButton nextRound_button = new TextButton("", nextRound);
+        nextRound_button.setSize(nextRound_button.getWidth(), nextRound_button.getHeight());
+        nextRound_button.setPosition(320, 50);
+        stage.addActor(nextRound_button);
+
+        
 
         batch = new SpriteBatch();
             
@@ -102,5 +122,13 @@ public class Overlay {
 
         batch.end();
 
+        if(enemiesLeft <= 0) nextRound();
+
     }
+
+    public void nextRound() {
+        stage.act();
+        Gdx.input.setInputProcessor(stage);
+        stage.draw();
+    } 
 }
