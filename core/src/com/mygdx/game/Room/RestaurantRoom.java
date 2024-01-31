@@ -1,10 +1,9 @@
 package com.mygdx.game.Room;
 
-import com.badlogic.gdx.graphics.Texture;
+public class RestaurantRoom extends Room {
 
-public class KitchenRoom extends Room {
-
-    public KitchenRoom() {
+    public RestaurantRoom() {
         super.background = mapLoader.load("Tilemaps/Restaurants/Restaurant3/restaurant3.tmx");
     }
+    
 }

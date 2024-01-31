@@ -59,7 +59,7 @@ public class Bullet extends DynamicObject
 		bulletSprite = new Sprite(bulletTexture);
 		bulletHitbox = new Rectangle(xPos, yPos, 10, 10);
 		visible = true;
-		speedModifier = 2f;
+		speedModifier = 4f;
 		damage = 10;
 		this.weaponType = weaponType;
 		
@@ -131,11 +131,16 @@ public class Bullet extends DynamicObject
 	
 	public void render(SpriteBatch batch)
 	{
-		if(weaponType == Player.WeaponType.REDGUN) {
-			batch.draw(bulletSprite, xPosition, yPosition, 40, 40);
-		}
-		if(weaponType == Player.WeaponType.SHOTGUN) {
-			batch.draw(shotGunTexture, xPosition, yPosition, 70, 70);
+		switch (this.getWeapontype()) {
+			case SHOTGUN:
+				batch.draw(shotGunTexture, xPosition, yPosition, 50, 50);
+				break;
+			case REDGUN:
+				batch.draw(bulletSprite, xPosition, yPosition, 40, 40);
+				break;
+			default:
+				batch.draw(shotGunTexture, xPosition, yPosition, 40, 40);
+				break;
 		}
 	}
 	
@@ -158,7 +163,7 @@ public class Bullet extends DynamicObject
 				this.damage = 18;
 				break;
 			case SHOTGUN:
-				this.timeToDespawn = System.currentTimeMillis() + 100;
+				this.timeToDespawn = System.currentTimeMillis() + 70;
 				this.damage = 40;
 				break;
 			default:
