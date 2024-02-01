@@ -1,14 +1,17 @@
 package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.physics.Player;
 
@@ -37,11 +40,18 @@ public class Overlay {
 
     private BitmapFont font;
     private TextButtonStyle nextRound;
+    private TextButton nextRound_button;
     private Stage stage;
+    private FoodGame foodGame;
 
     SpriteBatch batch;
 
-    public Overlay() {
+    final Menu game;
+
+    public Overlay(Menu game, FoodGame foodGame) {
+
+        this.foodGame = foodGame;
+        this.game = game;
 
         // Overlay
 		OverlayTexture = new Texture("cheff/Weapon_Overlay.png");
@@ -76,15 +86,25 @@ public class Overlay {
         nextRound.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/next_round_Clicked.png")));
         nextRound.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/next_round_Hover.png")));
         nextRound.font = font;
-        TextButton nextRound_button = new TextButton("", nextRound);
+        nextRound_button = new TextButton("", nextRound);
         nextRound_button.setSize(nextRound_button.getWidth(), nextRound_button.getHeight());
         nextRound_button.setPosition(320, 50);
         stage.addActor(nextRound_button);
-
-        
+        show();
 
         batch = new SpriteBatch();
             
+    }
+
+    public void show() {
+
+        nextRound_button.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                foodGame.show();
+                game.setScreen(new FoodGame(game));
+            }
+        });
+
     }
 
     public void render(Player player1, int enemiesLeft) {
@@ -130,5 +150,5 @@ public class Overlay {
         stage.act();
         Gdx.input.setInputProcessor(stage);
         stage.draw();
-    } 
+    }
 }

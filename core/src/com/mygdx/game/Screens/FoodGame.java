@@ -55,7 +55,7 @@ public class FoodGame implements Screen
 
 	// List of all the current enemies
 	private ArrayList<Enemy> enemyList;
-	private ArrayList<DynamicObject> entityList;
+	private ArrayList<Object> entityList;
 
 	public FoodGame(final Menu game) {
 
@@ -74,17 +74,18 @@ public class FoodGame implements Screen
 
 		player1 = new Player(spawn.x, spawn.y, 450, 500);
 		batch = new SpriteBatch();
-
 		entityList.add(player1);
 
 		// Camera
 		camera = new OrthographicCamera(2560,1440);
 
-		overlay = new Overlay();
+		overlay = new Overlay(game, this);
 
 		playerPosition = new Vector2(player1.getHitbox().getX(), player1.getHitbox().getY());
 
 		shapeRenderer = new ShapeRenderer();
+
+		System.out.println("Constructor");
 
     }
 	
@@ -101,7 +102,7 @@ public class FoodGame implements Screen
 
 
 	public void show () {
-		enemiesGenerator = new EnemiesGenerator();
+		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom);
 		enemiesGenerator.generate();
 		
 	}
@@ -152,15 +153,18 @@ public class FoodGame implements Screen
 
 		// Get player position for enemies to track
         playerPosition.set(player1.getHitbox().getX(), player1.getHitbox().getY());
+		
+		enemiesGenerator.renderAllEnemies(timeBetweenRenderCalls);
 		renderEntities(playerPosition, timePassed, timeBetweenRenderCalls);
 		// Render number of enemies left
 
 		// Player's bullets
-		for (Bullet bullet : player1.getAmmunition()){
+		for (Bullet bullet : player1.getAmmunition()) {
 			bullet.update();
 			bullet.render(batch);
-			for (Enemy currentEnemy : enemyList) {
-
+			for (Object entity : entityList) {
+				if(!(entity instanceof Enemy)) continue;
+				Enemy currentEnemy = (Enemy) entity;
 				if (bullet.getHitbox().overlaps(currentEnemy.getHitbox())) {
 					bullet.setVisibility(false);
 					System.out.println("Enemy Shot");
@@ -202,7 +206,8 @@ public class FoodGame implements Screen
 		shapeRenderer.setColor(Color.RED);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 
-		for(DynamicObject entity : entityList) {
+		for(Object entity_ : entityList) {
+			DynamicObject entity = (DynamicObject) entity_;
 			shapeRenderer.rect(entity.getHitbox().getX(), entity.getHitbox().getY(), entity.getHitbox().getWidth(), entity.getHitbox().getHeight());
 		}
 
@@ -219,35 +224,34 @@ public class FoodGame implements Screen
 	}
 
 	// Method to be modified by Juozas random implementation of enemies
-	// public void createEnemies() {
-
-	// 	enemy = new Enemy(new Vector2(2077,3200), 300, 320, Enemy.EnemyType.HAMBURGER);
-	// 	enemy2 = new Enemy(new Vector2(2077,3300), 400, 300, Enemy.EnemyType.HOTDOG);
-
-	// 	enemyList.add(enemy);
-	// 	enemyList.add(enemy2);	
-
-	// 	entityList.add(enemy);
-	// 	entityList.add(enemy2);
-
+	//  public void createEnemies()  {
+	//  	enemy = new Enemy(new Vector2(2077,3200), 300, 320, Enemy.EnemyType.HAMBURGER);
+	//  	enemy2 = new Enemy(new Vector2(2077,3300), 400, 300, Enemy.EnemyType.HOTDOG);
+	//  	enemyList.add(enemy);
+	//  	enemyList.add(enemy2);
+	//  	entityList.add(enemy);
+	//  	entityList.add(enemy2);
 	// }
 
 	// Method that renders all current entities w.r.t. their y position
 	public void renderEntities(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
 		// Order the list of entities by yPos
-		Collections.sort(entityList, new Comparator<DynamicObject>() {
+		Collections.sort(entityList, new Comparator<Object>() {
 
-			public int compare(DynamicObject entity1, DynamicObject entity2) {
-                return Double.compare(entity2.getSprite().getY(), entity1.getSprite().getY());
+			public int compare(Object entity1, Object entity2) {
+				DynamicObject dynamicObject1 = (DynamicObject) entity1;
+				DynamicObject dynamicObject2 = (DynamicObject) entity2;
+                return Double.compare(dynamicObject1.getSprite().getY(), dynamicObject2.getSprite().getY());
             }
 		});
 
-		for (DynamicObject entity : entityList) {
-			if(entity.getPlayerBool()) {
+		for (Object entity : entityList) {
+			if(entity instanceof Player) {
 				player1.render(batch, this, camera);
-			} else {
-				entity.render(timePassed, timeBetweenRenderCalls, playerPosition, batch);
-				entity.enemyHit(playerPosition, player1);
+			} else if(entity instanceof Enemy){
+				Enemy enemy = (Enemy) entity;
+				enemy.render(timePassed, timeBetweenRenderCalls, playerPosition, batch);
+				enemy.enemyHit(playerPosition, player1);
 			}
 		}
 

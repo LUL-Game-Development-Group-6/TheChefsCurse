@@ -1,19 +1,22 @@
 package com.mygdx.game.physics;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.Room.Room;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EnemyFactory {
-    
+
     private static EnemyFactory singletonEnemyFactory;
     private List<Enemy> enemies;
     private Enemy.EnemyType type;
+    private Room room;
     private Vector2 position;
     private float width;
     private float height;
+    private boolean dimensionsSetByType;
 
     // constructor that resets values
     public EnemyFactory() {
@@ -22,6 +25,7 @@ public class EnemyFactory {
         width = 0;
         height = 0;
         type = null;
+        dimensionsSetByType = false;
     }
 
     // an enemy factory must be singleton
@@ -38,11 +42,24 @@ public class EnemyFactory {
     }
 
     public EnemyFactory withRandomType() {
-        int randomID = ThreadLocalRandom.current().nextInt(0, 3);
-        if(randomID == 0) type = Enemy.EnemyType.HAMBURGER;
-        if(randomID == 1) type = Enemy.EnemyType.HOTDOG;
-        if(randomID == 2) type = Enemy.EnemyType.SODA;
-        if(randomID == 3) type = Enemy.EnemyType.POPCORN;
+        int randomID = ThreadLocalRandom.current().nextInt(0, 1);
+
+        if(randomID == 0) {
+            type = Enemy.EnemyType.HAMBURGER;
+            this.width = 300;
+            this.height = 320;
+        }
+        if(randomID == 1) {
+            type = Enemy.EnemyType.HOTDOG;
+            this.width = 400;
+            this.height = 300;
+        }
+
+        dimensionsSetByType = true;
+
+    
+        // if(randomID == 2) type = Enemy.EnemyType.SODA;
+        // if(randomID == 3) type = Enemy.EnemyType.POPCORN;
         return this;
     }
 
@@ -51,13 +68,14 @@ public class EnemyFactory {
         return this;
     }
 
-    public EnemyFactory withRandomPosition()
+    public EnemyFactory withRandomPosition(Room room)
     {
-        this.position = generateRandomCoords();
+        this.position = room.entitySpawn(room.getBackground());
         return this;
     }
 
     public EnemyFactory withDimensions(float width, float height) {
+        if(dimensionsSetByType) throw new IllegalStateException();
         this.width = width;
         this.height = height;
         return this;
@@ -75,24 +93,6 @@ public class EnemyFactory {
 
     public void setEnemies(List<Enemy> enemies) {
         this.enemies = enemies;
-    }
-
-    private Vector2 generateRandomCoords() {
-        float x = ThreadLocalRandom.current().nextFloat(400, 800);
-        float y = ThreadLocalRandom.current().nextFloat(100, 600);
-
-        int cornersX[] = {85, 630, 1230, 685};
-        int cornersY[] = {270, 45, 174, 370};
-
-        for(Enemy enemy : enemies) {
-            float enemeyX = enemy.getSprite().getX();
-            float enemyY = enemy.getSprite().getY();
-            if(areObjectsNear(enemeyX, enemyY, x, y, 30)
-            || isPointWithinRoom(enemeyX,enemyY,cornersX,cornersY)) {
-                generateRandomCoords();
-            }
-        }
-        return new Vector2(x,y);
     }
 
     // Method to check if two objects are near each other
