@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import java.util.ArrayList;
@@ -24,9 +21,11 @@ import com.mygdx.game.Room.Room;
 import com.mygdx.game.Room.Room.RoomType;
 import com.mygdx.game.physics.Bullet;
 import com.mygdx.game.physics.DynamicObject;
+import com.mygdx.game.physics.EnemiesGenerator;
 import com.mygdx.game.physics.Enemy;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class FoodGame implements Screen
 {
@@ -35,6 +34,9 @@ public class FoodGame implements Screen
 	private SpriteBatch batch;
 	private Player player1;
 	private Vector2 playerPosition;
+
+	private EnemiesGenerator enemiesGenerator;
+
 	private Enemy enemy;
 	private Enemy enemy2;
 
@@ -73,7 +75,6 @@ public class FoodGame implements Screen
 		player1 = new Player(spawn.x, spawn.y, 450, 500);
 		batch = new SpriteBatch();
 
-		createEnemies();
 		entityList.add(player1);
 
 		// Camera
@@ -97,7 +98,13 @@ public class FoodGame implements Screen
     public void resume() {}
     public void resize(int width, int height) {}
     public void hide() {}
-	public void show () {}
+
+
+	public void show () {
+		enemiesGenerator = new EnemiesGenerator();
+		enemiesGenerator.generate();
+		
+	}
 
 	public void dispose() {
 		game.batch.dispose();
@@ -116,6 +123,7 @@ public class FoodGame implements Screen
 	@Override
 	public void render (float delta)
 	{
+
 		// Handle Pausing the Game and showing Pause Screen
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) pause();
 		if(pausedGameplay) return;
@@ -211,18 +219,18 @@ public class FoodGame implements Screen
 	}
 
 	// Method to be modified by Juozas random implementation of enemies
-	public void createEnemies() {
+	// public void createEnemies() {
 
-		enemy = new Enemy(new Vector2(2077,3200), 300, 320, Enemy.EnemyType.HAMBURGER);
-		enemy2 = new Enemy(new Vector2(2077,3300), 400, 300, Enemy.EnemyType.HOTDOG);
+	// 	enemy = new Enemy(new Vector2(2077,3200), 300, 320, Enemy.EnemyType.HAMBURGER);
+	// 	enemy2 = new Enemy(new Vector2(2077,3300), 400, 300, Enemy.EnemyType.HOTDOG);
 
-		enemyList.add(enemy);
-		enemyList.add(enemy2);	
+	// 	enemyList.add(enemy);
+	// 	enemyList.add(enemy2);	
 
-		entityList.add(enemy);
-		entityList.add(enemy2);
+	// 	entityList.add(enemy);
+	// 	entityList.add(enemy2);
 
-	}
+	// }
 
 	// Method that renders all current entities w.r.t. their y position
 	public void renderEntities(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {

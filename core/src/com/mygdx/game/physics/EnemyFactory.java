@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EnemyFactory {
+    
     private static EnemyFactory singletonEnemyFactory;
     private List<Enemy> enemies;
     private Enemy.EnemyType type;
@@ -87,7 +88,7 @@ public class EnemyFactory {
             float enemeyX = enemy.getSprite().getX();
             float enemyY = enemy.getSprite().getY();
             if(areObjectsNear(enemeyX, enemyY, x, y, 30)
-                    || isPointWithinRoom(enemeyX,enemyY,cornersX,cornersY)) {
+            || isPointWithinRoom(enemeyX,enemyY,cornersX,cornersY)) {
                 generateRandomCoords();
             }
         }

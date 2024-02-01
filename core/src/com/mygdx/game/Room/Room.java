@@ -10,7 +10,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.Room.factories.KitchenRoomFactory;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.Gdx;
 // Collider imports
@@ -152,7 +151,7 @@ public class Room {
 			}
 		}
 	}
-
+	// Returns a vector inside the map's collider coordinates
 	public Vector2 entitySpawn(TiledMap map) {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
@@ -167,7 +166,8 @@ public class Room {
 				do {
 					spawn.x = MathUtils.random(0, 10000);
 					spawn.y = MathUtils.random(0, 10000);
-				} while (!triangleCollider.contains(spawn));
+					
+				} while (!triangleCollider.contains(spawn) && !triangleCollider.contains(spawn.x + 450/2, spawn.y));
 			}
 		}
 		return spawn;
