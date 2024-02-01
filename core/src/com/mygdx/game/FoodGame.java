@@ -160,6 +160,20 @@ public class FoodGame implements Screen
 				bullet.setVisibility(false);
 			}
 		}
+		
+		// Enemy bullets
+		for (Enemy currentEnemy : enemyList) {
+			for (Bullet currentBullet : currentEnemy.getEnemyAmmunition()){
+				currentBullet.render(batch);
+				if(currentBullet.getHitbox().overlaps(player1.getHitbox())){
+					currentBullet.setVisibility(false);
+					player1.takeDamage(currentEnemy.getDamage());
+				}
+				if (currentBullet.getDespawnTime() < System.currentTimeMillis()){
+					currentBullet.setVisibility(false);
+				}
+			}
+		}
 
 		//remove enemies from list
 		for (int i = enemyList.size() - 1; i >= 0; i--){
