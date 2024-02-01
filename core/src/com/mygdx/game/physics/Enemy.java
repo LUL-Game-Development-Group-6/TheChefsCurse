@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.FoodGame;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Enemy extends DynamicObject{
   
@@ -27,9 +29,11 @@ public class Enemy extends DynamicObject{
 
   private TextureAtlas enemyAtlas;
   private Animation<Sprite> enemyAnimation;
-
+  
   private boolean isDead;
-
+  
+  private LinkedList<Bullet> enemyAmmunition;
+  
   public static enum EnemyType{
     HAMBURGER,
     HOTDOG,
@@ -43,10 +47,11 @@ public class Enemy extends DynamicObject{
 
     super.createHealth();
     this.setPlayer(false);
-
+	enemyAmmunition = new LinkedList<Bullet>();
+	this.enemyType = enemyType;
     switch(enemyType){
 
-      case HAMBURGER: // Mele enemy
+      case HAMBURGER:
         this.damage = 10;
         this.hitDistance = 10;
         this.cooldown = 2000;
@@ -66,7 +71,7 @@ public class Enemy extends DynamicObject{
 
 
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
-        setCurrentHealth(100);
+		    setCurrentHealth(100);
         setSpeed(40);
         break;
 
@@ -83,21 +88,21 @@ public class Enemy extends DynamicObject{
         enemyAtlas.createSprite("hotdog4"));
 
         enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
-        setCurrentHealth(60);
+		    setCurrentHealth(60);
         setSpeed(20);
         break;
 
       case POPCORN:
         this.damage = 10;
         enemyTexture = new Texture("enemies/Popcorn/Popcorn.png");
-        setCurrentHealth(40);
+		    setCurrentHealth(40);
         setSpeed(65);
         break;
 
       case SODA:
         this.damage = 15;
         enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
-        setCurrentHealth(70);
+		    setCurrentHealth(70);
         setSpeed(60);
         break;
 
@@ -121,7 +126,7 @@ public class Enemy extends DynamicObject{
     Sprite enemySprite = new Sprite(enemyTexture);
     enemySprite.setSize(width, height);
     enemySprite.setPosition(position.x + 100, position.y);
-
+    
     setSprite(enemySprite);
     setHitbox(new Rectangle(position.x, position.y, width, height));
 
@@ -148,6 +153,17 @@ public class Enemy extends DynamicObject{
   @Override
   public void render(float deltaTime, Vector2 playerPosition){
     update(deltaTime, playerPosition);
+	for (Bullet current : enemyAmmunition){
+		current.update();
+		if (current.getXPosition() < 0 || current.getXPosition() > 1280 || current.getYPosition() < 0 || current.getYPosition() > 720){
+			current.setVisibility(false);
+		}
+	}
+	for (int i = enemyAmmunition.size() - 1; i >= 0; i--){
+		if (enemyAmmunition.get(i).getVisibility() == false){
+			enemyAmmunition.remove(i);
+		}
+	}
   }
 
   public Vector2 getPosition() {
@@ -162,7 +178,7 @@ public class Enemy extends DynamicObject{
   public float getWidth() {
       return this.width;
   }
-
+  
   @Override//had to move this into enemy because it was more trouble than it was worth to try and change the one in dynamic object
   public void takeDamage(int damage)
   {
@@ -172,7 +188,7 @@ public class Enemy extends DynamicObject{
 		  isDead = true;
 	  }
   }
-
+  
   public void setIsDead(boolean isDead)
   {
 	  this.isDead = isDead;
@@ -190,7 +206,7 @@ public class Enemy extends DynamicObject{
 
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
-	}
+	} 
     // make enemy move towards player, but ranged enemy should stop at a certain distance
     // note to juozas 
 
@@ -198,18 +214,48 @@ public class Enemy extends DynamicObject{
   public Animation<Sprite> getEnemyAnimation() {
     return this.enemyAnimation;
   }
+  
+	public LinkedList<Bullet> getEnemyAmmunition() 
+	{
+		return enemyAmmunition;
+	}
+	
+	public int getDamage()
+	{
+			return damage;
+	}
 
   @Override
   public void enemyHit(Vector2 playerPosition, Player player) {
 
     long currentTime = System.currentTimeMillis();
 
-    long timeSinceLastShot = currentTime - lastShot;
+    long timeSinceLastShot = currentTime - lastShot; 
 
     if(this.position.dst(playerPosition) <= this.hitDistance) {
 
       if(timeSinceLastShot >= this.cooldown) {
-        player.takeDamage(this.damage);
+		switch (enemyType){
+			case HAMBURGER:
+				player.takeDamage(this.damage);
+				break;
+			case SODA:
+				player.takeDamage(this.damage);
+				break;
+			case POPCORN:
+				player.takeDamage(this.damage);
+				break;
+			case HOTDOG:
+				Bullet nextBullet = new Bullet(velocity.x, velocity.y, position.x, position.y + 50, 2);//mess about with positioning later
+				nextBullet.setSpeed(0.75f);//bullets were moving too fast
+				nextBullet.setDespawnTime(2);
+				enemyAmmunition.add(nextBullet);
+				velocity.set(0, 0);//will figure out how to make it stop moving. This doesn't do anything
+				break;
+		}
+		
+		
+		//else shoot some bullets
         System.out.println("Player Hit by enemy");
         lastShot = currentTime;
       }
