@@ -28,7 +28,7 @@ public class Bullet extends DynamicObject
 	private Texture shotGunTexture;
 	
 	private int damage;
-	private int weaponType;
+	private Player.WeaponType weaponType;
 	private long timeToDespawn;
 
 	private float initialX;
@@ -37,7 +37,7 @@ public class Bullet extends DynamicObject
 	private Animation<Sprite> bulletAnimation;
 	private long animationStart;
 	
-	public Bullet(float xS, float yS, float xPos, float yPos, int weaponType)
+	public Bullet(float xS, float yS, float xPos, float yPos, Player.WeaponType weaponType)
 	{
 		xSpeed = xS;
 		ySpeed = yS;
@@ -46,16 +46,20 @@ public class Bullet extends DynamicObject
 
 		initialX = xPosition;
 		initialY = yPosition;
-		//bulletTexture = new Texture("bullet_sprite.png");
+
+		// Redgun bullet
 		bulletTexture = new Texture("objects/bullet/bullet.png");
+
+		// Shotgun bullets
 		shotgunTexture_UP_RIGHT = new Texture("cheff/Shotgun/shotgun_bullet_UP_RIGHTt.png");
 		shotgunTexture_UP_LEFT = new Texture("cheff/Shotgun/shotgun_bullet_UP_LEFT.png");
 		shotgunTexture_DOWN_RIGHT = new Texture("cheff/Shotgun/shotgun_bullet_DOWN_RIGHT.png");
 		shotgunTexture_DOWN_LEFT = new Texture("cheff/Shotgun/shotgun_bullet_DOWN_LEFT.png");
+
 		bulletSprite = new Sprite(bulletTexture);
 		bulletHitbox = new Rectangle(xPos, yPos, 10, 10);
 		visible = true;
-		speedModifier = 2f;
+		speedModifier = 4f;
 		damage = 10;
 		this.weaponType = weaponType;
 		
@@ -127,11 +131,16 @@ public class Bullet extends DynamicObject
 	
 	public void render(SpriteBatch batch)
 	{
-		if(weaponType == 2) {
-			batch.draw(bulletSprite, xPosition, yPosition, 15, 15);
-		}
-		if(weaponType == 3) {
-			batch.draw(shotGunTexture, xPosition, yPosition, 20, 15);
+		switch (this.getWeapontype()) {
+			case SHOTGUN:
+				batch.draw(shotGunTexture, xPosition, yPosition, 50, 50);
+				break;
+			case REDGUN:
+				batch.draw(bulletSprite, xPosition, yPosition, 40, 40);
+				break;
+			default:
+				batch.draw(shotGunTexture, xPosition, yPosition, 40, 40);
+				break;
 		}
 	}
 	
@@ -145,16 +154,16 @@ public class Bullet extends DynamicObject
 		return this.timeToDespawn;
 	}
 
-	public void setDespawnTime(int weaponType) {
+	public void setDespawnTime(Player.WeaponType weaponType) {
 		switch (weaponType) {
-			case 1:
+			case FIST:
 				break;
-			case 2:
+			case REDGUN:
 				this.timeToDespawn = System.currentTimeMillis() + 200;
 				this.damage = 18;
 				break;
-			case 3:
-				this.timeToDespawn = System.currentTimeMillis() + 100;
+			case SHOTGUN:
+				this.timeToDespawn = System.currentTimeMillis() + 70;
 				this.damage = 40;
 				break;
 			default:
@@ -162,7 +171,7 @@ public class Bullet extends DynamicObject
 		}
 	}
 
-	public int getWeapontype() {
+	public Player.WeaponType getWeapontype() {
 		return this.weaponType;
 	}
 	public void setBulletAnimation(Animation<Sprite> anim) {

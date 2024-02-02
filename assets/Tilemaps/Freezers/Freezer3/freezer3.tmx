@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="3">
+ <imagelayer id="2" name="Image Layer 1">
+  <image source="freezer_3.png" width="11840" height="4960"/>
+ </imagelayer>
+ <objectgroup id="3" name="colliders">
+  <object id="2" x="4121.21" y="1818.18">
+   <polygon points="0,0 -48.4848,-3.0303 -1918.18,-981.818 -1945.45,-978.788 -3969.7,106.061 -3978.79,157.576 -3975.76,181.818 1503.03,3057.58 1545.45,3069.7 3630.3,2000 3669.7,2018.18 5475.76,2954.55 5509.09,2954.55 7569.7,1900 7584.85,1860.61 2038.79,-1054.18 2004.79,-1048.18"/>
+  </object>
+ </objectgroup>
+</map>

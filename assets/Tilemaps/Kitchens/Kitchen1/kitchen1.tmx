@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="13">
+ <imagelayer id="2" name="Image Layer 1" offsetx="16" offsety="32">
+  <image source="kitchen_1.png" width="4330" height="3050"/>
+ </imagelayer>
+ <objectgroup id="3" name="colliders">
+  <object id="12" x="287.879" y="1945.45">
+   <polygon points="0,0 1833.33,954.545 3896.97,-106.061 2024.24,-1084.85"/>
+  </object>
+ </objectgroup>
+</map>
