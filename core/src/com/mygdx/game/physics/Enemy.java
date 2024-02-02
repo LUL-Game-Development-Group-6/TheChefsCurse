@@ -200,25 +200,11 @@ public class Enemy extends DynamicObject{
 	  return isDead;
   }
 
-
   private void move(float x, float y)
 	{
-    // This works, but the sprite is not updated
-    //System.out.println("Enemy position (x = " + x + " , y = " + y + ")");
-
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x - hitbox.getWidth() / 2, y - hitbox.getHeight() / 4);
-	} 
-
-  //public void moveBack(Vector2 Hitbox, Vector2 spriteVector)
-	//{
-	//	sprite.setPosition(spriteVector.x, spriteVector.y);
-	//	hitbox.setPosition(Hitbox.x, Hitbox.y);
-	//}
-
-
-  // make enemy move towards player, but ranged enemy should stop at a certain distance
-  // note to juozas 
+	}
 
   @Override
   public Animation<Sprite> getEnemyAnimation() {
