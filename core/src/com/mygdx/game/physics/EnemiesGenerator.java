@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class EnemiesGenerator {
     private static final int MAX_ENEMY_POOL_SIZE = 10;
+    private int enemiesLeft = MAX_ENEMY_POOL_SIZE;
     private EnemyFactory factory;
     private Room room;
     private float timeElapsedSinceLastSpawn;
@@ -47,8 +48,7 @@ public class EnemiesGenerator {
             int diff = enemiesToSpawn + enemiesSpawned;
             for(int i = enemiesSpawned - 1; i < diff; i++) {
                 try {
-                    Enemy enemy = factory.getEnemies().get(i);
-                    recentlySpawnedEnemies.add(enemy);
+                    recentlySpawnedEnemies.add(factory.getEnemies().get(i));
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
                     System.out.println("[WARN] Unable to spawn enemy. " + e);
                 }
@@ -57,10 +57,9 @@ public class EnemiesGenerator {
 
             // reset time tracker
             timeElapsedSinceLastSpawn = 0;
-        } else if(enemiesSpawned == 0){
+        } else if(enemiesSpawned == 0) {
             try {
-                Enemy enemy = factory.getEnemies().get(0);
-                recentlySpawnedEnemies.add(enemy);
+                recentlySpawnedEnemies.add(factory.getEnemies().get(0));
             } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
                 System.out.println("[WARN] Unable to spawn enemy. " + e);
             }
@@ -69,8 +68,6 @@ public class EnemiesGenerator {
         } else {
             timeElapsedSinceLastSpawn += delta;
         }
-
-        // render all drawn enemies
     }
 
     private int generateNextRandomChuckSize() {
@@ -84,5 +81,25 @@ public class EnemiesGenerator {
             }
         }
         return -1;
+    }
+
+    public static int getPoolSize() {
+        return MAX_ENEMY_POOL_SIZE;
+    }
+
+    public int getEnemiesSpawned() {
+        return enemiesSpawned;
+    }
+
+    public int getEnemiesLeft() {
+        return enemiesLeft;
+    }
+
+    public void enemyKilled() {
+        enemiesLeft--;
+    }
+
+    public void reset() {
+        factory.kill();
     }
 }
