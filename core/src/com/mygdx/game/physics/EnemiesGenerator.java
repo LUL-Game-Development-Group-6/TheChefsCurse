@@ -39,7 +39,7 @@ public class EnemiesGenerator {
         }
     }
 
-    public void renderAllEnemies(float delta) {
+    public void getNextBatchOfEnemies(float delta) {
         // every 15 seconds
         if(timeElapsedSinceLastSpawn >= 5 && enemiesSpawned <= MAX_ENEMY_POOL_SIZE) {
             // spawn random batch of enemies
