@@ -72,7 +72,7 @@ public class Enemy extends DynamicObject{
 
 
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
-        setCurrentHealth(100);
+		    setCurrentHealth(100);
         setSpeed(200);
         break;
 
@@ -91,7 +91,7 @@ public class Enemy extends DynamicObject{
         enemyAtlas.createSprite("hotdog4"));
 
         enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
-        setCurrentHealth(60);
+		    setCurrentHealth(60);
         setSpeed(50);
         break;
 
@@ -138,7 +138,7 @@ public class Enemy extends DynamicObject{
   public void update(float timePassed, float deltaTime, Vector2 playerPosition, SpriteBatch batch) {
 
       // draw enemy
-      batch.draw(this.getHealthSprite(), this.getHitbox().getX() + offsetX , this.getHitbox().getY()
+      batch.draw(this.getHealthSprite(), this.getHitbox().getX() + offsetX , this.getHitbox().getY() 
       + this.getHitbox().getHeight() + offsetY, this.getHealthSprite().getWidth()/2, this.getHealthSprite().getHeight()/2);
 
       this.healthPercentage();
@@ -200,15 +200,14 @@ public class Enemy extends DynamicObject{
 	  return isDead;
   }
 
-
   private void move(float x, float y)
-  {
+	{
     // This works, but the sprite is not updated
     //System.out.println("Enemy position (x = " + x + " , y = " + y + ")");
 
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x - hitbox.getWidth() / 2, y - hitbox.getHeight() / 4);
-  }
+	} 
 
   @Override
   public Animation<Sprite> getEnemyAnimation() {
