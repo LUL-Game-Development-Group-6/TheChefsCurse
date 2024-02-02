@@ -1,5 +1,6 @@
 package com.mygdx.game.physics;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Room.Room;
 
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EnemyFactory {
-
     private static EnemyFactory singletonEnemyFactory;
     private List<Enemy> enemies;
     private Enemy.EnemyType type;
@@ -42,7 +42,7 @@ public class EnemyFactory {
     }
 
     public EnemyFactory withRandomType() {
-        int randomID = ThreadLocalRandom.current().nextInt(0, 1);
+        int randomID = MathUtils.random(0, 1);
 
         if(randomID == 0) {
             type = Enemy.EnemyType.HAMBURGER;
@@ -56,10 +56,6 @@ public class EnemyFactory {
         }
 
         dimensionsSetByType = true;
-
-    
-        // if(randomID == 2) type = Enemy.EnemyType.SODA;
-        // if(randomID == 3) type = Enemy.EnemyType.POPCORN;
         return this;
     }
 
@@ -68,8 +64,7 @@ public class EnemyFactory {
         return this;
     }
 
-    public EnemyFactory withRandomPosition(Room room)
-    {
+    public EnemyFactory withRandomPosition(Room room) {
         this.position = room.entitySpawn(room.getBackground());
         return this;
     }
@@ -95,21 +90,7 @@ public class EnemyFactory {
         this.enemies = enemies;
     }
 
-    // Method to check if two objects are near each other
-    public static boolean areObjectsNear(float x1, float y1, float x2, float y2, double radius) {
-        // Calculate the distance between the two points using the distance formula
-        double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-
-        // Check if the distance is less than or equal to the specified radius
-        return distance <= radius;
-    }
-
-    // Method to check if a point is within the boundaries of the room
-    public static boolean isPointWithinRoom(float x, float y, int[] roomCornersX, int[] roomCornersY) {
-        // Check if the point is within the rectangular boundary defined by the four corner points
-        boolean isWithinXBounds = x >= Math.min(roomCornersX[0], roomCornersX[1]) && x <= Math.max(roomCornersX[2], roomCornersX[3]);
-        boolean isWithinYBounds = y >= Math.min(roomCornersY[0], roomCornersY[3]) && y <= Math.max(roomCornersY[1], roomCornersY[2]);
-
-        return isWithinXBounds && isWithinYBounds;
+    public void kill() {
+        enemies = new ArrayList<>();
     }
 }
