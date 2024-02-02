@@ -138,7 +138,7 @@ public class Enemy extends DynamicObject{
   public void update(float timePassed, float deltaTime, Vector2 playerPosition, SpriteBatch batch) {
 
       // draw enemy
-      batch.draw(this.getHealthSprite(), this.getHitbox().getX() + offsetX , this.getHitbox().getY() 
+      batch.draw(this.getHealthSprite(), this.getHitbox().getX() + offsetX , this.getHitbox().getY()
       + this.getHitbox().getHeight() + offsetY, this.getHealthSprite().getWidth()/2, this.getHealthSprite().getHeight()/2);
 
       this.healthPercentage();
@@ -202,12 +202,9 @@ public class Enemy extends DynamicObject{
 
   private void move(float x, float y)
 	{
-    // This works, but the sprite is not updated
-    //System.out.println("Enemy position (x = " + x + " , y = " + y + ")");
-
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x - hitbox.getWidth() / 2, y - hitbox.getHeight() / 4);
-	} 
+	}
 
   @Override
   public Animation<Sprite> getEnemyAnimation() {
