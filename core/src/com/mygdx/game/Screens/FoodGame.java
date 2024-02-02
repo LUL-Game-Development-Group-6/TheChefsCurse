@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.mygdx.game.Room.RoomBuilder;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.Screen;
@@ -29,48 +30,38 @@ import java.util.stream.Collectors;
 
 public class FoodGame implements Screen
 {
-	private Room currentRoom;
+	/*
+		* LibGDX Objects
+	 */
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	private Player player1;
 	private Vector2 playerPosition;
+	final Menu game; // Game instance from Menu class to swtich between screens
+	private Overlay overlay;
+	private ShapeRenderer shapeRenderer; // Check hitboxes
 
+	/*
+	 	* Native Objects
+	 */
+	private Room currentRoom;
+	private Player player1;
 	private EnemiesGenerator enemiesGenerator;
-
 	private Enemy enemy;
 	private Enemy enemy2;
-
 	private float timePassed;
     private float timeBetweenRenderCalls;
-	// Boolean to check if the game has been paused
-	private boolean pausedGameplay;
-
-	// Game instance from Menu class to swtich between screens
-	final Menu game;
-	private Overlay overlay;
-
-	// Check hitboxes
-	private ShapeRenderer shapeRenderer;
-
-
-	// List of all the current enemies
-	private ArrayList<Enemy> enemyList;
-	private ArrayList<Object> entityList;
+	private boolean pausedGameplay; // Boolean to check if the game has been paused
+	private ArrayList<Object> entityList; // List of all the current enemies
 
 	public FoodGame(final Menu game) {
-
         this.game = game;
-		this.enemyList = new ArrayList<>();
 		this.entityList = new ArrayList<>();
-
 		pausedGameplay = false;
 
 		// Random Room from the 9 choices
-		currentRoom = new Room();
-		currentRoom.create(currentRoom.randomRoom());
+		currentRoom = RoomBuilder.init().withRandomRoomType().create().get();
 
-		Vector2 spawn = new Vector2();
-		spawn = currentRoom.entitySpawn(currentRoom.getBackground());
+		Vector2 spawn = currentRoom.entitySpawn(currentRoom.getBackground());
 
 		player1 = new Player(spawn.x, spawn.y, 450, 500);
 		batch = new SpriteBatch();
@@ -84,33 +75,30 @@ public class FoodGame implements Screen
 		playerPosition = new Vector2(player1.getHitbox().getX(), player1.getHitbox().getY());
 
 		shapeRenderer = new ShapeRenderer();
-
-		System.out.println("Constructor");
-
     }
-	
 
     public void pause() {
 		pausedGameplay = !pausedGameplay;
-		if(pausedGameplay == false) {return;}
+		if(!pausedGameplay) return;
 		game.setScreen(new Pause(game, this));
 	}
 
     public void resume() {}
-    public void resize(int width, int height) {}
-    public void hide() {}
 
+    public void resize(int width, int height) {}
+
+    public void hide() {}
 
 	public void show () {
 		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom);
 		enemiesGenerator.generate();
-		
 	}
 
 	public void dispose() {
 		game.batch.dispose();
 		player1.dispose();
 		shapeRenderer.dispose();
+		entityList = null;
 	}
 
 	public boolean getPaused() {
@@ -124,7 +112,6 @@ public class FoodGame implements Screen
 	@Override
 	public void render (float delta)
 	{
-
 		// Handle Pausing the Game and showing Pause Screen
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) pause();
 		if(pausedGameplay) return;
@@ -134,7 +121,6 @@ public class FoodGame implements Screen
 			pausedGameplay = true;
 			game.setScreen(new GameOver(game, this));
 		}
-
 
 		// Start rendering
 		ScreenUtils.clear(0, 0, 0, 0);
@@ -153,10 +139,10 @@ public class FoodGame implements Screen
 
 		// Get player position for enemies to track
         playerPosition.set(player1.getHitbox().getX(), player1.getHitbox().getY());
-		
-		enemiesGenerator.renderAllEnemies(timeBetweenRenderCalls);
+
+		// Get and render next batch of random enemies
+		enemiesGenerator.getNextBatchOfEnemies(timeBetweenRenderCalls);
 		renderEntities(playerPosition, timePassed, timeBetweenRenderCalls);
-		// Render number of enemies left
 
 		// Player's bullets
 		for (Bullet bullet : player1.getAmmunition()) {
@@ -179,18 +165,12 @@ public class FoodGame implements Screen
 			}
 		}
 		
-		//remove enemies from list
-		for (int i = enemyList.size() - 1; i >= 0; i--){
-			if (enemyList.get(i).getIsDead() == true){
-				enemyList.remove(i);
-			}
-		}
-		
 		for (int i = entityList.size() - 1; i >= 0; i--){
 			if (entityList.get(i) instanceof Enemy){
 				Enemy temp = (Enemy)entityList.get(i);
-				if (temp.getIsDead() == true){
+				if (temp.getIsDead()) {
 					entityList.remove(i);
+					enemiesGenerator.enemyKilled();
 				}
 			}
 		}
@@ -199,13 +179,14 @@ public class FoodGame implements Screen
         batch.end();
 
 		// Render overlay elements
-		overlay.render(player1, entityList.size() - 1);
+		overlay.render(player1, entityList.size() - 1, enemiesGenerator);
 
 		// Here is where hitboxes are rendered, this will eventually be deleted
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 
+		// Render all generated and pre-set entities on map
 		for(Object entity_ : entityList) {
 			DynamicObject entity = (DynamicObject) entity_;
 			shapeRenderer.rect(entity.getHitbox().getX(), entity.getHitbox().getY(), entity.getHitbox().getWidth(), entity.getHitbox().getHeight());
@@ -213,35 +194,21 @@ public class FoodGame implements Screen
 
 		shapeRenderer.end();
 	}
-
-
 	public float getTimePassed() {
 		return timePassed;
 	}
-
 	public OrthographicCamera getCamera() {
 		return this.camera;
 	}
-
-	// Method to be modified by Juozas random implementation of enemies
-	//  public void createEnemies()  {
-	//  	enemy = new Enemy(new Vector2(2077,3200), 300, 320, Enemy.EnemyType.HAMBURGER);
-	//  	enemy2 = new Enemy(new Vector2(2077,3300), 400, 300, Enemy.EnemyType.HOTDOG);
-	//  	enemyList.add(enemy);
-	//  	enemyList.add(enemy2);
-	//  	entityList.add(enemy);
-	//  	entityList.add(enemy2);
-	// }
 
 	// Method that renders all current entities w.r.t. their y position
 	public void renderEntities(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
 		// Order the list of entities by yPos
 		Collections.sort(entityList, new Comparator<Object>() {
-
 			public int compare(Object entity1, Object entity2) {
 				DynamicObject dynamicObject1 = (DynamicObject) entity1;
 				DynamicObject dynamicObject2 = (DynamicObject) entity2;
-                return Double.compare(dynamicObject1.getSprite().getY(), dynamicObject2.getSprite().getY());
+                return Double.compare(dynamicObject2.getSprite().getY(), dynamicObject1.getSprite().getY());
             }
 		});
 
@@ -254,6 +221,9 @@ public class FoodGame implements Screen
 				enemy.enemyHit(playerPosition, player1);
 			}
 		}
+	}
 
+	public EnemiesGenerator getEnemiesGenerator() {
+		return enemiesGenerator;
 	}
 }
