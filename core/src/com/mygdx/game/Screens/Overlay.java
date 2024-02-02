@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mygdx.game.physics.EnemiesGenerator;
 import com.mygdx.game.physics.Player;
 
 public class Overlay {
@@ -97,21 +99,18 @@ public class Overlay {
     }
 
     public void show() {
-
         nextRound_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                foodGame.show();
+                stage.dispose();
+                foodGame.getEnemiesGenerator().reset();
                 game.setScreen(new FoodGame(game));
             }
         });
-
     }
 
-    public void render(Player player1, int enemiesLeft) {
+    public void render(Player player1, int enemiesLeft, EnemiesGenerator generator) {
 
         batch.begin();
-        
-        
         // Render player's health and overlay at the top left of the screen
 
         batch.draw(OverlaySprite, 0, 550, OverlaySprite.getWidth()/2, OverlaySprite.getHeight()/2);
@@ -137,13 +136,13 @@ public class Overlay {
 		batch.draw(enemiesLeftSprite, 870, 620, enemiesLeftSprite.getWidth()/3f, enemiesLeftSprite.getHeight()/3f);
 
 
-        String enemiesLeftStr = Integer.toString(enemiesLeft);
+        String enemiesLeftStr = Integer.toString(generator.getEnemiesLeft());
+
 		font.draw(batch, enemiesLeftStr,1165,  655);
 
         batch.end();
 
-        if(enemiesLeft <= 0) nextRound();
-
+        if(enemiesLeft <= 0 && EnemiesGenerator.getPoolSize() - generator.getEnemiesSpawned() == 0) nextRound();
     }
 
     public void nextRound() {

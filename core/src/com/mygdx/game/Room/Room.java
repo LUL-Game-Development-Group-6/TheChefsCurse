@@ -91,49 +91,6 @@ public class Room {
 		renderer = new OrthogonalTiledMapRenderer(background);
 	}
 
-	public RoomType randomRoom() {
-
-		int a = MathUtils.random(1, 9);
-		RoomType returnRoom;
-
-		switch (a) {
-
-			case 1:
-				returnRoom = RoomType.KITCHEN_1;
-				break;
-			case 2:
-				returnRoom = RoomType.KITCHEN_2;
-				break;
-			case 3:
-				returnRoom = RoomType.KITCHEN_3;
-				break;
-			case 4:
-				returnRoom = RoomType.FREEZER_1;
-				break;
-			case 5:
-				returnRoom = RoomType.FREEZER_2;
-				break;
-			case 6:
-				returnRoom = RoomType.FREEZER_3;
-				break;	
-			case  7:
-				returnRoom = RoomType.RESTAURANT_1;
-				break;
-			case  8:
-				returnRoom = RoomType.RESTAURANT_2;
-				break;
-			case 9:
-				returnRoom = RoomType.RESTAURANT_3;
-				break;
-			default:
-				returnRoom = RoomType.RESTAURANT_1;
-				break;
-		}
-
-		return returnRoom; 
-
-	}
-
 	public void checkCollission(Player player1, TiledMap map) {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
