@@ -18,7 +18,8 @@ import com.badlogic.gdx.maps.objects.PolygonMapObject;
 
 
 public class Room {
-
+	// TODO: optimize
+	// https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
 	public static enum RoomType {
 		
 		KITCHEN_1,

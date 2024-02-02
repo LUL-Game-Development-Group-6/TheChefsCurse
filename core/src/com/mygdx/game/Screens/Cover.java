@@ -69,7 +69,7 @@ public class Cover implements Screen
 
         background = new Texture("cover/Cheffs_Curse_Cover.png");
         logo = new Texture("cover/logo_static.png");
-
+         //TODO: extract this into createBButton
         start = new TextButtonStyle();
         start.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Start_NotClicked.png")));
         start.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Start_Clicked.png")));
@@ -171,6 +171,7 @@ public class Cover implements Screen
         logoAtlas = new TextureAtlas(Gdx.files.internal("cover/Logo.atlas"));
 	logo_animation = new Animation<Sprite>(
 			1/15f,
+            // TODO; FOR LOOP INSTEAD OF THIS
 			logoAtlas.createSprite("logo1"),
 			logoAtlas.createSprite("logo2"),
 			logoAtlas.createSprite("logo3"),

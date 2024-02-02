@@ -35,7 +35,7 @@ public class FoodGame implements Screen
 	 */
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	private Vector2 playerPosition;
+	private Vector2 playerPosition; // TODO: transfer it to PLAYER
 	final Menu game; // Game instance from Menu class to swtich between screens
 	private Overlay overlay;
 	private ShapeRenderer shapeRenderer; // Check hitboxes
@@ -43,13 +43,10 @@ public class FoodGame implements Screen
 	/*
 	 	* Native Objects
 	 */
-	private Room currentRoom;
-	private Player player1;
+	private final Room currentRoom;
+	private final Player player1;
 	private EnemiesGenerator enemiesGenerator;
-	private Enemy enemy;
-	private Enemy enemy2;
 	private float timePassed;
-    private float timeBetweenRenderCalls;
 	private boolean pausedGameplay; // Boolean to check if the game has been paused
 	private ArrayList<Object> entityList; // List of all the current enemies
 
@@ -134,7 +131,7 @@ public class FoodGame implements Screen
 		camera.update();
 
 		// Times to get time passed and to follow the player vector
-		timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
+		float timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
         timePassed += Gdx.graphics.getDeltaTime();
 
 		// Get player position for enemies to track
@@ -164,7 +161,7 @@ public class FoodGame implements Screen
 				player1.getAmmunition().remove(bullet);
 			}
 		}
-		
+
 		for (int i = entityList.size() - 1; i >= 0; i--){
 			if (entityList.get(i) instanceof Enemy){
 				Enemy temp = (Enemy)entityList.get(i);
@@ -174,6 +171,8 @@ public class FoodGame implements Screen
 				}
 			}
 		}
+
+//		entityList.stream().filter(e -> e instanceof Enemy).filter(e -> ((Enemy) e).getIsDead()).collect(Collectors.toList());
 
 		batch.setProjectionMatrix(camera.combined);
         batch.end();
