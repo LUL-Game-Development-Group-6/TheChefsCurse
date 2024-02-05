@@ -139,6 +139,9 @@ public abstract class DynamicObject {
     public void enemyHit(Vector2 playerPosition, Player player) {}
     public float getHeight() {return 0;}
     public float getWidth() {return 0;}
+    public Vector2 getPreviousPos() {return null;}
+    public Vector2 getPreviousSprite() {return null;}
+    public void moveBack(Vector2 Hitbox, Vector2 spriteVector) {}
 
     // Can't do switch case with ranges, thats why I used this disposition
     public void healthPercentage() {

@@ -47,7 +47,9 @@ public class Pause implements Screen
     public void pause() {}
     public void resume() {}
     public void resize(int width, int height) {}
-    public void hide() {}
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
 
     // Works like create() method
     public void show() {

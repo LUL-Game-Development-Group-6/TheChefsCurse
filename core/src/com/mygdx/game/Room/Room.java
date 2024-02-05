@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.Gdx;
 // Collider imports
@@ -49,7 +50,6 @@ public class Room {
 		renderer.setMap(background);
 		renderer.render();
 		renderer.setView(camera);
-		checkCollission(player1, background);
 
 	}
 
@@ -92,7 +92,7 @@ public class Room {
 		renderer = new OrthogonalTiledMapRenderer(background);
 	}
 
-	public void checkCollission(Player player1, TiledMap map) {
+	public void checkCollission(DynamicObject entity, TiledMap map) {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
 	
@@ -103,8 +103,9 @@ public class Room {
 
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 				
-				if(!triangleCollider.contains(player1.getHitbox().x, player1.getHitbox().y) || !triangleCollider.contains(player1.getHitbox().x + player1.getHitbox().width, player1.getHitbox().y)) {
-					player1.moveBack(player1.getPreviousPos(), player1.getPreviousSprite());
+				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y) ||
+				 !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)) {
+					entity.moveBack(entity.getPreviousPos(), entity.getPreviousSprite());
 				}
 			}
 		}
@@ -125,7 +126,7 @@ public class Room {
 					spawn.x = MathUtils.random(0, 10000);
 					spawn.y = MathUtils.random(0, 10000);
 					
-				} while (!triangleCollider.contains(spawn) && !triangleCollider.contains(spawn.x + 450/2, spawn.y));
+				} while (!triangleCollider.contains(spawn) && !triangleCollider.contains(spawn.x + 450, spawn.y));
 			}
 		}
 		return spawn;

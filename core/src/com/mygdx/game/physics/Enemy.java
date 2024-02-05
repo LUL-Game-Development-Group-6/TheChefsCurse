@@ -16,6 +16,11 @@ public class Enemy extends DynamicObject{
   
   private Vector2 position;
   private Vector2 velocity;
+
+  private Vector2 previousSprite;
+	private Vector2 previousPos;
+
+
   private float height;
   private float width;
   private Texture enemyTexture;
@@ -128,9 +133,11 @@ public class Enemy extends DynamicObject{
     Sprite enemySprite = new Sprite(enemyTexture);
     enemySprite.setSize(width, height);
     enemySprite.setPosition(position.x, position.y);
+    this.setHitbox(new Rectangle(0, 0, width - width/5, height - height/5));
+    previousPos = new Vector2(this.getHitbox().x, this.getHitbox().y);
+		previousSprite = new Vector2();
     
     setSprite(enemySprite);
-    this.setHitbox(new Rectangle(0, 0, width - width/5, height - height/5));
 
   }
 
@@ -165,6 +172,11 @@ public class Enemy extends DynamicObject{
 
   @Override
   public void render(float timePassed, float timeBetweenRenderCalls, Vector2 playerPosition, SpriteBatch batch) {
+
+    // Get previous position for colliders
+		previousPos.set(this.getHitbox().x, this.getHitbox().y);
+		previousSprite.set(this.getSprite().getX(), this.getSprite().getY());
+
     this.update(timePassed, timeBetweenRenderCalls, playerPosition, batch);
   }
 
@@ -180,6 +192,16 @@ public class Enemy extends DynamicObject{
   public float getWidth() {
       return this.width;
   }
+
+  @Override
+	public Vector2 getPreviousPos() {
+		return this.previousPos;
+	}
+
+	@Override
+	public Vector2 getPreviousSprite() {
+		return this.previousSprite;
+	}
   
   @Override//had to move this into enemy because it was more trouble than it was worth to try and change the one in dynamic object
   public void takeDamage(int damage)
@@ -204,6 +226,13 @@ public class Enemy extends DynamicObject{
 	{
 		sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
 		hitbox.setPosition(x - hitbox.getWidth() / 2, y - hitbox.getHeight() / 4);
+	}
+
+  @Override
+	public void moveBack(Vector2 Hitbox, Vector2 spriteVector)
+	{
+		sprite.setPosition(spriteVector.x, spriteVector.y);
+		hitbox.setPosition(Hitbox.x, Hitbox.y);
 	}
 
   @Override

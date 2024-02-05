@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.physics.EnemiesGenerator;
 import com.mygdx.game.physics.Player;
 
-public class Overlay {
+public class Overlay implements Screen {
     
     private Texture OverlayTexture;
     private Sprite OverlaySprite;
@@ -149,5 +149,31 @@ public class Overlay {
         stage.act();
         Gdx.input.setInputProcessor(stage);
         stage.draw();
+    }
+
+    @Override
+    public void render(float delta) {
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
+
+    @Override
+    public void dispose() {
     }
 }

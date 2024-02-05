@@ -245,10 +245,12 @@ public class Player extends DynamicObject {
 		this.jitter = jitter;
 	}
 
+	@Override
 	public Vector2 getPreviousPos() {
 		return this.previousPos;
 	}
 
+	@Override
 	public Vector2 getPreviousSprite() {
 		return this.previousSprite;
 	}
@@ -335,6 +337,7 @@ public class Player extends DynamicObject {
 		hitbox.setPosition(hitbox.getX() + x, hitbox.getY() + y);
 	}
 
+	@Override
 	public void moveBack(Vector2 Hitbox, Vector2 spriteVector)
 	{
 		sprite.setPosition(spriteVector.x, spriteVector.y);

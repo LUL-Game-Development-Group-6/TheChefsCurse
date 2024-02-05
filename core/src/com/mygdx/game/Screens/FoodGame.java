@@ -84,7 +84,9 @@ public class FoodGame implements Screen
 
     public void resize(int width, int height) {}
 
-    public void hide() {}
+    public void hide() {
+		Gdx.input.setInputProcessor(null);
+	}
 
 	public void show () {
 		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom);
@@ -219,6 +221,8 @@ public class FoodGame implements Screen
 				enemy.render(timePassed, timeBetweenRenderCalls, playerPosition, batch);
 				enemy.enemyHit(playerPosition, player1);
 			}
+			DynamicObject collission = (DynamicObject) entity;
+			currentRoom.checkCollission(collission, currentRoom.getBackground());
 		}
 	}
 
