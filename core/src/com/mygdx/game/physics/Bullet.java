@@ -36,7 +36,15 @@ public class Bullet extends DynamicObject
 
 	private Animation<Sprite> bulletAnimation;
 	private long animationStart;
+
+	public static enum EnemyBullet {
+		HOTDOG_BULLET,
+		POPCORN_BULLET,
+	}
+
+	private EnemyBullet enemyBullet;
 	
+	// Bullet Constructor for player
 	public Bullet(float xS, float yS, float xPos, float yPos, Player.WeaponType weaponType)
 	{
 		xSpeed = xS;
@@ -62,6 +70,30 @@ public class Bullet extends DynamicObject
 		speedModifier = 4f;
 		damage = 10;
 		this.weaponType = weaponType;
+		
+	}
+
+	// Constructor for enemy bullets
+	public Bullet(float xS, float yS, float xPos, float yPos,  EnemyBullet enemyBullet)
+	{
+		xSpeed = xS;
+		ySpeed = yS;
+		xPosition = xPos;
+		yPosition = yPos;
+
+		initialX = xPosition;
+		initialY = yPosition;
+
+		// Redgun bullet
+		bulletTexture = new Texture("objects/bullet/bullet.png");
+
+
+		bulletSprite = new Sprite(bulletTexture);
+		bulletHitbox = new Rectangle(xPos, yPos, 10, 10);
+		visible = true;
+		speedModifier = 4f;
+		damage = 10;
+		this.enemyBullet = enemyBullet;
 		
 	}
 	
@@ -143,6 +175,19 @@ public class Bullet extends DynamicObject
 				break;
 		}
 	}
+
+	public void renderEnemyBullet(SpriteBatch batch) {
+		switch (this.enemyBullet) {
+			case HOTDOG_BULLET:
+				batch.draw(bulletSprite, xPosition, yPosition, 40, 40);
+				break;
+			case POPCORN_BULLET:
+				batch.draw(bulletSprite, xPosition, yPosition, 40, 40);
+				break;
+			default:
+				break;
+		}
+	}
 	
 	public int getDamage()
 	{
@@ -165,6 +210,21 @@ public class Bullet extends DynamicObject
 			case SHOTGUN:
 				this.timeToDespawn = System.currentTimeMillis() + 70;
 				this.damage = 40;
+				break;
+			default:
+				break;
+		}
+	}
+
+	public void setDespawnTime(EnemyBullet enemyBullet) {
+		switch (enemyBullet) {
+			case HOTDOG_BULLET:
+				this.timeToDespawn = System.currentTimeMillis() + 1000;
+				this.damage = 18;
+				break;
+			case POPCORN_BULLET:
+				this.timeToDespawn = System.currentTimeMillis() + 200;
+				this.damage = 18;
 				break;
 			default:
 				break;

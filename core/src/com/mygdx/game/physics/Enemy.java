@@ -1,5 +1,7 @@
 package com.mygdx.game.physics;
 
+import java.util.LinkedList;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -35,6 +37,8 @@ public class Enemy extends DynamicObject{
 
   private TextureAtlas enemyAtlas;
   private Animation<Sprite> enemyAnimation;
+
+  private LinkedList<Bullet> enemyAmmunition;
   
   private boolean isDead;
   
@@ -51,11 +55,12 @@ public class Enemy extends DynamicObject{
 
     super.createHealth();
     this.setPlayer(false);
+    enemyAmmunition = new LinkedList<Bullet>();
 	
 	
     switch(enemyType){
 
-      case HAMBURGER: // Mele enemy
+      case HAMBURGER:
         this.damage = 10;
         this.hitDistance = 20;
         this.cooldown = 2000;
@@ -122,6 +127,8 @@ public class Enemy extends DynamicObject{
 
       case SODA:
         this.damage = 15;
+        this.hitDistance = 20;
+        this.cooldown = 3000;
         offsetX = -20;
         offsetY = 20;
         enemyAtlas = new TextureAtlas("enemies/Soda/soda.atlas");
@@ -160,6 +167,7 @@ public class Enemy extends DynamicObject{
     this.width = width;
     this.velocity = new Vector2(1, 1);
     this.lastShot = 0;
+    this.enemyType = enemyType;
 
     Sprite enemySprite = new Sprite(enemyTexture);
     enemySprite.setSize(width, height);
@@ -202,19 +210,36 @@ public class Enemy extends DynamicObject{
   }
 
   @Override
-  public void render(float timePassed, float timeBetweenRenderCalls, Vector2 playerPosition, SpriteBatch batch) {
+  public void render(float timePassed, float timeBetweenRenderCalls, Vector2 playerPosition, SpriteBatch batch, Player player) {
 
     // Get previous position for colliders
 		previousPos.set(this.getHitbox().x, this.getHitbox().y);
 		previousSprite.set(this.getSprite().getX(), this.getSprite().getY());
 
     this.update(timePassed, timeBetweenRenderCalls, playerPosition, batch);
+
+    for (Bullet bullet : enemyAmmunition) {
+      bullet.update();
+      bullet.renderEnemyBullet(batch);
+      if (bullet.getHitbox().overlaps(player.getHitbox())) {
+        player.takeDamage(this.damage);
+        bullet.setVisibility(false);
+        this.getAmmunition().remove(bullet);
+      }
+      if(bullet.getDespawnTime() < System.currentTimeMillis()) {
+        bullet.setVisibility(false);
+        this.getAmmunition().remove(bullet);
+      }
+    }
   }
 
   public Vector2 getPosition() {
-      return position;
+    return position;
   }
 
+  public LinkedList<Bullet> getAmmunition() {
+    return this.enemyAmmunition;
+  }
   @Override
   public float getHeight() {
       return this.height;
@@ -271,16 +296,17 @@ public class Enemy extends DynamicObject{
     return this.enemyAnimation;
   }
 
-  @Override
+  
   public void enemyHit(Vector2 playerPosition, Player player) {
 
-    long currentTime = System.currentTimeMillis();
+    System.out.println(this.enemyType);
 
+    long currentTime = System.currentTimeMillis();
     long timeSinceLastShot = currentTime - lastShot; 
 
-    if(this.position.dst(playerPosition) <= this.hitDistance) {
+    if(this.position.dst(playerPosition) <= this.hitDistance && timeSinceLastShot >= this.cooldown) {
 
-      switch (enemyType) {
+      switch (this.enemyType) {
         case HAMBURGER:
 				  player.takeDamage(this.damage);
 				  break;
@@ -291,19 +317,18 @@ public class Enemy extends DynamicObject{
 				  player.takeDamage(this.damage);
 				  break;
 			  case HOTDOG:
-				  //Bullet nextBullet = new Bullet(velocity.x, velocity.y, position.x, position.y + 50, 2);
-				  //nextBullet.setSpeed(0.75f);
-				  //nextBullet.setDespawnTime(2);
-				  //enemyAmmunition.add(nextBullet);
-				  //velocity.set(0, 0);
-				  //break;
+				  Bullet nextBullet = new Bullet(velocity.x, velocity.y, position.x, position.y + 50, Bullet.EnemyBullet.HOTDOG_BULLET);
+				  nextBullet.setSpeed(0.2f);
+				  nextBullet.setDespawnTime(Bullet.EnemyBullet.HOTDOG_BULLET);
+				  enemyAmmunition.add(nextBullet);
+				  break;
+        default:
+          break;
       }
 
-      if(timeSinceLastShot >= this.cooldown) {
-        player.takeDamage(this.damage);	
-        System.out.println("Player Hit by enemy");
-        lastShot = currentTime;
-      }
+      System.out.println("Player Hit by enemy");
+      lastShot = currentTime;
+
     }
   }
 }
