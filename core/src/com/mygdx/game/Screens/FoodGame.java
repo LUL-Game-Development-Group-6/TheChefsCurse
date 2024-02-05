@@ -27,6 +27,7 @@ import com.mygdx.game.physics.Enemy;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Collectors;
+import com.mygdx.game.Room.Furniture;
 
 public class FoodGame implements Screen
 {
@@ -63,6 +64,8 @@ public class FoodGame implements Screen
 		player1 = new Player(spawn.x, spawn.y, 450, 500);
 		batch = new SpriteBatch();
 		entityList.add(player1);
+		Furniture furn1 = new Furniture(spawn.x, spawn.y, 450, 500);
+		entityList.add(furn1);
 
 		// Camera
 		camera = new OrthographicCamera(2560,1440);
@@ -218,6 +221,10 @@ public class FoodGame implements Screen
 				Enemy enemy = (Enemy) entity;
 				enemy.render(timePassed, timeBetweenRenderCalls, playerPosition, batch);
 				enemy.enemyHit(playerPosition, player1);
+			}
+			else if(entity instanceof Furniture){
+				Furniture furniture = (Furniture) entity;
+				furniture.render(batch);
 			}
 		}
 	}
