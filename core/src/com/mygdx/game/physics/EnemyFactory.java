@@ -42,7 +42,7 @@ public class EnemyFactory {
     }
 
     public EnemyFactory withRandomType() {
-        int randomID = MathUtils.random(0, 1);
+        int randomID = MathUtils.random(0, 3);
 
         if(randomID == 0) {
             type = Enemy.EnemyType.HAMBURGER;
@@ -53,6 +53,17 @@ public class EnemyFactory {
             type = Enemy.EnemyType.HOTDOG;
             this.width = 400;
             this.height = 300;
+        }
+        if(randomID == 2) {
+            type = Enemy.EnemyType.POPCORN;
+            this.width = 280;
+            this.height = 300;
+        }
+
+        if(randomID == 3) {
+            type = Enemy.EnemyType.SODA;
+            this.width = 250;
+            this.height = 330;
         }
 
         dimensionsSetByType = true;

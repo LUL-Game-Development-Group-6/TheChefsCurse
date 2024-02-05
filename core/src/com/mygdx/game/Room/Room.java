@@ -122,11 +122,12 @@ public class Room {
 
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 
-				do {
+				while (!triangleCollider.contains(spawn) || !triangleCollider.contains(spawn.x + 700, spawn.y)) {
+					
 					spawn.x = MathUtils.random(0, 10000);
 					spawn.y = MathUtils.random(0, 10000);
 					
-				} while (!triangleCollider.contains(spawn) && !triangleCollider.contains(spawn.x + 450, spawn.y));
+				}
 			}
 		}
 		return spawn;

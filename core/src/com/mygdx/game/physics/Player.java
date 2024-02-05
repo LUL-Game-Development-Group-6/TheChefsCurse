@@ -261,6 +261,8 @@ public class Player extends DynamicObject {
 	public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera)
 	{
 
+		System.err.println("Coords: x= " + this.getHitbox().x + " y= " + this.getHitbox().y);
+
 		// Get previous position for colliders
 		previousPos.set(this.getHitbox().x, this.getHitbox().y);
 		previousSprite.set(this.getSprite().getX(), this.getSprite().getY());

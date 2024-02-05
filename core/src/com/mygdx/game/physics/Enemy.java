@@ -57,7 +57,7 @@ public class Enemy extends DynamicObject{
 
       case HAMBURGER: // Mele enemy
         this.damage = 10;
-        this.hitDistance = 10;
+        this.hitDistance = 20;
         this.cooldown = 2000;
         offsetX = -25;
         offsetY = 20;
@@ -102,20 +102,51 @@ public class Enemy extends DynamicObject{
 
       case POPCORN:
         this.damage = 10;
+        this.hitDistance = 500;
+        this.cooldown = 3000;
         offsetX = -20;
         offsetY = 20;
-        enemyTexture = new Texture("enemies/Popcorn/Popcorn.png");
+        enemyAtlas = new TextureAtlas("enemies/Popcorn/popcorn.atlas");
+        enemyAnimation = new Animation<>(
+          1/12f,
+          enemyAtlas.createSprite("Popcorn1"),
+          enemyAtlas.createSprite("Popcorn2"),
+          enemyAtlas.createSprite("Popcorn3"),
+          enemyAtlas.createSprite("Popcorn4"),
+          enemyAtlas.createSprite("Popcorn5"));
+
+        enemyTexture = new Texture("enemies/Popcorn/Popcorn_Standing.png");
 		    setCurrentHealth(40);
-        setSpeed(65);
+        setSpeed(100);
         break;
 
       case SODA:
         this.damage = 15;
         offsetX = -20;
         offsetY = 20;
+        enemyAtlas = new TextureAtlas("enemies/Soda/soda.atlas");
+        enemyAnimation = new Animation<>(
+          1/20f,
+          enemyAtlas.createSprite("Soda_Sprite1"),
+          enemyAtlas.createSprite("Soda_Sprite2"),
+          enemyAtlas.createSprite("Soda_Sprite3"),
+          enemyAtlas.createSprite("Soda_Sprite4"),
+          enemyAtlas.createSprite("Soda_Sprite5"),
+          enemyAtlas.createSprite("Soda_Sprite6"),
+          enemyAtlas.createSprite("Soda_Sprite7"),
+          enemyAtlas.createSprite("Soda_Sprite8"),
+          enemyAtlas.createSprite("Soda_Sprite9"),
+          enemyAtlas.createSprite("Soda_Sprite10"),
+          enemyAtlas.createSprite("Soda_Sprite11"),
+          enemyAtlas.createSprite("Soda_Sprite12"),
+          enemyAtlas.createSprite("Soda_Sprite13"),
+          enemyAtlas.createSprite("Soda_Sprite14"));
+
+
         enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
-		    setCurrentHealth(70);
-        setSpeed(60);
+
+		    setCurrentHealth(100);
+        setSpeed(150);
         break;
 
       default:
@@ -133,7 +164,7 @@ public class Enemy extends DynamicObject{
     Sprite enemySprite = new Sprite(enemyTexture);
     enemySprite.setSize(width, height);
     enemySprite.setPosition(position.x, position.y);
-    this.setHitbox(new Rectangle(0, 0, width - width/5, height - height/5));
+    this.setHitbox(new Rectangle(0, 0, width - width/5, height - height/8));
     previousPos = new Vector2(this.getHitbox().x, this.getHitbox().y);
 		previousSprite = new Vector2();
     
@@ -248,6 +279,25 @@ public class Enemy extends DynamicObject{
     long timeSinceLastShot = currentTime - lastShot; 
 
     if(this.position.dst(playerPosition) <= this.hitDistance) {
+
+      switch (enemyType) {
+        case HAMBURGER:
+				  player.takeDamage(this.damage);
+				  break;
+			  case SODA:
+				  player.takeDamage(this.damage);
+				  break;
+			  case POPCORN:
+				  player.takeDamage(this.damage);
+				  break;
+			  case HOTDOG:
+				  //Bullet nextBullet = new Bullet(velocity.x, velocity.y, position.x, position.y + 50, 2);
+				  //nextBullet.setSpeed(0.75f);
+				  //nextBullet.setDespawnTime(2);
+				  //enemyAmmunition.add(nextBullet);
+				  //velocity.set(0, 0);
+				  //break;
+      }
 
       if(timeSinceLastShot >= this.cooldown) {
         player.takeDamage(this.damage);	
