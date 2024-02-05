@@ -218,7 +218,7 @@ public class FoodGame implements Screen
 				player1.render(batch, this, camera);
 			} else if(entity instanceof Enemy){
 				Enemy enemy = (Enemy) entity;
-				enemy.render(timePassed, timeBetweenRenderCalls, playerPosition, batch, player1);
+				enemy.render(timePassed, timeBetweenRenderCalls, playerPosition, batch, player1, this);
 				enemy.enemyHit(playerPosition, player1);
 			}
 			DynamicObject collission = (DynamicObject) entity;
