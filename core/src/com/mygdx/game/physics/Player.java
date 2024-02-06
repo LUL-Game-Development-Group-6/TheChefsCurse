@@ -135,7 +135,7 @@ public class Player extends DynamicObject {
 		this.setMaxHealth(100);
 
 		// Player's Hitbox and Facing Directions
-		setHitbox(new Rectangle(x, y, width/2, height));
+		setHitbox(new Rectangle(x, y, width/2.5f, height));
 		previousPos = new Vector2(this.getHitbox().x, this.getHitbox().y);
 		previousSprite = new Vector2();
 		
@@ -261,7 +261,7 @@ public class Player extends DynamicObject {
 	public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera)
 	{
 
-		System.err.println("Coords: x= " + this.getHitbox().x + " y= " + this.getHitbox().y);
+		//System.err.println("Coords: x= " + this.getHitbox().x + " y= " + this.getHitbox().y);
 
 		// Get previous position for colliders
 		previousPos.set(this.getHitbox().x, this.getHitbox().y);

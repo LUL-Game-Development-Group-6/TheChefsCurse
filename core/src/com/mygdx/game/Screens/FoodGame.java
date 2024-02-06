@@ -35,7 +35,6 @@ public class FoodGame implements Screen
 	 */
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	private Vector2 playerPosition; // TODO: transfer it to PLAYER
 	final Menu game; // Game instance from Menu class to swtich between screens
 	private Overlay overlay;
 	private ShapeRenderer shapeRenderer; // Check hitboxes
@@ -69,9 +68,9 @@ public class FoodGame implements Screen
 
 		overlay = new Overlay(game, this);
 
-		playerPosition = new Vector2(player1.getHitbox().getX(), player1.getHitbox().getY());
-
 		shapeRenderer = new ShapeRenderer();
+		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom);
+		enemiesGenerator.generate();
     }
 
     public void pause() {
@@ -87,10 +86,7 @@ public class FoodGame implements Screen
     public void hide() {
 		Gdx.input.setInputProcessor(null);
 	}
-
 	public void show () {
-		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom);
-		enemiesGenerator.generate();
 	}
 
 	public void dispose() {
@@ -136,12 +132,9 @@ public class FoodGame implements Screen
 		float timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
         timePassed += Gdx.graphics.getDeltaTime();
 
-		// Get player position for enemies to track
-        playerPosition.set(player1.getHitbox().getX(), player1.getHitbox().getY());
-
 		// Get and render next batch of random enemies
 		enemiesGenerator.getNextBatchOfEnemies(timeBetweenRenderCalls);
-		renderEntities(playerPosition, timePassed, timeBetweenRenderCalls);
+		renderEntities(player1, timePassed, timeBetweenRenderCalls);
 
 		// Player's bullets
 		for (Bullet bullet : player1.getAmmunition()) {
@@ -174,13 +167,8 @@ public class FoodGame implements Screen
 			}
 		}
 
-//		entityList.stream().filter(e -> e instanceof Enemy).filter(e -> ((Enemy) e).getIsDead()).collect(Collectors.toList());
-
 		batch.setProjectionMatrix(camera.combined);
         batch.end();
-
-		// Render overlay elements
-		overlay.render(player1, entityList.size() - 1, enemiesGenerator);
 
 		// Here is where hitboxes are rendered, this will eventually be deleted
 		shapeRenderer.begin(ShapeType.Line);
@@ -194,7 +182,12 @@ public class FoodGame implements Screen
 		}
 
 		shapeRenderer.end();
+
+		// Render overlay elements
+		overlay.render(player1, entityList.size() - 1, enemiesGenerator, enemiesGenerator.getEnemiesLeft());
 	}
+
+	
 	public float getTimePassed() {
 		return timePassed;
 	}
@@ -203,7 +196,8 @@ public class FoodGame implements Screen
 	}
 
 	// Method that renders all current entities w.r.t. their y position
-	public void renderEntities(Vector2 playerPosition, float timePassed, float timeBetweenRenderCalls) {
+	public void renderEntities(Player player, float timePassed, float timeBetweenRenderCalls) {
+
 		// Order the list of entities by yPos
 		Collections.sort(entityList, new Comparator<Object>() {
 			public int compare(Object entity1, Object entity2) {
@@ -215,11 +209,12 @@ public class FoodGame implements Screen
 
 		for (Object entity : entityList) {
 			if(entity instanceof Player) {
+
 				player1.render(batch, this, camera);
+
 			} else if(entity instanceof Enemy){
 				Enemy enemy = (Enemy) entity;
-				enemy.render(timePassed, timeBetweenRenderCalls, playerPosition, batch, player1, this);
-				enemy.enemyHit(playerPosition, player1);
+				enemy.render(timePassed, timeBetweenRenderCalls, batch, player, this);
 			}
 			DynamicObject collission = (DynamicObject) entity;
 			currentRoom.checkCollission(collission, currentRoom.getBackground());

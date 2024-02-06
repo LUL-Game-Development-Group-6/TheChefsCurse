@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EnemiesGenerator {
-    private static final int MAX_ENEMY_POOL_SIZE = 10;
-    private int enemiesLeft = MAX_ENEMY_POOL_SIZE;
+    private int MAX_ENEMY_POOL_SIZE = 10;
+    private int enemiesLeft;
     private EnemyFactory factory;
     private Room room;
     private float timeElapsedSinceLastSpawn;
@@ -25,7 +25,9 @@ public class EnemiesGenerator {
     }
 
     public EnemiesGenerator(List<Object> entityList, Room room) {
+
         this.room = room; 
+        enemiesLeft = MAX_ENEMY_POOL_SIZE;
         factory = EnemyFactory.getInstance();
         timeElapsedSinceLastSpawn = 0;
         enemiesSpawned = 0;
@@ -72,10 +74,10 @@ public class EnemiesGenerator {
 
     private int generateNextRandomChuckSize() {
         if(MAX_ENEMY_POOL_SIZE - enemiesSpawned > 0) {
-            int maxBound = MAX_ENEMY_POOL_SIZE - enemiesSpawned;
+            int maxBound = Math.min(4, MAX_ENEMY_POOL_SIZE - enemiesSpawned);
             int minBound = 1;
             try {
-                return ThreadLocalRandom.current().nextInt(minBound, maxBound);
+                return ThreadLocalRandom.current().nextInt(minBound, maxBound + 1);
             } catch (IllegalArgumentException e) {
                 return 0;
             }
@@ -83,7 +85,7 @@ public class EnemiesGenerator {
         return -1;
     }
 
-    public static int getPoolSize() {
+    public int getPoolSize() {
         return MAX_ENEMY_POOL_SIZE;
     }
 
@@ -92,11 +94,11 @@ public class EnemiesGenerator {
     }
 
     public int getEnemiesLeft() {
-        return enemiesLeft;
+        return this.enemiesLeft;
     }
 
     public void enemyKilled() {
-        enemiesLeft--;
+        this.enemiesLeft--;
     }
 
     public void reset() {

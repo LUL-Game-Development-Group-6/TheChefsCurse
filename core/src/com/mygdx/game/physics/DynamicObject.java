@@ -134,7 +134,7 @@ public abstract class DynamicObject {
 
     // Methods to be overwritten
     public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera) {}
-    public void render(float timePassed, float timeBetweenRenderCalls, Vector2 playerPosition, SpriteBatch batch, Player player, FoodGame game) {}
+    public void render(float timePassed, float timeBetweenRenderCalls, SpriteBatch batch, Player player, FoodGame game) {}
     public Animation<Sprite> getEnemyAnimation() {return null;}
     public float getHeight() {return 0;}
     public float getWidth() {return 0;}

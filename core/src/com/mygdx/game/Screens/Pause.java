@@ -32,10 +32,10 @@ public class Pause implements Screen
     // Variabkes to display elements (e.g, buttons)
     private Stage stage;
     private BitmapFont font;
-
+    private SpriteBatch batch;
     // Game object (Menu instance in the constructor)
     final Menu game;
-    final FoodGame foodGame;
+    private FoodGame foodGame;
 
     // Screen constructor
     public Pause(final Menu game, FoodGame foodGame) {
@@ -55,7 +55,7 @@ public class Pause implements Screen
     public void show() {
         
         // Variables to draw buttons and images into the screen
-        game.batch = new SpriteBatch();
+        batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
@@ -104,21 +104,20 @@ public class Pause implements Screen
 
     public void render(float delta) {
         stage.act();
-        game.batch.begin();
+        batch.begin();
         ScreenUtils.clear(1, 0, 0, 1);
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        game.batch.draw(logo, 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(logo, 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) game.setScreen(foodGame);
-        game.batch.end();
+        //if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) game.setScreen(foodGame);
+        batch.end();
         stage.draw();
     }
 
     public void dispose() {
         
         background.dispose();
-        game.batch.dispose();
         stage.dispose();
         font.dispose();
     }

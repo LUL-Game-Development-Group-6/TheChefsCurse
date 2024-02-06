@@ -210,11 +210,11 @@ public class Bullet extends DynamicObject
 			case FIST:
 				break;
 			case REDGUN:
-				this.timeToDespawn = System.currentTimeMillis() + 200;
+				this.timeToDespawn = System.currentTimeMillis() + 600;
 				this.damage = 18;
 				break;
 			case SHOTGUN:
-				this.timeToDespawn = System.currentTimeMillis() + 70;
+				this.timeToDespawn = System.currentTimeMillis() + 100;
 				this.damage = 40;
 				break;
 			default:
@@ -225,12 +225,12 @@ public class Bullet extends DynamicObject
 	public void setDespawnTime(EnemyBullet enemyBullet) {
 		switch (enemyBullet) {
 			case HOTDOG_BULLET:
-				this.timeToDespawn = System.currentTimeMillis() + 2000;
-				this.damage = 20;
+				this.timeToDespawn = System.currentTimeMillis() + 1500;
+				this.damage = 8;
 				break;
 			case POPCORN_BULLET:
-				this.timeToDespawn = System.currentTimeMillis() + 1200;
-				this.damage = 10;
+				this.timeToDespawn = System.currentTimeMillis() + 1000;
+				this.damage = 5;
 				break;
 			default:
 				break;

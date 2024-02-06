@@ -108,7 +108,7 @@ public class Overlay implements Screen {
         });
     }
 
-    public void render(Player player1, int enemiesLeft, EnemiesGenerator generator) {
+    public void render(Player player1, int enemiesLeft, EnemiesGenerator generator, int counter) {
 
         batch.begin();
         // Render player's health and overlay at the top left of the screen
@@ -136,13 +136,15 @@ public class Overlay implements Screen {
 		batch.draw(enemiesLeftSprite, 870, 620, enemiesLeftSprite.getWidth()/3f, enemiesLeftSprite.getHeight()/3f);
 
 
-        String enemiesLeftStr = Integer.toString(generator.getEnemiesLeft());
+        String enemiesLeftStr = Integer.toString(counter);
+
+        //System.out.println(counter);
 
 		font.draw(batch, enemiesLeftStr,1165,  655);
 
         batch.end();
 
-        if(enemiesLeft <= 0 && EnemiesGenerator.getPoolSize() - generator.getEnemiesSpawned() == 0) nextRound();
+        if(counter <= 0) nextRound();
     }
 
     public void nextRound() {

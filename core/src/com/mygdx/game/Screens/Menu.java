@@ -18,3 +18,7 @@ public class Menu extends Game {
         super.dispose();
     }
 }
+
+class RoundIncrementor {
+    
+}

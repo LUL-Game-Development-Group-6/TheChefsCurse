@@ -90,7 +90,7 @@ public class Enemy extends DynamicObject{
         break;
 
       case HOTDOG:
-        this.damage = 20;
+        this.damage = 8;
         this.hitDistance = 1050;
         this.cooldown = 5000;
         offsetX = 20;
@@ -109,7 +109,7 @@ public class Enemy extends DynamicObject{
         break;
 
       case POPCORN:
-        this.damage = 10;
+        this.damage = 5;
         this.hitDistance = 800;
         this.cooldown = 3000;
         offsetX = -20;
@@ -187,9 +187,9 @@ public class Enemy extends DynamicObject{
   }
 
 
-  public void update(float timePassed, float deltaTime, Vector2 playerPosition, SpriteBatch batch) {
+  public void update(float timePassed, float deltaTime, Player player, SpriteBatch batch) {
 
-    float distance = playerPosition.dst(position);
+    float distance = player.getPreviousPos().dst(position);
 
     // Draw enemy standing still if hes close enough
     if(distance < this.hitDistance) {
@@ -208,7 +208,7 @@ public class Enemy extends DynamicObject{
     this.healthPercentage();
 
     // Calculate the direction vector between the enemy and the player
-    Vector2 direction = new Vector2(playerPosition.x - position.x, playerPosition.y - position.y);
+    Vector2 direction = new Vector2(player.getPreviousPos().x - position.x, player.getPreviousPos().y - position.y);
     // Normalize vector
     direction.nor();
     /*
@@ -220,16 +220,17 @@ public class Enemy extends DynamicObject{
     // Update the enemy's position
     position.add(velocity.x * deltaTime, velocity.y * deltaTime);
     move(position.x, position.y);
+    enemyHit(player);
   }
 
   @Override
-  public void render(float timePassed, float timeBetweenRenderCalls, Vector2 playerPosition, SpriteBatch batch, Player player, FoodGame game) {
+  public void render(float timePassed, float timeBetweenRenderCalls, SpriteBatch batch, Player player, FoodGame game) {
 
     // Get previous position for colliders
 		previousPos.set(this.getHitbox().x, this.getHitbox().y);
 		previousSprite.set(this.getSprite().getX(), this.getSprite().getY());
 
-    this.update(timePassed, timeBetweenRenderCalls, playerPosition, batch);
+    this.update(timePassed, timeBetweenRenderCalls, player, batch);
 
     for (Bullet bullet : enemyAmmunition) {
       bullet.update();
@@ -310,12 +311,12 @@ public class Enemy extends DynamicObject{
   }
 
   
-  public void enemyHit(Vector2 playerPosition, Player player) {
+  public void enemyHit(Player player) {
 
     long currentTime = System.currentTimeMillis();
     long timeSinceLastShot = currentTime - lastShot; 
 
-    if(this.position.dst(playerPosition) <= this.hitDistance && timeSinceLastShot >= this.cooldown) {
+    if(this.position.dst(player.getPreviousPos()) <= this.hitDistance && timeSinceLastShot >= this.cooldown) {
 
 
       switch (this.enemyType) {
