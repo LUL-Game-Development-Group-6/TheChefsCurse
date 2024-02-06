@@ -1,6 +1,7 @@
 package com.mygdx.game.physics;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Room.Room;
 
@@ -16,6 +17,7 @@ public class EnemiesGenerator {
     private float timeElapsedSinceLastSpawn;
     private int enemiesSpawned;
     private List<Object> recentlySpawnedEnemies;
+    private boolean firstEnemy;
 
     public EnemiesGenerator() {
         factory = EnemyFactory.getInstance();
@@ -32,6 +34,7 @@ public class EnemiesGenerator {
         timeElapsedSinceLastSpawn = 0;
         enemiesSpawned = 0;
         recentlySpawnedEnemies = entityList;
+        firstEnemy = false;
     } 
 
     public void generate() {
@@ -49,16 +52,21 @@ public class EnemiesGenerator {
             int enemiesToSpawn = generateNextRandomChuckSize();
             int diff = enemiesToSpawn + enemiesSpawned;
             for(int i = enemiesSpawned - 1; i < diff; i++) {
+
                 try {
-                    recentlySpawnedEnemies.add(factory.getEnemies().get(i));
+                    Enemy enemyToAdd = factory.getEnemies().get(i);
+                    if(!recentlySpawnedEnemies.contains(enemyToAdd)) {
+                        recentlySpawnedEnemies.add(enemyToAdd);
+                    }
+
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
                     System.out.println("[WARN] Unable to spawn enemy. " + e);
                 }
                 enemiesSpawned++;
             }
-
             // reset time tracker
             timeElapsedSinceLastSpawn = 0;
+
         } else if(enemiesSpawned == 0) {
             try {
                 recentlySpawnedEnemies.add(factory.getEnemies().get(0));
@@ -67,6 +75,7 @@ public class EnemiesGenerator {
             }
             timeElapsedSinceLastSpawn = 0;
             enemiesSpawned++;
+
         } else {
             timeElapsedSinceLastSpawn += delta;
         }
@@ -77,7 +86,7 @@ public class EnemiesGenerator {
             int maxBound = Math.min(4, MAX_ENEMY_POOL_SIZE - enemiesSpawned);
             int minBound = 1;
             try {
-                return ThreadLocalRandom.current().nextInt(minBound, maxBound + 1);
+                return MathUtils.random(minBound, maxBound);
             } catch (IllegalArgumentException e) {
                 return 0;
             }
