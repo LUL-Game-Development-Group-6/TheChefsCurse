@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.Room.RoomBuilder;
+import com.mygdx.game.gamesave.GameSaveLoader;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.Screen;
@@ -192,6 +193,12 @@ public class FoodGame implements Screen
 		}
 
 		shapeRenderer.end();
+
+		GameSaveLoader.getInstance()
+				.health(player1.getCurrentHealth())
+				.enemiesLeft(enemiesGenerator.getEnemiesLeft())
+				.withTimestamp(System.currentTimeMillis())
+				.update();
 	}
 	public float getTimePassed() {
 		return timePassed;
