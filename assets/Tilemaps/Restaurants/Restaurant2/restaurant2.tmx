@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="4">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="5">
  <imagelayer id="3" name="Image Layer 1">
   <image source="restaurant_2.png" width="6720" height="4620"/>
+ </imagelayer>
+ <imagelayer id="6" name="Image Layer 2" offsetx="4956" offsety="1404.29">
+  <image source="bar.png" width="1520" height="1180"/>
  </imagelayer>
  <objectgroup id="5" name="colliders">
   <object id="3" x="272.727" y="1727.27">
    <polygon points="0,0 1772.73,948.485 339.394,1724.24 342.424,1739.39 2145.45,2700 2172.73,2700 6190.91,612.121 6193.94,593.939 4363.64,-366.667 4330.3,-372.727 3575.27,32.7273 3404.61,235.394 3257.94,47.3939 1567.27,-845.273 1545.27,-839.273"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="7" name="furniture">
+  <object id="4" x="6436.36" y="2303.03">
+   <polygon points="0,0 -575.758,321.212 -1490.91,-127.273 -1457.58,-612.121 -1024.24,-821.212 -18.1818,-333.333"/>
   </object>
  </objectgroup>
 </map>

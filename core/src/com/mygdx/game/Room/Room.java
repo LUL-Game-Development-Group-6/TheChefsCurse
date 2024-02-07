@@ -12,6 +12,9 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.Player;
+
+import javax.swing.text.html.parser.Entity;
+
 import com.badlogic.gdx.Gdx;
 // Collider imports
 import com.badlogic.gdx.maps.MapObject;
@@ -105,6 +108,7 @@ public class Room {
 	public void checkCollission(DynamicObject entity, TiledMap map) {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
+		MapObjects furnitureList = map.getLayers().get("furniture").getObjects();
 	
 		for(MapObject collider : colliderList) {
 
@@ -114,7 +118,7 @@ public class Room {
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 				
 				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y) ||
-				 !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)) {
+				 !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y) || checkFurnitureCollission(entity, furnitureList)) {
 					entity.moveBack(entity.getPreviousPos(), entity.getPreviousSprite());
 				}
 			}
@@ -124,6 +128,8 @@ public class Room {
 	public Vector2 entitySpawn(TiledMap map) {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
+		MapObjects furnitureList = map.getLayers().get("furniture").getObjects();
+
 		Vector2 spawn = new Vector2(0, 0);
 
 		for(MapObject collider : colliderList) {
@@ -132,16 +138,50 @@ public class Room {
 
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 
-				while (!triangleCollider.contains(spawn) || !triangleCollider.contains(spawn.x + 700, spawn.y)) {
+				while (!triangleCollider.contains(spawn) || !triangleCollider.contains(spawn.x + 700, spawn.y) || checkFurnitureSpawn(spawn, furnitureList)) {
 					
 					spawn.x = MathUtils.random(0, 10000);
 					spawn.y = MathUtils.random(0, 10000);
-					
+
+
 				}
 			}
 		}
 		return spawn;
 	}
+
+
+	public boolean checkFurnitureSpawn(Vector2 spawn, MapObjects furnitureList) {
+
+		for(MapObject furniture : furnitureList) {
+			if(furniture instanceof PolygonMapObject) {
+				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
+				if(furniturePolygon.contains(spawn) || furniturePolygon.contains(spawn.x + 700, spawn.y)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean checkFurnitureCollission(DynamicObject entity, MapObjects furnitureList) {
+
+		for(MapObject furniture : furnitureList) {
+
+			if(furniture instanceof PolygonMapObject) {
+
+				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
+
+				if(furniturePolygon.contains(entity.getHitbox().x, entity.getHitbox().y) ||
+				furniturePolygon.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
 	public TiledMap getBackground() {
 		return background;
 	}
