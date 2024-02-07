@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.Room.RoomBuilder;
+import com.mygdx.game.gamesave.GameSaveLoader;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.Screen;
@@ -35,21 +36,21 @@ public class FoodGame implements Screen
 	 */
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	final Menu game; // Game instance from Menu class to swtich between screens
+	Menu game; 			// Game instance from Menu class to swtich between screens
 	private Overlay overlay;
 	private ShapeRenderer shapeRenderer; // Check hitboxes
 
 	/*
 	 	* Native Objects
 	 */
-	private final Room currentRoom;
-	private final Player player1;
+	private Room currentRoom;
+	private Player player1;
 	private EnemiesGenerator enemiesGenerator;
 	private float timePassed;
 	private boolean pausedGameplay; // Boolean to check if the game has been paused
 	private ArrayList<Object> entityList; // List of all the current enemies
 
-	public FoodGame(final Menu game) {
+	public FoodGame(Menu game) {
         this.game = game;
 		this.entityList = new ArrayList<>();
 		pausedGameplay = false;
@@ -185,6 +186,12 @@ public class FoodGame implements Screen
 
 		// Render overlay elements
 		overlay.render(player1, entityList.size() - 1, enemiesGenerator, enemiesGenerator.getEnemiesLeft());
+
+		GameSaveLoader.getInstance()
+			.health(player1.getCurrentHealth())
+			.enemiesLeft(enemiesGenerator.getEnemiesLeft())
+			.withTimestamp(System.currentTimeMillis())
+			.update();
 	}
 
 	

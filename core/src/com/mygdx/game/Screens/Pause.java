@@ -34,11 +34,11 @@ public class Pause implements Screen
     private BitmapFont font;
     private SpriteBatch batch;
     // Game object (Menu instance in the constructor)
-    final Menu game;
+    Menu game;
     private FoodGame foodGame;
 
     // Screen constructor
-    public Pause(final Menu game, FoodGame foodGame) {
+    public Pause(Menu game, FoodGame foodGame) {
         this.game = game;
         this.foodGame = foodGame;
     }
@@ -93,7 +93,7 @@ public class Pause implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new Cover(game));
+                game.setScreen(new Cover(new Menu()));
             }
         });
 
@@ -110,7 +110,7 @@ public class Pause implements Screen
         batch.draw(logo, 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 
 
-        //if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) game.setScreen(foodGame);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) game.setScreen(foodGame);
         batch.end();
         stage.draw();
     }

@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mygdx.game.helpers.Fonts;
 import com.mygdx.game.physics.EnemiesGenerator;
 import com.mygdx.game.physics.Player;
 
@@ -41,10 +42,15 @@ public class Overlay implements Screen {
 	private Sprite overlaySprite;
 
     private BitmapFont font;
+    private BitmapFont roundFont;
+    private BitmapFont roundNumber;
+    private Fonts myFont;
+
     private TextButtonStyle nextRound;
     private TextButton nextRound_button;
     private Stage stage;
     private FoodGame foodGame;
+    
 
     SpriteBatch batch;
 
@@ -52,8 +58,10 @@ public class Overlay implements Screen {
 
     public Overlay(Menu game, FoodGame foodGame) {
 
+
         this.foodGame = foodGame;
         this.game = game;
+        myFont = new Fonts();
 
         // Overlay
 		OverlayTexture = new Texture("cheff/Weapon_Overlay.png");
@@ -77,9 +85,9 @@ public class Overlay implements Screen {
 		enemiesLeftSprite = new Sprite(enemiesLeftTexture);
 
         // Handle font
-		font = new BitmapFont();
-		font.getData().setScale(3);
-		font.setColor(Color.BLACK);
+		font = myFont.getFont(Color.WHITE, 35, 2);
+        roundFont = myFont.getFont(Color.WHITE, 45, 3);
+        roundNumber = myFont.getFont(Color.RED, 45, 3);
 
         // Next round button
         stage = new Stage();
@@ -89,8 +97,8 @@ public class Overlay implements Screen {
         nextRound.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/next_round_Hover.png")));
         nextRound.font = font;
         nextRound_button = new TextButton("", nextRound);
-        nextRound_button.setSize(nextRound_button.getWidth(), nextRound_button.getHeight());
-        nextRound_button.setPosition(320, 50);
+        nextRound_button.setSize(nextRound_button.getWidth()/2, nextRound_button.getHeight()/2);
+        nextRound_button.setPosition(500, 30);
         stage.addActor(nextRound_button);
         show();
 
@@ -103,6 +111,7 @@ public class Overlay implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 stage.dispose();
                 foodGame.getEnemiesGenerator().reset();
+                game.incrementRound();
                 game.setScreen(new FoodGame(game));
             }
         });
@@ -136,11 +145,13 @@ public class Overlay implements Screen {
 		batch.draw(enemiesLeftSprite, 870, 620, enemiesLeftSprite.getWidth()/3f, enemiesLeftSprite.getHeight()/3f);
 
 
-        String enemiesLeftStr = Integer.toString(counter);
 
+        String enemiesLeftStr = Integer.toString(counter);
         //System.out.println(counter);
 
-		font.draw(batch, enemiesLeftStr,1165,  655);
+		font.draw(batch, enemiesLeftStr,centerX(enemiesLeftStr),  650);
+        roundFont.draw(batch, "ROUND:",30,  80);
+        roundNumber.draw(batch, game.getStrRound(),250,  80);
 
         batch.end();
 
@@ -152,6 +163,19 @@ public class Overlay implements Screen {
         Gdx.input.setInputProcessor(stage);
         stage.draw();
     }
+
+    /*
+     * This only returns the x coordinate depending on the ammount of enemies
+     * to center the numbers
+     */
+    private int centerX(String numberString) {
+        if(numberString.length() == 1) {
+            return 1160;
+        } else if (numberString.length() == 2) {
+            return 1150;
+        }
+        return 1140;
+    } 
 
     @Override
     public void render(float delta) {

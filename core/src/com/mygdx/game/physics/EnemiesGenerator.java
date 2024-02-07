@@ -10,14 +10,13 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EnemiesGenerator {
-    private int MAX_ENEMY_POOL_SIZE = 10;
+    private int MAX_ENEMY_POOL_SIZE;
     private int enemiesLeft;
     private EnemyFactory factory;
     private Room room;
     private float timeElapsedSinceLastSpawn;
     private int enemiesSpawned;
     private List<Object> recentlySpawnedEnemies;
-    private boolean firstEnemy;
 
     public EnemiesGenerator() {
         factory = EnemyFactory.getInstance();
@@ -29,12 +28,12 @@ public class EnemiesGenerator {
     public EnemiesGenerator(List<Object> entityList, Room room) {
 
         this.room = room; 
+        MAX_ENEMY_POOL_SIZE = room.getPoolSize();
         enemiesLeft = MAX_ENEMY_POOL_SIZE;
         factory = EnemyFactory.getInstance();
         timeElapsedSinceLastSpawn = 0;
         enemiesSpawned = 0;
         recentlySpawnedEnemies = entityList;
-        firstEnemy = false;
     } 
 
     public void generate() {
@@ -68,8 +67,12 @@ public class EnemiesGenerator {
             timeElapsedSinceLastSpawn = 0;
 
         } else if(enemiesSpawned == 0) {
+            
             try {
-                recentlySpawnedEnemies.add(factory.getEnemies().get(0));
+                Enemy enemyToAdd = factory.getEnemies().get(0);
+                if(!recentlySpawnedEnemies.contains(enemyToAdd)) {
+                    recentlySpawnedEnemies.add(enemyToAdd);
+                }
             } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
                 System.out.println("[WARN] Unable to spawn enemy. " + e);
             }
@@ -83,7 +86,7 @@ public class EnemiesGenerator {
 
     private int generateNextRandomChuckSize() {
         if(MAX_ENEMY_POOL_SIZE - enemiesSpawned > 0) {
-            int maxBound = Math.min(4, MAX_ENEMY_POOL_SIZE - enemiesSpawned);
+            int maxBound = Math.min(5, MAX_ENEMY_POOL_SIZE - enemiesSpawned);
             int minBound = 1;
             try {
                 return MathUtils.random(minBound, maxBound);

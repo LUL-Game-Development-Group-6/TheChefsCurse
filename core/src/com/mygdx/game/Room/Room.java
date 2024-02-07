@@ -42,6 +42,7 @@ public class Room {
 	protected ShapeRenderer shapeRenderer;
 	protected Vector2 spawnableCoords;
 
+	private int pool_size;
 
 	public void render(Player player1, OrthographicCamera camera)
 	{
@@ -61,29 +62,38 @@ public class Room {
 		switch (roomType) {
 
 			case KITCHEN_1:
+				pool_size = 10;
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen1/kitchen1.tmx");
 			case KITCHEN_2:
+				pool_size = 20;
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen2/kitchen2.tmx");
 				break;
 			case KITCHEN_3:
+				pool_size = 30;
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen3/kitchen3.tmx");
 				break;
 			case FREEZER_1:
+				pool_size = 10;
 				background = mapLoader.load("Tilemaps/Freezers/Freezer1/freezer1.tmx");
 				break;
 			case FREEZER_2:
+				pool_size = 25;
 				background = mapLoader.load("Tilemaps/Freezers/Freezer2/freezer2.tmx");
 				break;
 			case FREEZER_3:
+				pool_size = 30;
 				background = mapLoader.load("Tilemaps/Freezers/Freezer3/freezer3.tmx");
 				break;	
 			case  RESTAURANT_1:
+				pool_size = 10;
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant1/restaurant1.tmx");
 				break;
 			case  RESTAURANT_2:
+				pool_size = 20;
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant2/restaurant2.tmx");
 				break;
 			case RESTAURANT_3:
+				pool_size = 23;
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant3/restaurant3.tmx");
 				break;
 			default:
@@ -134,5 +144,8 @@ public class Room {
 	}
 	public TiledMap getBackground() {
 		return background;
+	}
+	public int getPoolSize() {
+		return this.pool_size;
 	}
 }

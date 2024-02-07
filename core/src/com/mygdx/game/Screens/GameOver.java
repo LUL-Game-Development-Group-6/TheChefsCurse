@@ -87,7 +87,7 @@ public class GameOver implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new Cover(game));
+                game.setScreen(new Cover(new Menu()));
             }
         });
 

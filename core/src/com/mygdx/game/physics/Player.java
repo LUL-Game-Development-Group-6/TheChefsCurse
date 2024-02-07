@@ -20,7 +20,6 @@ import java.util.LinkedList;
 public class Player extends DynamicObject {
 
 	// Player variables
-    private int score;
     private float jitter;
 	private float height;
 	private float width;
@@ -124,7 +123,6 @@ public class Player extends DynamicObject {
 		
 		allAnimations = new ArrayList<Animation<Sprite>>();
 		allStatics = new ArrayList<Sprite>();
-		score = 0;
 		setSpeed(2f);
 		setJitter(2f);
 
