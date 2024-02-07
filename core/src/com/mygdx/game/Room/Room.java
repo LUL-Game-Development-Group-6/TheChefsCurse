@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.Player;
 
-import javax.swing.text.html.parser.Entity;
 
 import com.badlogic.gdx.Gdx;
 // Collider imports
@@ -72,7 +71,7 @@ public class Room {
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen2/kitchen2.tmx");
 				break;
 			case KITCHEN_3:
-				pool_size = 30;
+				pool_size = 25;
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen3/kitchen3.tmx");
 				break;
 			case FREEZER_1:
@@ -80,11 +79,11 @@ public class Room {
 				background = mapLoader.load("Tilemaps/Freezers/Freezer1/freezer1.tmx");
 				break;
 			case FREEZER_2:
-				pool_size = 25;
+				pool_size = 20;
 				background = mapLoader.load("Tilemaps/Freezers/Freezer2/freezer2.tmx");
 				break;
 			case FREEZER_3:
-				pool_size = 30;
+				pool_size = 25;
 				background = mapLoader.load("Tilemaps/Freezers/Freezer3/freezer3.tmx");
 				break;	
 			case  RESTAURANT_1:
@@ -96,7 +95,7 @@ public class Room {
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant2/restaurant2.tmx");
 				break;
 			case RESTAURANT_3:
-				pool_size = 23;
+				pool_size = 20;
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant3/restaurant3.tmx");
 				break;
 			default:

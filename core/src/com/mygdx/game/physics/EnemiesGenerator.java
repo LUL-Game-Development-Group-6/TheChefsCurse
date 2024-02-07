@@ -94,7 +94,7 @@ public class EnemiesGenerator {
                 return 0;
             }
         }
-        return -1;
+        return 0;
     }
 
     public int getPoolSize() {

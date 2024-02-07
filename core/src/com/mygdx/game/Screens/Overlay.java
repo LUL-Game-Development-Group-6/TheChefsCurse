@@ -155,7 +155,7 @@ public class Overlay implements Screen {
 
         batch.end();
 
-        if(counter <= 100) nextRound();
+        if(counter <= 0) nextRound();
     }
 
     public void nextRound() {
