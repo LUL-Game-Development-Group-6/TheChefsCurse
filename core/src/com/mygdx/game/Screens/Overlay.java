@@ -19,6 +19,13 @@ import com.mygdx.game.physics.EnemiesGenerator;
 import com.mygdx.game.physics.Player;
 
 public class Overlay implements Screen {
+
+    private static Overlay instance;
+
+    public static Overlay getInstance(FoodGame foodGame) {
+        if(instance == null) instance = new Overlay(foodGame);
+        return instance;
+    }
     
     private Texture OverlayTexture;
     private Sprite OverlaySprite;
@@ -50,17 +57,14 @@ public class Overlay implements Screen {
     private TextButton nextRound_button;
     private Stage stage;
     private FoodGame foodGame;
+    private Menu game;
     
 
     SpriteBatch batch;
 
-    final Menu game;
-
-    public Overlay(Menu game, FoodGame foodGame) {
-
-
+    public Overlay(FoodGame foodGame) {
         this.foodGame = foodGame;
-        this.game = game;
+        this.game = Menu.getInstance();
         myFont = new Fonts();
 
         // Overlay

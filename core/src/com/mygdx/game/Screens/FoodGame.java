@@ -80,7 +80,7 @@ public class FoodGame implements Screen
 		// Camera
 		camera = new OrthographicCamera(2560,1440);
 
-		overlay = new Overlay(game, this);
+		overlay = Overlay.getInstance(this);
 
 		shapeRenderer = new ShapeRenderer();
 		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom);
