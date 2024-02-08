@@ -10,6 +10,7 @@ public class GameSaveLoader {
     private long gameStartTimestamp;
     private long firstTimeStamp;
     private static GameSaveLoader gameSaveLoader;
+    private static final String FILENAME = "gamesave.json";
 
     public static GameSaveLoader getInstance() {
         if(gameSaveLoader == null) gameSaveLoader = new GameSaveLoader();
@@ -26,15 +27,12 @@ public class GameSaveLoader {
     }
 
     private void init() {
-        String filename = "gamesave.json";
+        
         GameSave InitgameSave = new GameSave("1", 0, 0, 0, 100, 0);
         try {
-            String gameSaveAsJSON = objectMapper.writer().withDefaultPrettyPrinter().writeValueAsString(InitgameSave);
-            File gamesaveAsFile = new File(filename);
+            File gamesaveAsFile = new File(FILENAME);
             if(gamesaveAsFile.createNewFile()) {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-                writer.write(gameSaveAsJSON);
-                writer.close();
+                updateGamesaveFile(InitgameSave);
             }
         } catch (FileNotFoundException e) {
             System.out.println("[ERROR] Cannot find gamesave file");
@@ -73,9 +71,13 @@ public class GameSaveLoader {
     }
 
     public void update() {
+        updateGamesaveFile(gameSave);
+    }
+
+    private void updateGamesaveFile(GameSave gameSave) {
         try {
             String gameSaveAsJSON = objectMapper.writer().withDefaultPrettyPrinter().writeValueAsString(gameSave);
-            BufferedWriter writer = new BufferedWriter(new FileWriter("gamesave.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME));
             writer.write(gameSaveAsJSON);
             writer.close();
         } catch (FileNotFoundException e) {
