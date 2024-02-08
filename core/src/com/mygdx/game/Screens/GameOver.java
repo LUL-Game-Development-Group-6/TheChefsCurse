@@ -41,7 +41,7 @@ public class GameOver implements Screen
 
     // Game object (Menu instance in the constructor)
     final Menu game;
-    final FoodGame foodGame;
+    private FoodGame foodGame;
 
     // Screen constructor
     public GameOver(final Menu game, FoodGame foodGame) {
@@ -58,7 +58,6 @@ public class GameOver implements Screen
 
     // Works like create() method
     public void show() {
-        
         // Variables to draw buttons and images into the screen
         game.batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
@@ -87,7 +86,11 @@ public class GameOver implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new Cover(new Menu()));
+                foodGame.dispose();
+                foodGame.getEnemiesGenerator().reset();
+                game.dispose();
+                foodGame = null;
+                game.setScreen(Cover.getInstance());
             }
         });
 

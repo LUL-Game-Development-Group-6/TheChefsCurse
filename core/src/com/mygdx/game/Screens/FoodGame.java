@@ -31,12 +31,25 @@ import java.util.stream.Collectors;
 
 public class FoodGame implements Screen
 {
+
+	private static FoodGame instance;
+
+	public static FoodGame getInstance() {
+		if(instance == null) instance = new FoodGame();
+		return instance;
+	}
+
+	public static FoodGame getInstance(boolean createNew) {
+		if(instance == null || createNew) instance = new FoodGame();
+		return instance;
+	}
+
 	/*
 		* LibGDX Objects
 	 */
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	Menu game; 			// Game instance from Menu class to swtich between screens
+	private Menu game; 			// Game instance from Menu class to swtich between screens
 	private Overlay overlay;
 	private ShapeRenderer shapeRenderer; // Check hitboxes
 
@@ -50,8 +63,8 @@ public class FoodGame implements Screen
 	private boolean pausedGameplay; // Boolean to check if the game has been paused
 	private ArrayList<Object> entityList; // List of all the current enemies
 
-	public FoodGame(Menu game) {
-        this.game = game;
+	public FoodGame() {
+        this.game = Menu.getInstance();
 		this.entityList = new ArrayList<>();
 		pausedGameplay = false;
 

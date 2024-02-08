@@ -23,6 +23,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Cover implements Screen  
 {
+    private static Cover instance;
+
+    public static Cover getInstance() {
+        if(instance == null) instance = new Cover();
+        return instance;
+    }
 
     // Cover images
     private Texture background;
@@ -44,11 +50,11 @@ public class Cover implements Screen
     private BitmapFont font;
 
     // Game object (Menu instance in the constructor)
-    Menu game;
+    private Menu game;
 
     // Screen constructor
-    public Cover(Menu game) {
-        this.game = game;
+    public Cover() {
+        this.game = Menu.getInstance();
         logoAnimated();
     }
 
@@ -72,7 +78,6 @@ public class Cover implements Screen
         background = new Texture("cover/Cheffs_Curse_Cover.png");
         logo = new Texture("cover/logo_static.png");
         createButtons();
-
     }
 
     public void render(float delta) {
@@ -173,7 +178,6 @@ public class Cover implements Screen
 
         start_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                
                 // Start the animation
                 logo_animation.setPlayMode(Animation.PlayMode.NORMAL);
                 timePassed = 0;
@@ -183,7 +187,8 @@ public class Cover implements Screen
                     @Override
                     public void run() {
                         if (logo_animation.isAnimationFinished(timePassed)) {
-                            game.setScreen(new FoodGame(game));
+                            game.dispose();
+                            game.setScreen(FoodGame.getInstance(true));
                         }
                     }
                 }, logo_animation.getAnimationDuration());

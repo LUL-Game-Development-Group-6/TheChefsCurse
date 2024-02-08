@@ -105,14 +105,14 @@ public class Overlay implements Screen {
         batch = new SpriteBatch();
             
     }
-
+ 
     public void show() {
         nextRound_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 stage.dispose();
                 foodGame.getEnemiesGenerator().reset();
                 game.incrementRound();
-                game.setScreen(new FoodGame(game));
+                game.setScreen(FoodGame.getInstance());
             }
         });
     }

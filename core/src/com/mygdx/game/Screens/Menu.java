@@ -4,6 +4,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamesave.GameSaveLoader;
 
 public class Menu extends Game {
+
+    private static Menu game;
+
+    public static Menu getInstance() {
+        if(game == null) game = new Menu();
+        return game;
+    }
     
     public SpriteBatch batch;
     private int round;
@@ -12,7 +19,7 @@ public class Menu extends Game {
         round = 1;
         GameSaveLoader.getInstance().load();
         batch = new SpriteBatch();
-        this.setScreen(new Cover(this));
+        this.setScreen(Cover.getInstance());
     }
 
     public void render() {
@@ -34,10 +41,4 @@ public class Menu extends Game {
     public void incrementRound() {
         round++;
     }
-}
-
-
-
-class RoundIncrementor {
-    
 }
