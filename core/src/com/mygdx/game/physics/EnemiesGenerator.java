@@ -45,12 +45,16 @@ public class EnemiesGenerator {
     }
 
     public void getNextBatchOfEnemies(float delta) {
-        // every 15 seconds
+        // every 15 seconds generate batch if pool is not full
         if(timeElapsedSinceLastSpawn >= 15 && enemiesSpawned <= MAX_ENEMY_POOL_SIZE) {
-            // spawn random batch of enemies
+            // get random size of enemy chunk
             int enemiesToSpawn = generateNextRandomChuckSize();
+
+            // get new number of enemies
             int diff = enemiesToSpawn + enemiesSpawned;
-            for(int i = enemiesSpawned - 1; i < diff; i++) {
+
+            // for each enemy
+            for(int i = enemiesSpawned; i < diff; i++) {
 
                 try {
                     Enemy enemyToAdd = factory.getEnemies().get(i);
