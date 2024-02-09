@@ -1,5 +1,6 @@
 package com.mygdx.game.Screens;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,11 +9,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.SnapshotArray;
+
 import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.Room.RoomBuilder;
 import com.mygdx.game.gamesave.GameSaveLoader;
+import com.mygdx.game.helpers.AnimationParameters;
+import com.mygdx.game.helpers.ShadersHelper;
 import com.mygdx.game.physics.Player;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.Screen;
@@ -27,6 +32,7 @@ import com.mygdx.game.physics.EnemiesGenerator;
 import com.mygdx.game.physics.Enemy;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 public class FoodGame implements Screen
@@ -44,23 +50,27 @@ public class FoodGame implements Screen
 	 	* Native Objects
 	 */
 	private Room currentRoom;
+	private ShadersHelper shadersHelper;
 	private Player player1;
 	private EnemiesGenerator enemiesGenerator;
 	private float timePassed;
 	private boolean pausedGameplay; // Boolean to check if the game has been paused
 	private ArrayList<Object> entityList; // List of all the current enemies
+	private ArrayList<AnimationParameters> xpList;
 
 	public FoodGame(Menu game) {
         this.game = game;
 		this.entityList = new ArrayList<>();
+		this.xpList = new ArrayList<>();
+		shadersHelper = new ShadersHelper();
 		pausedGameplay = false;
 
 		// Random Room from the 9 choices
-		currentRoom = RoomBuilder.init().withRandomRoomType().create().get();
+		currentRoom = RoomBuilder.init().withRandomRoomType().create(game).get();
 
 		Vector2 spawn = currentRoom.entitySpawn(currentRoom.getBackground());
 
-		player1 = new Player(spawn.x, spawn.y, 450, 500);
+		player1 = new Player(spawn.x, spawn.y, 450, 500, game);
 		batch = new SpriteBatch();
 		entityList.add(player1);
 
@@ -70,7 +80,7 @@ public class FoodGame implements Screen
 		overlay = new Overlay(game, this);
 
 		shapeRenderer = new ShapeRenderer();
-		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom);
+		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom, game);
 		enemiesGenerator.generate();
     }
 
@@ -145,36 +155,67 @@ public class FoodGame implements Screen
 				if(!(entity instanceof Enemy)) continue;
 				Enemy currentEnemy = (Enemy) entity;
 				if (bullet.getHitbox().overlaps(currentEnemy.getHitbox())) {
+					currentEnemy.setHit(true);
+					currentEnemy.setTimeHit();
 					bullet.setVisibility(false);
 					System.out.println("Enemy Shot");
 					currentEnemy.takeDamage(bullet.getDamage());
 					player1.getAmmunition().remove(bullet);
 				}
 			}
-
 			if(bullet.getDespawnTime() < System.currentTimeMillis()) {
 				bullet.setVisibility(false); 	
 				player1.getAmmunition().remove(bullet);
 			}
 		}
 
+		// Dead enemies (create XP animation)
 		for (int i = entityList.size() - 1; i >= 0; i--){
 			if (entityList.get(i) instanceof Enemy){
 				Enemy temp = (Enemy)entityList.get(i);
 				if (temp.getIsDead()) {
-					entityList.remove(i);
+					// CreateXP Animation
+					AnimationParameters animation = new AnimationParameters(
+						game.getXpAnimationHelper().get10xp(),
+						temp.getHitbox().getX() + temp.getHitbox().getWidth()/2,
+						temp.getHitbox().getY() + temp.getHitbox().getHeight()/2,
+						System.currentTimeMillis()
+					);
+					
+					xpList.add(animation);
+					game.getXpAnimationHelper().get10xp();
+
+					entityList.remove(temp);
 					enemiesGenerator.enemyKilled();
+					game.increaseXP();
+
 				}
 			}
 		}
+		
+		// Draw xp animation if an enemy is killed
+		Iterator<AnimationParameters> iterator = xpList.iterator();
+		while (iterator.hasNext()) {
+    		AnimationParameters params = iterator.next();
+    		long elapsedTime = System.currentTimeMillis() - params.getTimeStarted();
+    		if (elapsedTime < 500) {
+        		batch.draw(params.geAnimation().getKeyFrame(timePassed, true),
+                params.getX(), params.getY(), 200, 170);
+    		} else {
+				System.out.println("Bingo");
+        		iterator.remove();
+    		}
+		}
 
-		batch.setProjectionMatrix(camera.combined);
+		
         batch.end();
+		
 
 		// Here is where hitboxes are rendered, this will eventually be deleted
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
 		shapeRenderer.setProjectionMatrix(camera.combined);
+
 
 		// Render all generated and pre-set entities on map
 		for(Object entity_ : entityList) {
@@ -192,6 +233,16 @@ public class FoodGame implements Screen
 			.enemiesLeft(enemiesGenerator.getEnemiesLeft())
 			.withTimestamp(System.currentTimeMillis())
 			.update();
+
+			
+		for (Object object : entityList) {
+			if(object instanceof DynamicObject) {
+				DynamicObject entity = (DynamicObject) object;
+				if(entity.getHit()) {
+					shadersHelper.drawshader(entity, timePassed, camera);
+				}
+			}
+		}
 	}
 
 	
@@ -230,5 +281,8 @@ public class FoodGame implements Screen
 
 	public EnemiesGenerator getEnemiesGenerator() {
 		return enemiesGenerator;
+	}
+	public ShadersHelper getShadersHelper() {
+		return shadersHelper;
 	}
 }

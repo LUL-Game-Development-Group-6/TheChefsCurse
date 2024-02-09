@@ -2,13 +2,24 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamesave.GameSaveLoader;
+import com.mygdx.game.helpers.StatsHelper;
+import com.mygdx.game.helpers.XpAnimationHelper;
 
 public class Menu extends Game {
     
     public SpriteBatch batch;
+    private StatsHelper statsHelper;
+    private XpAnimationHelper xpAnimation;
     private int round;
+    private int XP;
+    private int totalXP;
+
 
     public void create() {
+        xpAnimation = new XpAnimationHelper();
+        statsHelper = new StatsHelper();
+        XP= 0;
+        totalXP = 0;
         round = 1;
         GameSaveLoader.getInstance().load();
         batch = new SpriteBatch();
@@ -23,7 +34,7 @@ public class Menu extends Game {
     }
 
     public int getRound() {
-        return round;
+        return this.round;
     }
 
     public String getStrRound() {
@@ -32,12 +43,38 @@ public class Menu extends Game {
     }
 
     public void incrementRound() {
-        round++;
+        this.round++;
     }
-}
 
+    public void resetGame() {
+        this.statsHelper.resetScaler();
+        this.round = 1;
+        this.XP = 0;
+        this.totalXP = 0;
+    }
 
+    public void increaseXP() {
+        this.XP += 10;
+        this.totalXP += 10;
+    }
 
-class RoundIncrementor {
-    
+    public void useXP(int usedXP) {
+        this.XP -= usedXP;
+    }
+
+    public int getXP() {
+        return this.XP;
+    }
+
+    public int getTotalXP() {
+        return this.totalXP;
+    }
+
+    public StatsHelper getStatsHelper() {
+        return this.statsHelper;
+    }
+
+    public XpAnimationHelper getXpAnimationHelper() {
+        return this.xpAnimation;
+    }
 }

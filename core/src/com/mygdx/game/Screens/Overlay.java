@@ -111,8 +111,7 @@ public class Overlay implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 stage.dispose();
                 foodGame.getEnemiesGenerator().reset();
-                game.incrementRound();
-                game.setScreen(new FoodGame(game));
+                game.setScreen(new NewRound(game, foodGame));
             }
         });
     }
@@ -169,6 +168,7 @@ public class Overlay implements Screen {
      * to center the numbers
      */
     private int centerX(String numberString) {
+
         if(numberString.length() == 1) {
             return 1160;
         } else if (numberString.length() == 2) {

@@ -205,17 +205,17 @@ public class Bullet extends DynamicObject
 		return this.timeToDespawn;
 	}
 
-	public void setDespawnTime(Player.WeaponType weaponType) {
+	public void setDespawnTime(Player.WeaponType weaponType, Menu game) {
 		switch (weaponType) {
 			case FIST:
 				break;
 			case REDGUN:
 				this.timeToDespawn = System.currentTimeMillis() + 600;
-				this.damage = 18;
+				this.damage = 18 + game.getStatsHelper().getDamageScaler();
 				break;
 			case SHOTGUN:
 				this.timeToDespawn = System.currentTimeMillis() + 100;
-				this.damage = 40;
+				this.damage = 40 + game.getStatsHelper().getDamageScaler();
 				break;
 			default:
 				break;

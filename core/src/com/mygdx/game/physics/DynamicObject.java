@@ -18,6 +18,7 @@ import java.util.List;
 
 public abstract class DynamicObject {
     private static int[] healthLevels = {0,10,25,40,50,60,75,80,100};
+    private boolean isMoving;
     private int MAX_HEALTH;
     private int currentHealth;
     protected float speed;
@@ -30,17 +31,33 @@ public abstract class DynamicObject {
     protected Sprite sprite;
     protected Texture texture;
 
+    private boolean hit;
+    private long timeHit;
+
     private List<Pair> healthTextures;
 
     private Texture currentEntityHealth;
 
     public void takeDamage(int damage){
 		this.currentHealth = this.currentHealth - damage;
-		if (this.currentHealth <= 0){
-			System.out.println("Entity should die");
-		}
     }
 
+    public boolean getIsMoving() {
+        return isMoving;
+    }
+
+    public void setIsMoving(boolean bool) {
+        isMoving = bool;
+    }
+
+    public long getTimeHit() {
+        return timeHit;
+    }
+
+    public void setTimeHit() {
+        timeHit = System.currentTimeMillis();
+    }
+    
     public int getCurrentHealth() {
         return currentHealth;
     }
@@ -141,6 +158,9 @@ public abstract class DynamicObject {
     public Vector2 getPreviousPos() {return null;}
     public Vector2 getPreviousSprite() {return null;}
     public void moveBack(Vector2 Hitbox, Vector2 spriteVector) {}
+    public void setHit(boolean isHit) {hit = isHit;}
+    public boolean getHit() {return this.hit;}
+    public Animation<Sprite> getAnimation() {return null;}
 
     // Can't do switch case with ranges, thats why I used this disposition
     public void healthPercentage() {

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Screens.FoodGame;
+import com.mygdx.game.Screens.Menu;
 
 public class Enemy extends DynamicObject{
   
@@ -44,6 +45,8 @@ public class Enemy extends DynamicObject{
   private LinkedList<Bullet> enemyAmmunition;
   
   private boolean isDead;
+  private SpriteBatch enemyBatch;
+  private Menu game;
   
   public static enum EnemyType{
     HAMBURGER,
@@ -54,11 +57,13 @@ public class Enemy extends DynamicObject{
 
   private EnemyType enemyType;
 
-  public Enemy(Vector2 position, float width, float height, EnemyType enemyType){
-
+  public Enemy(Menu game, Vector2 position, float width, float height, EnemyType enemyType){
+  
     super.createHealth();
     this.setPlayer(false);
+    this.game = game;
     enemyAmmunition = new LinkedList<Bullet>();
+    enemyBatch = new SpriteBatch();
 	
 	
     switch(enemyType){
@@ -85,7 +90,7 @@ public class Enemy extends DynamicObject{
 
 
         enemyTexture = new Texture("enemies/Hamburguer/Hamburguer_Standing.png");
-		    setCurrentHealth(100);
+		    setCurrentHealth(100 +  game.getStatsHelper().getEnemyScaler());
         setSpeed(200);
         break;
 
@@ -104,7 +109,7 @@ public class Enemy extends DynamicObject{
         enemyAtlas.createSprite("hotdog4"));
 
         enemyTexture = new Texture("enemies/Hotdog/hotdog_still.png");
-		    setCurrentHealth(60);
+		    setCurrentHealth(60 + game.getStatsHelper().getEnemyScaler());
         setSpeed(50);
         break;
 
@@ -124,7 +129,7 @@ public class Enemy extends DynamicObject{
           enemyAtlas.createSprite("Popcorn5"));
 
         enemyTexture = new Texture("enemies/Popcorn/Popcorn_Standing.png");
-		    setCurrentHealth(40);
+		    setCurrentHealth(40 + game.getStatsHelper().getEnemyScaler());
         setSpeed(100);
         break;
 
@@ -155,13 +160,16 @@ public class Enemy extends DynamicObject{
 
         enemyTexture = new Texture("enemies/Soda/Soda_Standing.png");
 
-		    setCurrentHealth(100);
+		    setCurrentHealth(100 + game.getStatsHelper().getEnemyScaler());
         setSpeed(150);
         break;
 
       default:
         break;
     }
+
+    damage += game.getStatsHelper().getEnemyScaler();
+
 
 	  this.isDead = false;
     this.setMaxHealth(this.getCurrentHealth());
@@ -171,6 +179,7 @@ public class Enemy extends DynamicObject{
     this.velocity = new Vector2(1, 1);
     this.lastShot = 0;
     this.enemyType = enemyType;
+    this.setHit(false);
 
     normalSpeed = this.getSpeed();
 
@@ -189,6 +198,7 @@ public class Enemy extends DynamicObject{
 
   public void update(float timePassed, float deltaTime, Player player, SpriteBatch batch) {
 
+    
     float distance = player.getPreviousPos().dst(position);
 
     // Draw enemy standing still if hes close enough
@@ -236,6 +246,8 @@ public class Enemy extends DynamicObject{
       bullet.update();
       bullet.renderEnemyBullet(batch, game);
       if (bullet.getHitbox().overlaps(player.getHitbox())) {
+        player.setHit(true);
+        player.setTimeHit();
         player.takeDamage(this.damage);
         bullet.setVisibility(false);
         this.getAmmunition().remove(bullet);
@@ -249,6 +261,11 @@ public class Enemy extends DynamicObject{
 
   public Vector2 getPosition() {
     return position;
+  }
+
+  @Override
+  public Animation<Sprite> getAnimation() {
+    return enemyAnimation;
   }
 
   public LinkedList<Bullet> getAmmunition() {
@@ -322,9 +339,13 @@ public class Enemy extends DynamicObject{
       switch (this.enemyType) {
         case HAMBURGER:
 				  player.takeDamage(this.damage);
+          player.setHit(true);
+          player.setTimeHit();
 				  break;
 			  case SODA:
 				  player.takeDamage(this.damage);
+          player.setHit(true);
+          player.setTimeHit();
 				  break;
 			  case POPCORN:
           Bullet nextBullet1 = new Bullet(bulletSpeed.x, bulletSpeed.y, position.x, position.y + 50, Bullet.EnemyBullet.POPCORN_BULLET);
@@ -341,8 +362,6 @@ public class Enemy extends DynamicObject{
         default:
           break;
       }
-
-      System.out.println("Player Hit by enemy");
       lastShot = currentTime;
 
     }

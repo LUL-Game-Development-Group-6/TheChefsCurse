@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Room.Room;
+import com.mygdx.game.Screens.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class EnemiesGenerator {
     private float timeElapsedSinceLastSpawn;
     private int enemiesSpawned;
     private List<Object> recentlySpawnedEnemies;
+    private Menu game;
 
     public EnemiesGenerator() {
         factory = EnemyFactory.getInstance();
@@ -25,9 +27,10 @@ public class EnemiesGenerator {
         recentlySpawnedEnemies = new ArrayList<>();
     }
 
-    public EnemiesGenerator(List<Object> entityList, Room room) {
+    public EnemiesGenerator(List<Object> entityList, Room room, Menu game) {
 
         this.room = room; 
+        this.game = game;
         MAX_ENEMY_POOL_SIZE = room.getPoolSize();
         enemiesLeft = MAX_ENEMY_POOL_SIZE;
         factory = EnemyFactory.getInstance();
@@ -40,7 +43,7 @@ public class EnemiesGenerator {
         for(int i = 0; i<MAX_ENEMY_POOL_SIZE; i++) {
             Enemy enemy = factory.withRandomType()
                     .withRandomPosition(room)
-                    .build();
+                    .build(this.game);
         }
     }
 
@@ -50,18 +53,18 @@ public class EnemiesGenerator {
             // spawn random batch of enemies
             int enemiesToSpawn = generateNextRandomChuckSize();
             int diff = enemiesToSpawn + enemiesSpawned;
-            for(int i = enemiesSpawned - 1; i < diff; i++) {
-
+            for(int i = enemiesSpawned; i < diff; i++) {
                 try {
                     Enemy enemyToAdd = factory.getEnemies().get(i);
                     if(!recentlySpawnedEnemies.contains(enemyToAdd)) {
+
                         recentlySpawnedEnemies.add(enemyToAdd);
+                        enemiesSpawned++;
                     }
 
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
                     System.out.println("[WARN] Unable to spawn enemy. " + e);
                 }
-                enemiesSpawned++;
             }
             // reset time tracker
             timeElapsedSinceLastSpawn = 0;
