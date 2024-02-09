@@ -94,7 +94,7 @@ public class Pause implements Screen
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 game.resetGame();
-                game.setScreen(new Cover(game));
+                game.setScreen(Cover.getInstance());
             }
         });
 

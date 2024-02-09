@@ -37,12 +37,25 @@ import java.util.stream.Collectors;
 
 public class FoodGame implements Screen
 {
+
+	private static FoodGame instance;
+
+	public static FoodGame getInstance() {
+		if(instance == null) instance = new FoodGame();
+		return instance;
+	}
+
+	public static FoodGame getInstance(boolean createNew) {
+		if(instance == null || createNew) instance = new FoodGame();
+		return instance;
+	}
+
 	/*
 		* LibGDX Objects
 	 */
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	Menu game; 			// Game instance from Menu class to swtich between screens
+	private Menu game; 			// Game instance from Menu class to swtich between screens
 	private Overlay overlay;
 	private ShapeRenderer shapeRenderer; // Check hitboxes
 
@@ -58,8 +71,8 @@ public class FoodGame implements Screen
 	private ArrayList<Object> entityList; // List of all the current enemies
 	private ArrayList<AnimationParameters> xpList;
 
-	public FoodGame(Menu game) {
-        this.game = game;
+	public FoodGame() {
+        this.game = Menu.getInstance();
 		this.entityList = new ArrayList<>();
 		this.xpList = new ArrayList<>();
 		shadersHelper = new ShadersHelper();
@@ -77,7 +90,7 @@ public class FoodGame implements Screen
 		// Camera
 		camera = new OrthographicCamera(2560,1440);
 
-		overlay = new Overlay(game, this);
+		overlay = Overlay.getInstance(this);
 
 		shapeRenderer = new ShapeRenderer();
 		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom, game);

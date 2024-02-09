@@ -48,10 +48,12 @@ public class EnemiesGenerator {
     }
 
     public void getNextBatchOfEnemies(float delta) {
-        // every 15 seconds
-        if(timeElapsedSinceLastSpawn >= 5 && enemiesSpawned <= MAX_ENEMY_POOL_SIZE) {
-            // spawn random batch of enemies
+        // every 15 seconds generate batch if pool is not full
+        if(timeElapsedSinceLastSpawn >= 15 && enemiesSpawned <= MAX_ENEMY_POOL_SIZE) {
+            // get random size of enemy chunk
             int enemiesToSpawn = generateNextRandomChuckSize();
+
+            // get new number of enemies
             int diff = enemiesToSpawn + enemiesSpawned;
             for(int i = enemiesSpawned; i < diff; i++) {
                 try {
@@ -89,7 +91,7 @@ public class EnemiesGenerator {
 
     private int generateNextRandomChuckSize() {
         if(MAX_ENEMY_POOL_SIZE - enemiesSpawned > 0) {
-            int maxBound = Math.min(5, MAX_ENEMY_POOL_SIZE - enemiesSpawned);
+            int maxBound = Math.min(4, MAX_ENEMY_POOL_SIZE - enemiesSpawned);
             int minBound = 1;
             try {
                 return MathUtils.random(minBound, maxBound);

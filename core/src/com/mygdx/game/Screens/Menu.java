@@ -6,6 +6,13 @@ import com.mygdx.game.helpers.StatsHelper;
 import com.mygdx.game.helpers.XpAnimationHelper;
 
 public class Menu extends Game {
+
+    private static Menu game;
+
+    public static Menu getInstance() {
+        if(game == null) game = new Menu();
+        return game;
+    }
     
     public SpriteBatch batch;
     private StatsHelper statsHelper;
@@ -23,7 +30,7 @@ public class Menu extends Game {
         round = 1;
         GameSaveLoader.getInstance().load();
         batch = new SpriteBatch();
-        this.setScreen(new Cover(this));
+        this.setScreen(Cover.getInstance());
     }
 
     public void render() {
