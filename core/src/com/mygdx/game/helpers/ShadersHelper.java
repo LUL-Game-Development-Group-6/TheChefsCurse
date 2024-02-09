@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -26,43 +27,11 @@ public class ShadersHelper {
 
         shaderBatch = new SpriteBatch();
 
-        vertexShader = 
-            "attribute vec4 a_position;\n" +
-            "attribute vec4 a_color;\n" +
-            "attribute vec2 a_texCoord0;\n" +
-            "uniform mat4 u_projTrans;\n" +
-            "varying vec4 v_color;\n" +
-            "varying vec2 v_texCoords;\n" +
-            "\n" +
-            "void main()\n" +
-            "{\n" +
-            "   v_color = a_color;\n" +
-            "   v_texCoords = a_texCoord0;\n" +
-            "   gl_Position =  u_projTrans * a_position;\n" +
-            "}";
-        fragmentShader = 
-            "uniform float u_time;\n" +
-            "varying vec4 v_color;\n" +
-            "varying vec2 v_texCoords;\n" +
-            "uniform sampler2D u_texture;\n" +
-            "\n" +
-            "void main()\n" +
-            "{\n" +
-            "   vec4 texColor = texture2D(u_texture, v_texCoords);\n" +
-            "   if (texColor.a > 0.5) {\n" +
-            "       float fadeDuration = 0.5; // Time in seconds for the fade effect to complete\n" +
-            "       float normalizedTime = min(u_time / fadeDuration, 1.0); // Ensure time doesn't exceed fadeDuration\n" +
-            "       float startAlpha = 0.8; // Starting alpha value\n" +
-            "       float endAlpha = 0.0; // Ending alpha value\n" +
-            "       float alpha = mix(startAlpha, endAlpha, normalizedTime); // Linearly interpolate alpha from startAlpha to endAlpha over fadeDuration\n" +
-            "       gl_FragColor = vec4(1, 0, 0, max(alpha, 0.0)); // Ensure alpha doesn't go below 0\n" +
-            "   } else {\n" +
-            "       gl_FragColor = texColor;\n" +
-            "   }\n" +
-            "}";
-        
-        
-
+        // Read glsl shader files
+        FileHandle vertexHandler = Gdx.files.internal("shaders/vertexShader.glsl");
+        FileHandle fragmentHandler = Gdx.files.internal("shaders/fragmentShader.glsl");
+        vertexShader = vertexHandler.readString();
+        fragmentShader = fragmentHandler.readString();
         shader = new ShaderProgram(vertexShader, fragmentShader);
     }
 
@@ -70,10 +39,11 @@ public class ShadersHelper {
     public void drawshader(DynamicObject entity, float timePassed, OrthographicCamera camera) {
 
         shaderBatch.begin();
+
+        // Get frame to apply shader and coordinates
         currentFrame = entity.getAnimation().getKeyFrame(timePassed, true);   
-        
         currentFrame.setSize(entity.getSprite().getWidth()/2, entity.getSprite().getHeight()/2);
-        
+    
         // Convert map coordinates into screen coordinates to get entity position
         Vector3 screenCoords = new Vector3(entity.getSprite().getX(), entity.getSprite().getY(), 0);
         Vector3 worldCoords = camera.project(screenCoords);

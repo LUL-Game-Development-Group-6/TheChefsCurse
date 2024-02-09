@@ -188,7 +188,7 @@ public class Cover implements Screen
                     public void run() {
                         if (logo_animation.isAnimationFinished(timePassed)) {
                             game.dispose();
-                            game.setScreen(FoodGame.getInstance(true));
+                            game.setScreen(new FoodGame(game));
                         }
                     }
                 }, logo_animation.getAnimationDuration());

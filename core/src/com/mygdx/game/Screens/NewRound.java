@@ -2,6 +2,7 @@ package com.mygdx.game.Screens;
 
 // LibGDX libraries
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.helpers.AnimationParameters;
+import com.mygdx.game.helpers.Fonts;
 import com.mygdx.game.helpers.StatsHelper;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -48,6 +50,10 @@ public class NewRound implements Screen
     // Variabkes to display elements (e.g, buttons)
     private Stage stage;
     private BitmapFont font;
+    private BitmapFont font1;
+    private BitmapFont font2;
+    private BitmapFont font3;
+    private Fonts myFont;
     private SpriteBatch batch;
     // Game object (Menu instance in the constructor)
     Menu game;
@@ -94,6 +100,11 @@ public class NewRound implements Screen
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(damageIcon, 120, 250, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/8);
         batch.draw(healthIcon, 120, 150, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/8);
+        font1.draw(batch, "Gear Up!\n\nupgrade your stats using \nthe XP points you gained.",120,  500);
+
+        font3.draw(batch, "Cost:        XP left: ",120,  380);
+        font2.draw(batch, "50xp",230,  380);
+        font2.draw(batch, game.getStrXP(),490,  380);
 
         timePassed += Gdx.graphics.getDeltaTime();
 
@@ -125,6 +136,11 @@ public class NewRound implements Screen
     }
 
     public void createButtons() {
+
+        myFont = new Fonts();
+        font1 = myFont.getFont(Color.WHITE, 23, 3);
+        font2 = myFont.getFont(Color.RED, 23, 3);
+        font3 = myFont.getFont(Color.GREEN, 23, 3);
 
         // Health and damage Icon
         damageTexture = new Texture("buttons/damage.png");

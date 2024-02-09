@@ -153,8 +153,10 @@ public class Overlay implements Screen {
         //System.out.println(counter);
 
 		font.draw(batch, enemiesLeftStr,centerX(enemiesLeftStr),  650);
-        roundFont.draw(batch, "ROUND:",30,  80);
+        roundFont.draw(batch, "xp:",30,  150);
+        roundFont.draw(batch, "ROUND:",30, 80);
         roundNumber.draw(batch, game.getStrRound(),250,  80);
+        roundNumber.draw(batch, game.getStrXP(),150,  150);
 
         batch.end();
 

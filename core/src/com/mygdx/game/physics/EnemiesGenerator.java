@@ -1,14 +1,11 @@
 package com.mygdx.game.physics;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Room.Room;
 import com.mygdx.game.Screens.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class EnemiesGenerator {
     private int MAX_ENEMY_POOL_SIZE;
@@ -49,7 +46,7 @@ public class EnemiesGenerator {
 
     public void getNextBatchOfEnemies(float delta) {
         // every 15 seconds generate batch if pool is not full
-        if(timeElapsedSinceLastSpawn >= 15 && enemiesSpawned <= MAX_ENEMY_POOL_SIZE) {
+        if(timeElapsedSinceLastSpawn >= 5 && enemiesSpawned <= MAX_ENEMY_POOL_SIZE) {
             // get random size of enemy chunk
             int enemiesToSpawn = generateNextRandomChuckSize();
 

@@ -38,18 +38,6 @@ import java.util.stream.Collectors;
 public class FoodGame implements Screen
 {
 
-	private static FoodGame instance;
-
-	public static FoodGame getInstance() {
-		if(instance == null) instance = new FoodGame();
-		return instance;
-	}
-
-	public static FoodGame getInstance(boolean createNew) {
-		if(instance == null || createNew) instance = new FoodGame();
-		return instance;
-	}
-
 	/*
 		* LibGDX Objects
 	 */
@@ -71,7 +59,7 @@ public class FoodGame implements Screen
 	private ArrayList<Object> entityList; // List of all the current enemies
 	private ArrayList<AnimationParameters> xpList;
 
-	public FoodGame() {
+	public FoodGame(Menu game) {
         this.game = Menu.getInstance();
 		this.entityList = new ArrayList<>();
 		this.xpList = new ArrayList<>();
@@ -230,16 +218,13 @@ public class FoodGame implements Screen
 		shapeRenderer.setProjectionMatrix(camera.combined);
 
 
-		// Render all generated and pre-set entities on map
+		// Render entity hitboxes
 		for(Object entity_ : entityList) {
 			DynamicObject entity = (DynamicObject) entity_;
 			shapeRenderer.rect(entity.getHitbox().getX(), entity.getHitbox().getY(), entity.getHitbox().getWidth(), entity.getHitbox().getHeight());
 		}
-
 		shapeRenderer.end();
 
-		// Render overlay elements
-		overlay.render(player1, entityList.size() - 1, enemiesGenerator, enemiesGenerator.getEnemiesLeft());
 
 		GameSaveLoader.getInstance()
 			.health(player1.getCurrentHealth())
@@ -247,7 +232,8 @@ public class FoodGame implements Screen
 			.withTimestamp(System.currentTimeMillis())
 			.update();
 
-			
+		
+		// Render shaders (red hitmarker when you hit an entity)
 		for (Object object : entityList) {
 			if(object instanceof DynamicObject) {
 				DynamicObject entity = (DynamicObject) object;
@@ -256,6 +242,9 @@ public class FoodGame implements Screen
 				}
 			}
 		}
+
+		// Render overlay elements
+		overlay.render(player1, entityList.size() - 1, enemiesGenerator, enemiesGenerator.getEnemiesLeft());
 	}
 
 	

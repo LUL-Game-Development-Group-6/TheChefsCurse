@@ -49,6 +49,11 @@ public class Menu extends Game {
         return string;
     }
 
+    public String getStrXP() {
+        String string = Integer.toString(XP);
+        return string;
+    }
+
     public void incrementRound() {
         this.round++;
     }
