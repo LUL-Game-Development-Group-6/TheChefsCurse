@@ -363,7 +363,6 @@ public class Enemy extends DynamicObject{
           break;
       }
       lastShot = currentTime;
-
     }
   }
 

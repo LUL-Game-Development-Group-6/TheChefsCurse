@@ -20,12 +20,7 @@ import com.mygdx.game.physics.Player;
 
 public class Overlay implements Screen {
 
-    private static Overlay instance;
-
-    public static Overlay getInstance(FoodGame foodGame) {
-        if(instance == null) instance = new Overlay(foodGame);
-        return instance;
-    }
+    public Overlay() {}
     
     private Texture OverlayTexture;
     private Sprite OverlaySprite;
@@ -66,6 +61,7 @@ public class Overlay implements Screen {
         this.foodGame = foodGame;
         this.game = Menu.getInstance();
         myFont = new Fonts();
+        batch = new SpriteBatch();
 
         // Overlay
 		OverlayTexture = new Texture("cheff/Weapon_Overlay.png");
@@ -115,7 +111,7 @@ public class Overlay implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 stage.dispose();
                 foodGame.getEnemiesGenerator().reset();
-                game.setScreen(new NewRound(game, foodGame));
+                game.setScreen(new NewRound(game));
             }
         });
     }

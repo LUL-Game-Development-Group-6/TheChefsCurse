@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DynamicObject {
-    private static int[] healthLevels = {0,10,25,40,50,60,75,80,100};
+    private static int[] healthLevels = {10,25,40,50,60,75,80,100};
     private boolean isMoving;
     private int MAX_HEALTH;
     private int currentHealth;

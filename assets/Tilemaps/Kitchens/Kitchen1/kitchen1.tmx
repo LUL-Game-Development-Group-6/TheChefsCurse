@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="15">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="22">
  <imagelayer id="2" name="Image Layer 1" offsetx="16" offsety="32">
   <image source="kitchen_1.png" width="4330" height="3050"/>
  </imagelayer>
@@ -29,6 +29,12 @@
   </object>
   <object id="14" x="464" y="1822">
    <polygon points="0,0 218,144 1448,-536 1494,-784 1260,-916 -38,-54"/>
+  </object>
+  <object id="20" x="2861" y="2512">
+   <polygon points="-85.3333,46.3333 -265,-54 -324,-103.667 338,-391 419,-400 512,-266"/>
+  </object>
+  <object id="21" x="1641" y="2198.5">
+   <polygon points="-3,118.833 205.333,117.833 192.167,-116.333 27.3333,-114"/>
   </object>
  </objectgroup>
 </map>

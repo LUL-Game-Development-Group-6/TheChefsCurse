@@ -14,6 +14,7 @@ import com.mygdx.game.Screens.Menu;
 import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.Player;
 
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 // Collider imports
@@ -44,7 +45,8 @@ public class Room {
 	protected OrthogonalTiledMapRenderer renderer;
 	protected ShapeRenderer shapeRenderer;
 	protected Vector2 spawnableCoords;
-
+	private FurnitureBuilder furnitureBuilder;
+	private RoomType roomType;
 
 	private int pool_size;
 
@@ -58,6 +60,7 @@ public class Room {
 
 	}
 
+	
 	public void create(RoomType roomType, Menu game) {
 
 		background = new TiledMap();
@@ -94,10 +97,19 @@ public class Room {
 			default:
 				break;
 		}
+
+		// Don't foget to delete these 2 lines after finishing all the rooms
+		this.roomType = RoomType.RESTAURANT_2;
+		background = mapLoader.load("Tilemaps/Restaurants/Restaurant2/restaurant2.tmx");
+		
 		pool_size = 10 + game.getStatsHelper().getEnemyScaler();
 		renderer = new OrthogonalTiledMapRenderer(background);
+
 	}
 
+	public RoomType getRoomType() {
+		return this.roomType;
+	}
 	public void checkCollission(DynamicObject entity, TiledMap map) {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="9">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="17">
  <imagelayer id="2" name="Image Layer 1">
   <image source="kitchen_3.png" width="10400" height="4320"/>
  </imagelayer>
@@ -59,6 +59,24 @@
   </object>
   <object id="8" x="8003.03" y="1842.42">
    <polygon points="0,0 -209.091,130.303 -1900,-739.394 -1887.88,-1057.58 -1554.55,-1124.24 -21.2121,-330.303"/>
+  </object>
+  <object id="9" x="5594" y="3298">
+   <polygon points="0,0 -298.662,-38.6754 -328,-159.333 -234,-204 -146.667,-220 358.667,-438.667 546.667,-286.667"/>
+  </object>
+  <object id="10" x="4091" y="2200">
+   <polygon points="0,0 286.293,-39.493 332.782,-104.316 346.667,-210.667 236,-245.333 -265.333,-209.333 -392,-70.6667 -302.574,0.819422"/>
+  </object>
+  <object id="11" x="7738" y="2562">
+   <polygon points="-34,0 -228,5 -244,180 -21,173"/>
+  </object>
+  <object id="12" x="7552.27" y="2916.67">
+   <polygon points="0,0 420.395,-23.0877 415.118,-200.094 -36.9385,-219.333"/>
+  </object>
+  <object id="13" x="4054.55" y="3249.09">
+   <polygon points="-34,0 -228,5 -244,180 -21,173"/>
+  </object>
+  <object id="16" x="2229.92" y="2550">
+   <polygon points="0,0 328.472,-17.193 324.349,-149.006 -28.8616,-163.333"/>
   </object>
  </objectgroup>
 </map>

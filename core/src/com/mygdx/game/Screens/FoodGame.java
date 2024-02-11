@@ -24,6 +24,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.Room.Furniture;
+import com.mygdx.game.Room.FurnitureBuilder;
 import com.mygdx.game.Room.Room;
 import com.mygdx.game.Room.Room.RoomType;
 import com.mygdx.game.physics.Bullet;
@@ -56,14 +58,16 @@ public class FoodGame implements Screen
 	private EnemiesGenerator enemiesGenerator;
 	private float timePassed;
 	private boolean pausedGameplay; // Boolean to check if the game has been paused
-	private ArrayList<Object> entityList; // List of all the current enemies
+	private ArrayList<Object> entityList; // List of all the current enemies player and furniture
 	private ArrayList<AnimationParameters> xpList;
+	private FurnitureBuilder furnitureBuilder;
 
 	public FoodGame(Menu game) {
         this.game = Menu.getInstance();
 		this.entityList = new ArrayList<>();
 		this.xpList = new ArrayList<>();
 		shadersHelper = new ShadersHelper();
+		furnitureBuilder = new FurnitureBuilder();
 		pausedGameplay = false;
 
 		// Random Room from the 9 choices
@@ -78,10 +82,11 @@ public class FoodGame implements Screen
 		// Camera
 		camera = new OrthographicCamera(2560,1440);
 
-		overlay = Overlay.getInstance(this);
+		overlay = new Overlay(this);
 
 		shapeRenderer = new ShapeRenderer();
 		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom, game);
+		furnitureBuilder.create(currentRoom.getRoomType(), entityList);
 		enemiesGenerator.generate();
     }
 
@@ -219,10 +224,10 @@ public class FoodGame implements Screen
 
 
 		// Render entity hitboxes
-		for(Object entity_ : entityList) {
-			DynamicObject entity = (DynamicObject) entity_;
-			shapeRenderer.rect(entity.getHitbox().getX(), entity.getHitbox().getY(), entity.getHitbox().getWidth(), entity.getHitbox().getHeight());
-		}
+		// for(Object entity_ : entityList) {
+			// DynamicObject entity = (DynamicObject) entity_;
+			// shapeRenderer.rect(entity.getHitbox().getX(), entity.getHitbox().getY(), entity.getHitbox().getWidth(), entity.getHitbox().getHeight());
+		// }
 		shapeRenderer.end();
 
 
@@ -269,7 +274,7 @@ public class FoodGame implements Screen
 
 		for (Object entity : entityList) {
 			if(entity instanceof Player) {
-
+				System.out.println("x= " + player1.getHitbox().getX() + " y= " + player1.getHitbox().getY());
 				player1.render(batch, this, camera);
 
 			} else if(entity instanceof Enemy){
@@ -278,6 +283,11 @@ public class FoodGame implements Screen
 			}
 			DynamicObject collission = (DynamicObject) entity;
 			currentRoom.checkCollission(collission, currentRoom.getBackground());
+
+			if(entity instanceof Furniture) {
+				Furniture furniture = (Furniture) entity;
+				furniture.render(batch);
+			}
 		}
 	}
 

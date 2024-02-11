@@ -63,9 +63,8 @@ public class NewRound implements Screen
     private float timePassed;
 
     // Screen constructor
-    public NewRound(Menu game, FoodGame foodGame) {
+    public NewRound(Menu game) {
         this.game = game;
-        this.foodGame = foodGame;
         this.statsHelper = game.getStatsHelper();
         xpAnimation = new ArrayList<>();
     }
@@ -208,7 +207,7 @@ public class NewRound implements Screen
         nextRound_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 stage.dispose();
-                foodGame.getEnemiesGenerator().reset();
+                //foodGame.getEnemiesGenerator().reset();
                 game.incrementRound();
                 game.setScreen(new FoodGame(game));
             }
