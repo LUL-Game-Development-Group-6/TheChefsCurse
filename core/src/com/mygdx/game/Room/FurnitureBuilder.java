@@ -91,10 +91,38 @@ public class FurnitureBuilder {
                 entityList.add(resTable2);
                 break;
             case RESTAURANT_2:
-
+                Furniture resTable3 = new Furniture(937, 4535, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable4 = new Furniture(1981, 4778, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable5 = new Furniture(2755, 4256, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable6 = new Furniture(2206, 3329, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable7 = new Furniture(1279, 2942, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable8 = new Furniture(2026, 2501, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable9 = new Furniture(2971, 2933, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable10 = new Furniture(3475, 3725, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable12 = new Furniture(4087, 3446, FurnitureType.RESTAURANT_TABLE);
+                entityList.add(resTable3);
+                entityList.add(resTable4);
+                entityList.add(resTable5);
+                entityList.add(resTable6);
+                entityList.add(resTable7);
+                entityList.add(resTable8);
+                entityList.add(resTable9);
+                entityList.add(resTable10);
+                entityList.add(resTable12);
                 break;
             case RESTAURANT_3:
-
+                Furniture resTable13 = new Furniture(779, 3893, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable14 = new Furniture(2066, 3884, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable15 = new Furniture(2849, 3038, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable16 = new Furniture(4163, 3416, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable17 = new Furniture(5333, 4046, FurnitureType.RESTAURANT_TABLE);
+                Furniture resTable18 = new Furniture(4037, 4307, FurnitureType.RESTAURANT_TABLE);
+                entityList.add(resTable13);
+                entityList.add(resTable14);
+                entityList.add(resTable15);
+                entityList.add(resTable16);
+                entityList.add(resTable17);
+                entityList.add(resTable18);
                 break;
             default:
                 break;

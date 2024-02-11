@@ -97,10 +97,6 @@ public class Room {
 			default:
 				break;
 		}
-
-		// Don't foget to delete these 2 lines after finishing all the rooms
-		this.roomType = RoomType.RESTAURANT_2;
-		background = mapLoader.load("Tilemaps/Restaurants/Restaurant2/restaurant2.tmx");
 		
 		pool_size = 10 + game.getStatsHelper().getEnemyScaler();
 		renderer = new OrthogonalTiledMapRenderer(background);
