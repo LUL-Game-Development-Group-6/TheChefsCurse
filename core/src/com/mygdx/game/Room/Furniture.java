@@ -22,22 +22,21 @@ public class Furniture extends DynamicObject
 	
     public static enum FurnitureType {
 	
-        // Kitchen
-		FRIDGE,
-        STOVE,
-        METAL_TABLE,
-        CHAIR1,
-        CHAIR2,
+      // Kitchen
+		  FRIDGE,
+      STOVE,
+      METAL_TABLE,
+      CHAIR1,
+      CHAIR2,
+      // Freezer
+      SINGLE_SHELF,
+      DOUBLE_SHELF,
+      LONG_SHELF,
+      ICE,
+      BOX,
 
-        // Freezer
-        SINGLE_SHELF,
-        DOUBLE_SHELF,
-        LONG_SHELF,
-        ICE,
-        BOX,
-        
-        // Restaurant
-        RESTAURANT_TABLE,
+      // Restaurant
+      RESTAURANT_TABLE,
 	}
 
 	public Furniture(float xPos, float yPos, FurnitureType type)

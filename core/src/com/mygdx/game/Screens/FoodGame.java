@@ -63,6 +63,7 @@ public class FoodGame implements Screen
 	private FurnitureBuilder furnitureBuilder;
 
 	public FoodGame(Menu game) {
+
         this.game = Menu.getInstance();
 		this.entityList = new ArrayList<>();
 		this.xpList = new ArrayList<>();
@@ -73,9 +74,9 @@ public class FoodGame implements Screen
 		// Random Room from the 9 choices
 		currentRoom = RoomBuilder.init().withRandomRoomType().create(game).get();
 
-		Vector2 spawn = currentRoom.entitySpawn(currentRoom.getBackground());
-
+		Vector2 spawn = currentRoom.entitySpawn(currentRoom.getBackground(), 450);
 		player1 = new Player(spawn.x, spawn.y, 450, 500, game);
+		
 		batch = new SpriteBatch();
 		entityList.add(player1);
 

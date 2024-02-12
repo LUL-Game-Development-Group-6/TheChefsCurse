@@ -70,30 +70,40 @@ public class Room {
 
 			case KITCHEN_1:
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen1/kitchen1.tmx");
+				break;
+
 			case KITCHEN_2:
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen2/kitchen2.tmx");
 				break;
+
 			case KITCHEN_3:
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen3/kitchen3.tmx");
 				break;
+
 			case FREEZER_1:
 				background = mapLoader.load("Tilemaps/Freezers/Freezer1/freezer1.tmx");
 				break;
+
 			case FREEZER_2:
 				background = mapLoader.load("Tilemaps/Freezers/Freezer2/freezer2.tmx");
 				break;
+
 			case FREEZER_3:
 				background = mapLoader.load("Tilemaps/Freezers/Freezer3/freezer3.tmx");
 				break;	
+
 			case  RESTAURANT_1:
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant1/restaurant1.tmx");
 				break;
+
 			case  RESTAURANT_2:
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant2/restaurant2.tmx");
 				break;
+
 			case RESTAURANT_3:
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant3/restaurant3.tmx");
 				break;
+				
 			default:
 				break;
 		}
@@ -127,7 +137,7 @@ public class Room {
 		}
 	}
 	// Returns a vector inside the map's collider coordinates
-	public Vector2 entitySpawn(TiledMap map) {
+	public Vector2 entitySpawn(TiledMap map, float entityWidth) {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
 		MapObjects furnitureList = map.getLayers().get("furniture").getObjects();
@@ -140,8 +150,8 @@ public class Room {
 
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 
-				while (!triangleCollider.contains(spawn) || !triangleCollider.contains(spawn.x + 700, spawn.y) 
-				|| checkFurnitureSpawn(spawn, furnitureList)) {
+				while (!triangleCollider.contains(spawn) || !triangleCollider.contains(spawn.x + entityWidth, spawn.y) 
+				|| checkFurnitureSpawn(spawn, furnitureList, entityWidth)) {
 					
 					spawn.x = MathUtils.random(0, 10000);
 					spawn.y = MathUtils.random(0, 10000);
@@ -154,12 +164,12 @@ public class Room {
 	}
 
 
-	public boolean checkFurnitureSpawn(Vector2 spawn, MapObjects furnitureList) {
+	public boolean checkFurnitureSpawn(Vector2 spawn, MapObjects furnitureList, float entityWidth) {
 
 		for(MapObject furniture : furnitureList) {
 			if(furniture instanceof PolygonMapObject) {
 				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
-				if(furniturePolygon.contains(spawn) || furniturePolygon.contains(spawn.x + 700, spawn.y)) {
+				if(furniturePolygon.contains(spawn) || furniturePolygon.contains(spawn.x + entityWidth, spawn.y)) {
 					return true;
 				}
 			}
