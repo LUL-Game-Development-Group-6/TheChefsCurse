@@ -1,6 +1,7 @@
 package com.mygdx.game.physics;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Room.Room;
 
@@ -75,7 +76,7 @@ public class EnemiesGenerator {
             int maxBound = MAX_ENEMY_POOL_SIZE - enemiesSpawned;
             int minBound = 1;
             try {
-                return ThreadLocalRandom.current().nextInt(minBound, maxBound);
+                return MathUtils.random(minBound, maxBound);
             } catch (IllegalArgumentException e) {
                 return 0;
             }
