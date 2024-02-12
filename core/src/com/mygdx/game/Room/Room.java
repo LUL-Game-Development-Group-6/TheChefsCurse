@@ -15,7 +15,7 @@ import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.Player;
 
 import java.util.ArrayList;
-
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Gdx;
 // Collider imports
 import com.badlogic.gdx.maps.MapObject;
@@ -119,10 +119,63 @@ public class Room {
 
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 				
-				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y) ||
-				 !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y) || checkFurnitureCollission(entity, furnitureList)) {
+				if(checkFurnitureCollission(entity, furnitureList)) {
 					entity.moveBack(entity.getPreviousPos(), entity.getPreviousSprite());
 				}
+				if (!(entity instanceof Player)){
+					if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y) || !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)) {
+						entity.moveBack(entity.getPreviousPos(), entity.getPreviousSprite());
+					}
+				}
+				else{
+					Player player1 = (Player) entity;
+					float testJitter = player1.getSpeed() / 2;
+				
+					if(!triangleCollider.contains(player1.getHitbox().x, player1.getHitbox().y)){
+						player1.moveBack(player1.getPreviousPos(), player1.getPreviousSprite());
+						if(Gdx.input.isKeyPressed(Input.Keys.S)){
+							player1.move(player1.getSpeed(), -testJitter);
+						}
+						else if(Gdx.input.isKeyPressed(Input.Keys.W)){
+							player1.move(player1.getSpeed(), testJitter);
+						}
+						else if(Gdx.input.isKeyPressed(Input.Keys.A)){
+							//player1.move(0, player1.getSpeed());
+							if (triangleCollider.contains(player1.getHitbox().x, player1.getHitbox().y - 20)){//could probably be more accurate than 20, just wanted to be certain with this
+								player1.move(-testJitter * 2, -player1.getSpeed());
+							}
+							else{
+								player1.move(-testJitter * 2, player1.getSpeed());
+							}
+						}
+						//player1.setPreviousSprite(player1.getSprite().getX(), player1.getSprite().getY());
+						//player1.setPreviousPos(player1.getHitbox().x, player1.getHitbox().y);
+					}
+					else if(!triangleCollider.contains(player1.getHitbox().x + player1.getHitbox().width, player1.getHitbox().y)){
+						player1.moveBack(player1.getPreviousPos(), player1.getPreviousSprite());
+						if(Gdx.input.isKeyPressed(Input.Keys.S)){
+							player1.move(-player1.getSpeed(), -testJitter);
+						}
+						else if(Gdx.input.isKeyPressed(Input.Keys.W)){
+							player1.move(-player1.getSpeed(), testJitter);
+						}
+						else if(Gdx.input.isKeyPressed(Input.Keys.D)){
+							//player1.move(0, player1.getSpeed());
+							if (triangleCollider.contains(player1.getHitbox().x + player1.getHitbox().width, player1.getHitbox().y - 20)){
+								player1.move(testJitter * 2, -player1.getSpeed());
+							}
+							else{
+								player1.move(testJitter * 2, player1.getSpeed());
+							}
+						}
+						//player1.setPreviousSprite(player1.getSprite().getX(), player1.getSprite().getY());
+						//player1.setPreviousPos(player1.getHitbox().x, player1.getHitbox().y);
+					}
+					if(!triangleCollider.contains(player1.getHitbox().x, player1.getHitbox().y) || !triangleCollider.contains(player1.getHitbox().x + player1.getHitbox().width, player1.getHitbox().y)){
+						player1.moveBack(player1.getPreviousPos(), player1.getPreviousSprite());
+					}
+				}
+				
 			}
 		}
 	}
