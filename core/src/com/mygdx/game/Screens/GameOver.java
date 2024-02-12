@@ -89,7 +89,7 @@ public class GameOver implements Screen
 
                 foodGame.dispose();
                 foodGame.getEnemiesGenerator().reset();
-                game.dispose();
+                game.resetGame();
                 foodGame = null;
                 game.setScreen(Cover.getInstance());
             }

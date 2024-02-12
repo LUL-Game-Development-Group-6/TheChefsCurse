@@ -97,7 +97,8 @@ public class Room {
 			default:
 				break;
 		}
-		
+
+		this.roomType = roomType;
 		pool_size = 10 + game.getStatsHelper().getEnemyScaler();
 		renderer = new OrthogonalTiledMapRenderer(background);
 
