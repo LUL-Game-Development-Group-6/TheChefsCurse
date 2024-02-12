@@ -3,9 +3,12 @@ package com.mygdx.game.physics;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.mygdx.game.Screens.FoodGame;
+import com.mygdx.game.Screens.Menu;
 import com.mygdx.game.misc.Coords;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.Animation;
 
 public class Bullet extends DynamicObject
@@ -35,8 +38,20 @@ public class Bullet extends DynamicObject
 	private float initialY;
 
 	private Animation<Sprite> bulletAnimation;
+	private Animation<Sprite> ketchupAnimation;
+	private Animation<Sprite> popBulletAnimation;
+	private TextureAtlas atlas;
+
 	private long animationStart;
+
+	public static enum EnemyBullet {
+		HOTDOG_BULLET,
+		POPCORN_BULLET,
+	}
+
+	private EnemyBullet enemyBullet;
 	
+	// Bullet Constructor for player
 	public Bullet(float xS, float yS, float xPos, float yPos, Player.WeaponType weaponType)
 	{
 		xSpeed = xS;
@@ -56,12 +71,35 @@ public class Bullet extends DynamicObject
 		shotgunTexture_DOWN_RIGHT = new Texture("cheff/Shotgun/shotgun_bullet_DOWN_RIGHT.png");
 		shotgunTexture_DOWN_LEFT = new Texture("cheff/Shotgun/shotgun_bullet_DOWN_LEFT.png");
 
+		
+
 		bulletSprite = new Sprite(bulletTexture);
 		bulletHitbox = new Rectangle(xPos, yPos, 10, 10);
 		visible = true;
 		speedModifier = 4f;
 		damage = 10;
 		this.weaponType = weaponType;
+		
+	}
+
+	// Constructor for enemy bullets
+	public Bullet(float xS, float yS, float xPos, float yPos,  EnemyBullet enemyBullet)
+	{
+		xSpeed = xS;
+		ySpeed = yS;
+		xPosition = xPos;
+		yPosition = yPos;
+
+		initialX = xPosition;
+		initialY = yPosition;
+
+		// Redgun bullet
+		createBulletAnimation();
+		bulletHitbox = new Rectangle(xPos, yPos, 50, 50);
+		visible = true;
+		speedModifier = 4f;
+		damage = 10;
+		this.enemyBullet = enemyBullet;
 		
 	}
 	
@@ -85,7 +123,7 @@ public class Bullet extends DynamicObject
 		visible = newVisibility;
 	}
 	
-	public double getSpeed()
+	public float getSpeed()
 	{
 		return speedModifier;
 	}
@@ -143,6 +181,19 @@ public class Bullet extends DynamicObject
 				break;
 		}
 	}
+
+	public void renderEnemyBullet(SpriteBatch batch, FoodGame game) {
+		switch (this.enemyBullet) {
+			case HOTDOG_BULLET:
+				batch.draw(ketchupAnimation.getKeyFrame(game.getTimePassed(), true), xPosition, yPosition, 80, 80);
+				break;
+			case POPCORN_BULLET:
+				batch.draw(popBulletAnimation.getKeyFrame(game.getTimePassed(), true), xPosition, yPosition, 70, 70);
+				break;
+			default:
+				break;
+		}
+	}
 	
 	public int getDamage()
 	{
@@ -154,17 +205,32 @@ public class Bullet extends DynamicObject
 		return this.timeToDespawn;
 	}
 
-	public void setDespawnTime(Player.WeaponType weaponType) {
+	public void setDespawnTime(Player.WeaponType weaponType, Menu game) {
 		switch (weaponType) {
 			case FIST:
 				break;
 			case REDGUN:
-				this.timeToDespawn = System.currentTimeMillis() + 200;
-				this.damage = 18;
+				this.timeToDespawn = System.currentTimeMillis() + 600;
+				this.damage = 18 + game.getStatsHelper().getDamageScaler();
 				break;
 			case SHOTGUN:
-				this.timeToDespawn = System.currentTimeMillis() + 70;
-				this.damage = 40;
+				this.timeToDespawn = System.currentTimeMillis() + 100;
+				this.damage = 40 + game.getStatsHelper().getDamageScaler();
+				break;
+			default:
+				break;
+		}
+	}
+
+	public void setDespawnTime(EnemyBullet enemyBullet) {
+		switch (enemyBullet) {
+			case HOTDOG_BULLET:
+				this.timeToDespawn = System.currentTimeMillis() + 1500;
+				this.damage = 8;
+				break;
+			case POPCORN_BULLET:
+				this.timeToDespawn = System.currentTimeMillis() + 1000;
+				this.damage = 5;
 				break;
 			default:
 				break;
@@ -211,5 +277,27 @@ public class Bullet extends DynamicObject
 
 	public long getAnimationStart() {
 		return this.animationStart;
+	}
+
+	public void createBulletAnimation() {
+		atlas = new TextureAtlas("enemies/bullets/ketchup.atlas");
+        ketchupAnimation = new Animation<>(
+        	1/20f,
+        	atlas.createSprite("ketchup1"),
+        	atlas.createSprite("ketchup2"),
+        	atlas.createSprite("ketchup3"),
+        	atlas.createSprite("ketchup4"),
+        	atlas.createSprite("ketchup5"),
+        	atlas.createSprite("ketchup6"));
+
+		atlas = new TextureAtlas("enemies/bullets/popbullet.atlas");
+		popBulletAnimation = new Animation<>(
+			1/20f,
+			atlas.createSprite("popbullet1"),
+			atlas.createSprite("popbullet2"),
+			atlas.createSprite("popbullet3"),
+			atlas.createSprite("popbullet4"),
+			atlas.createSprite("popbullet5"),
+			atlas.createSprite("popbullet6"));
 	}
 }

@@ -1,6 +1,9 @@
 package com.mygdx.game.Room;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.math.MathUtils;
+import com.mygdx.game.Screens.Menu;
 
 public class RoomBuilder {
     private static RoomBuilder roomBuilder;
@@ -24,11 +27,11 @@ public class RoomBuilder {
         return this;
     }
 
-    public RoomBuilder create() {
+    public RoomBuilder create(Menu game) {
         if(currentlyBuiltRoom == null && roomType == null) {
             throw new IllegalStateException("Cannot create room as Room is null or it's type is undefined.");
         }
-        currentlyBuiltRoom.create(roomType);
+        currentlyBuiltRoom.create(roomType, game);
         return this;
     }
 

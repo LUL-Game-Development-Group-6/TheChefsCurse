@@ -10,7 +10,12 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.Screens.Menu;
+import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.Player;
+
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 // Collider imports
 import com.badlogic.gdx.maps.MapObject;
@@ -40,7 +45,10 @@ public class Room {
 	protected OrthogonalTiledMapRenderer renderer;
 	protected ShapeRenderer shapeRenderer;
 	protected Vector2 spawnableCoords;
+	private FurnitureBuilder furnitureBuilder;
+	private RoomType roomType;
 
+	private int pool_size;
 
 	public void render(Player player1, OrthographicCamera camera)
 	{
@@ -49,11 +57,11 @@ public class Room {
 		renderer.setMap(background);
 		renderer.render();
 		renderer.setView(camera);
-		checkCollission(player1, background);
 
 	}
 
-	public void create(RoomType roomType) {
+	
+	public void create(RoomType roomType, Menu game) {
 
 		background = new TiledMap();
 		mapLoader = new TmxMapLoader();
@@ -89,12 +97,20 @@ public class Room {
 			default:
 				break;
 		}
+
+		this.roomType = roomType;
+		pool_size = 10 + game.getStatsHelper().getEnemyScaler();
 		renderer = new OrthogonalTiledMapRenderer(background);
+
 	}
 
-	public void checkCollission(Player player1, TiledMap map) {
+	public RoomType getRoomType() {
+		return this.roomType;
+	}
+	public void checkCollission(DynamicObject entity, TiledMap map) {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
+		MapObjects furnitureList = map.getLayers().get("furniture").getObjects();
 	
 		for(MapObject collider : colliderList) {
 
@@ -103,8 +119,9 @@ public class Room {
 
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 				
-				if(!triangleCollider.contains(player1.getHitbox().x, player1.getHitbox().y) || !triangleCollider.contains(player1.getHitbox().x + player1.getHitbox().width, player1.getHitbox().y)) {
-					player1.moveBack(player1.getPreviousPos(), player1.getPreviousSprite());
+				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y) ||
+				 !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y) || checkFurnitureCollission(entity, furnitureList)) {
+					entity.moveBack(entity.getPreviousPos(), entity.getPreviousSprite());
 				}
 			}
 		}
@@ -113,6 +130,8 @@ public class Room {
 	public Vector2 entitySpawn(TiledMap map) {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
+		MapObjects furnitureList = map.getLayers().get("furniture").getObjects();
+
 		Vector2 spawn = new Vector2(0, 0);
 
 		for(MapObject collider : colliderList) {
@@ -121,16 +140,55 @@ public class Room {
 
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 
-				do {
+				while (!triangleCollider.contains(spawn) || !triangleCollider.contains(spawn.x + 700, spawn.y) 
+				|| checkFurnitureSpawn(spawn, furnitureList)) {
+					
 					spawn.x = MathUtils.random(0, 10000);
 					spawn.y = MathUtils.random(0, 10000);
-					
-				} while (!triangleCollider.contains(spawn) && !triangleCollider.contains(spawn.x + 450/2, spawn.y));
+
+
+				}
 			}
 		}
 		return spawn;
 	}
+
+
+	public boolean checkFurnitureSpawn(Vector2 spawn, MapObjects furnitureList) {
+
+		for(MapObject furniture : furnitureList) {
+			if(furniture instanceof PolygonMapObject) {
+				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
+				if(furniturePolygon.contains(spawn) || furniturePolygon.contains(spawn.x + 700, spawn.y)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean checkFurnitureCollission(DynamicObject entity, MapObjects furnitureList) {
+
+		for(MapObject furniture : furnitureList) {
+
+			if(furniture instanceof PolygonMapObject) {
+
+				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
+
+				if(furniturePolygon.contains(entity.getHitbox().x, entity.getHitbox().y) ||
+				furniturePolygon.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
 	public TiledMap getBackground() {
 		return background;
+	}
+	public int getPoolSize() {
+		return this.pool_size;
 	}
 }

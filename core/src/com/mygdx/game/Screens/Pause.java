@@ -32,13 +32,13 @@ public class Pause implements Screen
     // Variabkes to display elements (e.g, buttons)
     private Stage stage;
     private BitmapFont font;
-
+    private SpriteBatch batch;
     // Game object (Menu instance in the constructor)
-    final Menu game;
-    final FoodGame foodGame;
+    Menu game;
+    private FoodGame foodGame;
 
     // Screen constructor
-    public Pause(final Menu game, FoodGame foodGame) {
+    public Pause(Menu game, FoodGame foodGame) {
         this.game = game;
         this.foodGame = foodGame;
     }
@@ -47,13 +47,15 @@ public class Pause implements Screen
     public void pause() {}
     public void resume() {}
     public void resize(int width, int height) {}
-    public void hide() {}
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
 
     // Works like create() method
     public void show() {
         
         // Variables to draw buttons and images into the screen
-        game.batch = new SpriteBatch();
+        batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
@@ -91,7 +93,9 @@ public class Pause implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new Cover(game));
+                game.resetGame();
+                foodGame.getEnemiesGenerator().reset();
+                game.setScreen(Cover.getInstance());
             }
         });
 
@@ -102,21 +106,20 @@ public class Pause implements Screen
 
     public void render(float delta) {
         stage.act();
-        game.batch.begin();
+        batch.begin();
         ScreenUtils.clear(1, 0, 0, 1);
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        game.batch.draw(logo, 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(logo, 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) game.setScreen(foodGame);
-        game.batch.end();
+        batch.end();
         stage.draw();
     }
 
     public void dispose() {
         
         background.dispose();
-        game.batch.dispose();
         stage.dispose();
         font.dispose();
     }

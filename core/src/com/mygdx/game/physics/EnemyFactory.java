@@ -3,6 +3,7 @@ package com.mygdx.game.physics;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Room.Room;
+import com.mygdx.game.Screens.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class EnemyFactory {
     }
 
     public EnemyFactory withRandomType() {
-        int randomID = MathUtils.random(0, 1);
+        int randomID = MathUtils.random(0, 3);
 
         if(randomID == 0) {
             type = Enemy.EnemyType.HAMBURGER;
@@ -53,6 +54,17 @@ public class EnemyFactory {
             type = Enemy.EnemyType.HOTDOG;
             this.width = 400;
             this.height = 300;
+        }
+        if(randomID == 2) {
+            type = Enemy.EnemyType.POPCORN;
+            this.width = 280;
+            this.height = 300;
+        }
+
+        if(randomID == 3) {
+            type = Enemy.EnemyType.SODA;
+            this.width = 250;
+            this.height = 330;
         }
 
         dimensionsSetByType = true;
@@ -76,8 +88,8 @@ public class EnemyFactory {
         return this;
     }
 
-    public Enemy build() {
-        Enemy enemy = new Enemy(position, width, height, type);
+    public Enemy build(Menu game) {
+        Enemy enemy = new Enemy(game, position, width, height, type);
         enemies.add(enemy);
         return enemy;
     }
