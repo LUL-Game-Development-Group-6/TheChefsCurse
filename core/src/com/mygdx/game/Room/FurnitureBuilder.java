@@ -132,7 +132,6 @@ public class FurnitureBuilder {
                 entityList.add(resTable17);
                 entityList.add(resTable18);
                 break;
-                
             default:
                 break;
         }

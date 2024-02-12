@@ -176,6 +176,12 @@ public class Cover implements Screen
             }
         });
 
+        about_button.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new About(game));
+            }
+        });
+
         start_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 // Start the animation

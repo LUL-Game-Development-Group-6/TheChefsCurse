@@ -21,10 +21,9 @@ public class Furniture extends DynamicObject
 	private float height;
 	
     public static enum FurnitureType {
-	
-      // Kitchen
-		  FRIDGE,
-      STOVE,
+        // Kitchen
+        FRIDGE,
+        STOVE,
       METAL_TABLE,
       CHAIR1,
       CHAIR2,
