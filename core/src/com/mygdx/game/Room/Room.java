@@ -14,8 +14,6 @@ import com.mygdx.game.Screens.Menu;
 import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.Player;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 // Collider imports
 import com.badlogic.gdx.maps.MapObject;
@@ -45,7 +43,6 @@ public class Room {
 	protected OrthogonalTiledMapRenderer renderer;
 	protected ShapeRenderer shapeRenderer;
 	protected Vector2 spawnableCoords;
-	private FurnitureBuilder furnitureBuilder;
 	private RoomType roomType;
 
 	private int pool_size;
@@ -167,7 +164,9 @@ public class Room {
 	public boolean checkFurnitureSpawn(Vector2 spawn, MapObjects furnitureList, float entityWidth) {
 
 		for(MapObject furniture : furnitureList) {
+
 			if(furniture instanceof PolygonMapObject) {
+				
 				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
 				if(furniturePolygon.contains(spawn) || furniturePolygon.contains(spawn.x + entityWidth, spawn.y)) {
 					return true;

@@ -178,7 +178,7 @@ public class Cover implements Screen
 
         about_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new About(game));
+                game.setScreen(About.getInstance());
             }
         });
 
