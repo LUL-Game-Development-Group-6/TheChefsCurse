@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="10">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="55">
  <imagelayer id="2" name="Image Layer 1">
   <image source="restaurant_3.png" width="7520" height="4140"/>
  </imagelayer>
@@ -33,5 +33,31 @@
   <object id="9" x="5321.33" y="2374">
    <polygon points="0,0 318.667,2.13492 318.667,-266.865 3.07396,-262.595"/>
   </object>
+ </objectgroup>
+ <objectgroup id="6" name="spawn">
+  <object id="31" x="2530.3" y="2500" width="2775.76" height="60.6061"/>
+  <object id="32" x="2412.12" y="2666.67" width="1645.45" height="112.121"/>
+  <object id="33" x="2712.12" y="2866.67" width="1360.61" height="100"/>
+  <object id="34" x="3221.21" y="3060.61" width="1233.33" height="109.091"/>
+  <object id="35" x="3309.09" y="3269.7" width="884.848" height="36.3636"/>
+  <object id="36" x="2800" y="3457.58" width="1036.36" height="60.6061"/>
+  <object id="37" x="3293.94" y="2321.21" width="1915.15" height="57.5758"/>
+  <object id="38" x="4451.52" y="2060.61" width="787.879" height="124.242"/>
+  <object id="39" x="4621.21" y="2654.55" width="818.182" height="48.4848"/>
+  <object id="40" x="5300" y="1903.03" width="715.152" height="63.6364"/>
+  <object id="41" x="5757.58" y="2121.21" width="548.485" height="48.4848"/>
+  <object id="42" x="4481.82" y="1721.21" width="1124.24" height="87.8788"/>
+  <object id="43" x="4454.55" y="1896.97" width="736.364" height="60.6061"/>
+  <object id="44" x="4500" y="1572.73" width="1112.12" height="60.6061"/>
+  <object id="45" x="4724.24" y="1369.7" width="1006.06" height="93.9394"/>
+  <object id="46" x="5021.21" y="1218.18" width="660.606" height="54.5455"/>
+  <object id="47" x="1842.42" y="3012.12" width="918.182" height="27.2727"/>
+  <object id="48" x="1481.82" y="2839.39" width="1109.09" height="51.5152"/>
+  <object id="49" x="1063.64" y="2624.24" width="1251.52" height="57.5758"/>
+  <object id="50" x="1178.79" y="2427.27" width="875.758" height="84.8485"/>
+  <object id="51" x="845.455" y="2090.91" width="1727.27" height="84.8485"/>
+  <object id="52" x="1236.36" y="2260.61" width="793.939" height="72.7273"/>
+  <object id="53" x="1178.79" y="1933.33" width="1196.97" height="81.8182"/>
+  <object id="54" x="1409.09" y="1806.06" width="709.091" height="45.4545"/>
  </objectgroup>
 </map>

@@ -77,7 +77,7 @@ public class EnemyFactory {
     }
 
     public EnemyFactory withRandomPosition(Room room) {
-        this.position = room.entitySpawn(room.getBackground(), width);
+        this.position = room.entitySpawn(room.getBackground(), width, 0);
         return this;
     }
 

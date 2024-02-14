@@ -74,7 +74,7 @@ public class FoodGame implements Screen
 		// Random Room from the 9 choices
 		currentRoom = RoomBuilder.init().withRandomRoomType().create(game).get();
 
-		Vector2 spawn = currentRoom.entitySpawn(currentRoom.getBackground(), 450);
+		Vector2 spawn = currentRoom.entitySpawn(currentRoom.getBackground(), 450, 0);
 		player1 = new Player(spawn.x, spawn.y, 450, 500, game);
 		entityList.add(player1);
 
@@ -280,6 +280,7 @@ public class FoodGame implements Screen
 			} else if(entity instanceof Enemy){
 				Enemy enemy = (Enemy) entity;
 				enemy.render(timePassed, timeBetweenRenderCalls, batch, player, this, currentRoom.gTiledMap());
+				enemy.isOursideMap(currentRoom.getBackground(), currentRoom);
 			}
 			DynamicObject collission = (DynamicObject) entity;
 			currentRoom.checkCollission(collission, currentRoom.getBackground());

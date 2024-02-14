@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="6">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="19">
  <imagelayer id="2" name="Image Layer 1">
   <image source="restaurant_1.png" width="4310" height="3040"/>
  </imagelayer>
@@ -21,5 +21,14 @@
   <object id="5" x="2096" y="2466">
    <polygon points="0,0 318.667,2.13492 318.667,-266.865 3.07396,-262.595"/>
   </object>
+ </objectgroup>
+ <objectgroup id="6" name="spawn">
+  <object id="12" x="1972" y="1840" width="740" height="198"/>
+  <object id="13" x="1424" y="1432" width="1010" height="96"/>
+  <object id="14" x="1734" y="1242" width="796" height="128"/>
+  <object id="15" x="988" y="1946" width="914" height="160"/>
+  <object id="16" x="814" y="1814" width="438" height="62"/>
+  <object id="17" x="1764" y="1628" width="754" height="110"/>
+  <object id="18" x="2490" y="2140" width="518" height="62"/>
  </objectgroup>
 </map>

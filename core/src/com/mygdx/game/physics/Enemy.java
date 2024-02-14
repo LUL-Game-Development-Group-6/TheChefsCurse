@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.Room.Room;
 import com.mygdx.game.Screens.FoodGame;
 import com.mygdx.game.Screens.Menu;
 
@@ -222,7 +223,6 @@ public class Enemy extends DynamicObject{
 
     // Check enemy collision
     randomizeEnemyDirection(lastHitObject, player, deltaTime, map);
-    enemyHit(player);
 
   }
 
@@ -327,7 +327,6 @@ public class Enemy extends DynamicObject{
 
     if(this.position.dst(player.getPreviousPos()) <= this.hitDistance && timeSinceLastShot >= this.cooldown) {
 
-
       switch (this.enemyType) {
         case HAMBURGER:
 				  player.takeDamage(this.damage);
@@ -402,24 +401,46 @@ public class Enemy extends DynamicObject{
   public void randomizeEnemyDirection(float lastHitObject, Player player, float deltaTime, TiledMap map) {
 
     Vector2 direction = new Vector2(player.getPreviousPos().x - position.x, player.getPreviousPos().y - position.y);
-    setBulletSpeed(direction);
     direction.nor();
 
     if(this.getCollided()) {
-      velocity.set(direction.x * -speed, direction.y * -speed);
+      velocity.set(direction.x * -speed, direction.y * speed);
     } else {
 
-      // Case where enemy doesnt collide against anything, its direction will go towards player
-      // Calculate the direction vector between the enemy and the player and normalize vector
       /*
+       * Case where enemy doesn't collide against anything, its direction will go towards player
+       * Calculate the direction vector between the enemy and the player and normalize vector
+       * 
        * Scale the direction by the speed to get the velocity
        * creating a copy of the direction vector to avoid progresively increase speed
        */
-      velocity.set(direction.x * speed, direction.y * speed); 
+
+      velocity.set(direction.x * speed, direction.y * speed);
+      setBulletSpeed(direction);
     }
     // Update enemy position
     position.add(velocity.x * deltaTime, velocity.y * deltaTime);   
     move(position.x, position.y);
-    velocity.set(direction.x * speed, direction.y * speed); 
-  } 
+    enemyHit(player);
+  }
+
+  // With new AI logic, enemies sometimes jump out the map, this will teleport them back
+  public void isOursideMap(TiledMap map, Room room) {
+    MapObjects colliderList = map.getLayers().get("colliders").getObjects();
+
+    for(MapObject roomSpawn : colliderList) {
+      
+      if(roomSpawn instanceof PolygonMapObject) {
+
+        Polygon triangleCollider = ((PolygonMapObject) roomSpawn).getPolygon();
+        if(!triangleCollider.contains(this.getHitbox().getX(), this.getHitbox().getY())
+        && !triangleCollider.contains(this.getHitbox().getX() + this.getHitbox().getWidth(), this.getHitbox().getY())) {
+          Vector2 backToMap = room.entitySpawn(map, this.width, 0);
+          sprite.setPosition(backToMap.x, backToMap.y);
+          hitbox.setPosition(backToMap);
+        }
+      }
+    }
+
+  }
 }
