@@ -2,14 +2,16 @@ package com.mygdx.game.physics;
 
 import java.util.LinkedList;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Screens.FoodGame;
@@ -36,6 +38,7 @@ public class Enemy extends DynamicObject{
 
   private long lastShot;
   private long cooldown;
+  private float lastHitObject;
 
   private int hitDistance;
 
@@ -64,7 +67,7 @@ public class Enemy extends DynamicObject{
     this.game = game;
     enemyAmmunition = new LinkedList<Bullet>();
     enemyBatch = new SpriteBatch();
-	
+    lastHitObject = 0;
 	
     switch(enemyType){
 
@@ -196,11 +199,12 @@ public class Enemy extends DynamicObject{
   }
 
 
-  public void update(float timePassed, float deltaTime, Player player, SpriteBatch batch) {
+  public void update(float timePassed, float deltaTime, Player player, SpriteBatch batch, TiledMap map) {
 
     
     float distance = player.getPreviousPos().dst(position);
 
+    // ENEMY ANIMATION
     // Draw enemy standing still if hes close enough
     if(distance < this.hitDistance) {
       setSpeed(0);
@@ -211,36 +215,24 @@ public class Enemy extends DynamicObject{
       this.getSprite().getX(), this.getSprite().getY(), this.getWidth(), this.getHeight());
 
     }
-
     // draw enemie's health
     batch.draw(this.getHealthSprite(), this.getHitbox().getX() + offsetX , this.getHitbox().getY()
     + this.getHitbox().getHeight() + offsetY, this.getHealthSprite().getWidth()/2, this.getHealthSprite().getHeight()/2);
     this.healthPercentage();
 
-    // Calculate the direction vector between the enemy and the player
-    Vector2 direction = new Vector2(player.getPreviousPos().x - position.x, player.getPreviousPos().y - position.y);
-    // Normalize vector
-    direction.nor();
-    /*
-     * Scale the direction by the speed to get the velocity
-     * creating a copy of the direction vector to avoid progresively increase speed
-     */
-    velocity.set(direction.x * speed, direction.y * speed);
-    setBulletSpeed(direction);
-    // Update the enemy's position
-    position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-    move(position.x, position.y);
+    // Check enemy collision
+    randomizeEnemyDirection(lastHitObject, player, deltaTime, map);
     enemyHit(player);
+
   }
 
   @Override
-  public void render(float timePassed, float timeBetweenRenderCalls, SpriteBatch batch, Player player, FoodGame game) {
+  public void render(float timePassed, float timeBetweenRenderCalls, SpriteBatch batch, Player player, FoodGame game, TiledMap map) {
 
     // Get previous position for colliders
 		previousPos.set(this.getHitbox().x, this.getHitbox().y);
 		previousSprite.set(this.getSprite().getX(), this.getSprite().getY());
-
-    this.update(timePassed, timeBetweenRenderCalls, player, batch);
+    this.update(timePassed, timeBetweenRenderCalls, player, batch, map);
 
     for (Bullet bullet : enemyAmmunition) {
       bullet.update();
@@ -290,7 +282,7 @@ public class Enemy extends DynamicObject{
 		return this.previousSprite;
 	}
   
-  @Override//had to move this into enemy because it was more trouble than it was worth to try and change the one in dynamic object
+  @Override
   public void takeDamage(int damage)
   {
 	  this.setCurrentHealth(this.getCurrentHealth() - damage);
@@ -369,4 +361,65 @@ public class Enemy extends DynamicObject{
   public void setBulletSpeed(Vector2 direction) {
     bulletSpeed.set(direction.x * normalSpeed, direction.y * normalSpeed);
   }
+
+  public boolean shouldChangeDirection(DynamicObject entity, TiledMap map) {
+    
+    MapObjects colliderList = map.getLayers().get("colliders").getObjects();
+		MapObjects furnitureList = map.getLayers().get("furniture").getObjects();
+
+		for(MapObject furniture : furnitureList) {
+
+			if(furniture instanceof PolygonMapObject) {
+
+				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
+
+				if(furniturePolygon.contains(entity.getHitbox().x, entity.getHitbox().y)
+        || furniturePolygon.contains(entity.getHitbox().x 
+        + entity.getHitbox().width, entity.getHitbox().y)) {
+          System.out.println("Enemy collided with furniture");
+					return true;
+				}
+      }
+		}
+
+    for(MapObject roomSpawn : colliderList) {
+      
+      if(roomSpawn instanceof PolygonMapObject) {
+
+        Polygon triangleCollider = ((PolygonMapObject) roomSpawn).getPolygon();
+				
+				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y) ||
+				 !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)) {
+          
+          System.out.println("Enemy collided with walls");
+          return true;
+        }
+      }
+    }
+		return false;
+	}
+
+  public void randomizeEnemyDirection(float lastHitObject, Player player, float deltaTime, TiledMap map) {
+
+    Vector2 direction = new Vector2(player.getPreviousPos().x - position.x, player.getPreviousPos().y - position.y);
+    setBulletSpeed(direction);
+    direction.nor();
+
+    if(this.getCollided()) {
+      velocity.set(direction.x * -speed, direction.y * -speed);
+    } else {
+
+      // Case where enemy doesnt collide against anything, its direction will go towards player
+      // Calculate the direction vector between the enemy and the player and normalize vector
+      /*
+       * Scale the direction by the speed to get the velocity
+       * creating a copy of the direction vector to avoid progresively increase speed
+       */
+      velocity.set(direction.x * speed, direction.y * speed); 
+    }
+    // Update enemy position
+    position.add(velocity.x * deltaTime, velocity.y * deltaTime);   
+    move(position.x, position.y);
+    velocity.set(direction.x * speed, direction.y * speed); 
+  } 
 }

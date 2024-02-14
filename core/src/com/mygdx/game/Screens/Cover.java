@@ -41,7 +41,6 @@ public class Cover implements Screen
 
     // Cover buttons
     private TextButtonStyle exit;
-    private TextButtonStyle options;
     private TextButtonStyle about;
     private TextButtonStyle start;
 
@@ -140,16 +139,7 @@ public class Cover implements Screen
         start.font = font;
         TextButton start_button = new TextButton("", start);
         start_button.setSize(start_button.getWidth()/2, start_button.getHeight()/2);
-        start_button.setPosition(120, 350);
-
-        options = new TextButtonStyle();
-        options.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Options_NotClicked.png")));
-        options.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Option_Clicked.png")));
-        options.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Options_Hover.png")));
-        options.font = font;
-        TextButton options_button = new TextButton("", options);
-        options_button.setSize(options_button.getWidth()/2, options_button.getHeight()/2);
-        options_button.setPosition(120, 250);
+        start_button.setPosition(120, 300);
 
         about = new TextButtonStyle();
         about.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/About_NotClicked.png")));
@@ -158,7 +148,7 @@ public class Cover implements Screen
         about.font = font;
         TextButton about_button = new TextButton("", about);
         about_button.setSize(about_button.getWidth()/2, about_button.getHeight()/2);
-        about_button.setPosition(120, 150);
+        about_button.setPosition(120, 200);
 
         exit = new TextButtonStyle();
         exit.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_NotClicked.png")));
@@ -167,7 +157,7 @@ public class Cover implements Screen
         exit.font = font;
         TextButton exit_button = new TextButton("", exit);
         exit_button.setSize(exit_button.getWidth()/2, exit_button.getHeight()/2);
-        exit_button.setPosition(120, 50);
+        exit_button.setPosition(120, 100);
 
 
         exit_button.addListener(new ClickListener() {
@@ -203,7 +193,6 @@ public class Cover implements Screen
         // Add buttons to the screen
         stage.addActor(start_button);
         stage.addActor(about_button);
-        stage.addActor(options_button);
         stage.addActor(exit_button);
 
     }

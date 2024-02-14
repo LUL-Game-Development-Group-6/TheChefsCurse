@@ -54,7 +54,6 @@ public class Room {
 		renderer.setMap(background);
 		renderer.render();
 		renderer.setView(camera);
-
 	}
 
 	
@@ -129,6 +128,9 @@ public class Room {
 				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y) ||
 				 !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y) || checkFurnitureCollission(entity, furnitureList)) {
 					entity.moveBack(entity.getPreviousPos(), entity.getPreviousSprite());
+					entity.setCollided(true);
+				} else {
+					entity.setCollided(false);
 				}
 			}
 		}
@@ -147,33 +149,17 @@ public class Room {
 
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 
-				while (!triangleCollider.contains(spawn) || !triangleCollider.contains(spawn.x + entityWidth, spawn.y) 
-				|| checkFurnitureSpawn(spawn, furnitureList, entityWidth)) {
-					
+				while (!triangleCollider.contains(spawn)
+				|| !triangleCollider.contains(spawn.x + entityWidth, spawn.y) 
+				|| checkFurnitureSpawn(spawn, furnitureList, entityWidth)) 
+				
+				{
 					spawn.x = MathUtils.random(0, 10000);
 					spawn.y = MathUtils.random(0, 10000);
-
-
 				}
 			}
 		}
 		return spawn;
-	}
-
-
-	public boolean checkFurnitureSpawn(Vector2 spawn, MapObjects furnitureList, float entityWidth) {
-
-		for(MapObject furniture : furnitureList) {
-
-			if(furniture instanceof PolygonMapObject) {
-				
-				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
-				if(furniturePolygon.contains(spawn) || furniturePolygon.contains(spawn.x + entityWidth, spawn.y)) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	public boolean checkFurnitureCollission(DynamicObject entity, MapObjects furnitureList) {
@@ -194,10 +180,29 @@ public class Room {
 	}
 
 
+	public boolean checkFurnitureSpawn(Vector2 spawn, MapObjects furnitureList, float entityWidth) {
+
+		for(MapObject furniture : furnitureList) {
+
+			if(furniture instanceof PolygonMapObject) {
+				
+				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
+				if(furniturePolygon.contains(spawn) || furniturePolygon.contains(spawn.x + entityWidth, spawn.y)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public TiledMap getBackground() {
 		return background;
 	}
 	public int getPoolSize() {
 		return this.pool_size;
+	}
+
+	public TiledMap gTiledMap() {
+		return this.background;
 	}
 }

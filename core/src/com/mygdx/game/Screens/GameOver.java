@@ -101,8 +101,6 @@ public class GameOver implements Screen
 
     public void render(float delta) {
 
-
-
         renderOpacity = Math.min(renderOpacity + delta / 2, 1f); 
         timePassed += delta;
 
@@ -112,9 +110,7 @@ public class GameOver implements Screen
 
         game.batch.setColor(1f, 1f, 1f, renderOpacity);
 
-
         game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
         game.batch.draw(gameOverAnimation.getKeyFrame(timePassed, true), 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         game.batch.end();
 

@@ -1,15 +1,10 @@
 package com.mygdx.game.Screens;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.SnapshotArray;
 
 import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
@@ -19,15 +14,12 @@ import com.mygdx.game.gamesave.GameSaveLoader;
 import com.mygdx.game.helpers.AnimationParameters;
 import com.mygdx.game.helpers.ShadersHelper;
 import com.mygdx.game.physics.Player;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.Room.Furniture;
 import com.mygdx.game.Room.FurnitureBuilder;
 import com.mygdx.game.Room.Room;
-import com.mygdx.game.Room.Room.RoomType;
 import com.mygdx.game.physics.Bullet;
 import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.EnemiesGenerator;
@@ -35,56 +27,62 @@ import com.mygdx.game.physics.Enemy;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.stream.Collectors;
 
 public class FoodGame implements Screen
 {
-
 	/*
-		* LibGDX Objects
+	 * LibGDX Objects 
 	 */
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	private Menu game; 			// Game instance from Menu class to swtich between screens
+	private ShapeRenderer shapeRenderer;
+	/*
+	* Native Objects
+	 */
+	private Menu game;
 	private Overlay overlay;
-	private ShapeRenderer shapeRenderer; // Check hitboxes
+	private Room currentRoom;
+	/*
+	 * Helpers
+	 * & Builders
+	 */
+	private ShadersHelper shadersHelper;
+	private EnemiesGenerator enemiesGenerator;
+	private FurnitureBuilder furnitureBuilder;
+
+	private Player player1;
+	private float timePassed;
+	private boolean pausedGameplay;
 
 	/*
-	 	* Native Objects
+	 * Lists
 	 */
-	private Room currentRoom;
-	private ShadersHelper shadersHelper;
-	private Player player1;
-	private EnemiesGenerator enemiesGenerator;
-	private float timePassed;
-	private boolean pausedGameplay; // Boolean to check if the game has been paused
-	private ArrayList<Object> entityList; // List of all the current enemies player and furniture
+	private ArrayList<Object> entityList;
 	private ArrayList<AnimationParameters> xpList;
-	private FurnitureBuilder furnitureBuilder;
 
 	public FoodGame(Menu game) {
 
         this.game = Menu.getInstance();
 		this.entityList = new ArrayList<>();
 		this.xpList = new ArrayList<>();
+
 		shadersHelper = new ShadersHelper();
 		furnitureBuilder = new FurnitureBuilder();
 		pausedGameplay = false;
+		batch = new SpriteBatch();
 
 		// Random Room from the 9 choices
 		currentRoom = RoomBuilder.init().withRandomRoomType().create(game).get();
 
 		Vector2 spawn = currentRoom.entitySpawn(currentRoom.getBackground(), 450);
 		player1 = new Player(spawn.x, spawn.y, 450, 500, game);
-		
-		batch = new SpriteBatch();
 		entityList.add(player1);
 
-		// Camera
+		// Camera & Overlay
 		camera = new OrthographicCamera(2560,1440);
-
 		overlay = new Overlay(this);
 
+		// Initializing Helpers
 		shapeRenderer = new ShapeRenderer();
 		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom, game);
 		furnitureBuilder.create(currentRoom.getRoomType(), entityList);
@@ -104,8 +102,7 @@ public class FoodGame implements Screen
     public void hide() {
 		Gdx.input.setInputProcessor(null);
 	}
-	public void show () {
-	}
+	public void show () {}
 
 	public void dispose() {
 		game.batch.dispose();
@@ -146,7 +143,7 @@ public class FoodGame implements Screen
 		camera.position.set(centerX, centerY, 0);
 		camera.update();
 
-		// Times to get time passed and to follow the player vector
+		// Times to get current delta and to follow the player vector for the enemy
 		float timeBetweenRenderCalls = Gdx.graphics.getDeltaTime();
         timePassed += Gdx.graphics.getDeltaTime();
 
@@ -158,10 +155,14 @@ public class FoodGame implements Screen
 		for (Bullet bullet : player1.getAmmunition()) {
 			bullet.update();
 			bullet.render(batch);
+
 			for (Object entity : entityList) {
+
 				if(!(entity instanceof Enemy)) continue;
 				Enemy currentEnemy = (Enemy) entity;
+
 				if (bullet.getHitbox().overlaps(currentEnemy.getHitbox())) {
+
 					currentEnemy.setHit(true);
 					currentEnemy.setTimeHit();
 					bullet.setVisibility(false);
@@ -217,13 +218,11 @@ public class FoodGame implements Screen
 		
         batch.end();
 		
-
+		
 		// Here is where hitboxes are rendered, this will eventually be deleted
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
 		shapeRenderer.setProjectionMatrix(camera.combined);
-
-
 		// Render entity hitboxes
 		// for(Object entity_ : entityList) {
 			// DynamicObject entity = (DynamicObject) entity_;
@@ -280,7 +279,7 @@ public class FoodGame implements Screen
 
 			} else if(entity instanceof Enemy){
 				Enemy enemy = (Enemy) entity;
-				enemy.render(timePassed, timeBetweenRenderCalls, batch, player, this);
+				enemy.render(timePassed, timeBetweenRenderCalls, batch, player, this, currentRoom.gTiledMap());
 			}
 			DynamicObject collission = (DynamicObject) entity;
 			currentRoom.checkCollission(collission, currentRoom.getBackground());
