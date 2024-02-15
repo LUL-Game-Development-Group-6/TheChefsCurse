@@ -130,7 +130,7 @@ public class Room {
 				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y)
 				|| !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)
 				|| checkFurnitureCollission(entity, furnitureList)) {
-					if(entity.getPlayerBool()) entity.moveBack(entity.getPreviousPos(), entity.getPreviousSprite());
+					if(entity.getPlayerBool() && entity.getPlayerBool()) entity.moveBack(entity.getPreviousPos(), entity.getPreviousSprite());
 					entity.setCollided(true);
 				} else {
 					entity.setCollided(false);

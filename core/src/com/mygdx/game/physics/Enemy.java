@@ -404,7 +404,7 @@ public class Enemy extends DynamicObject{
     direction.nor();
 
     if(this.getCollided()) {
-      velocity.set(direction.x * -speed, direction.y * speed);
+      whereIsPlayer(player, direction);
     } else {
 
       /*
@@ -425,7 +425,7 @@ public class Enemy extends DynamicObject{
   }
 
   // With new AI logic, enemies sometimes jump out the map, this will teleport them back
-  public void isOursideMap(TiledMap map, Room room) {
+  public void isOutsideMap(TiledMap map, Room room) {
     MapObjects colliderList = map.getLayers().get("colliders").getObjects();
 
     for(MapObject roomSpawn : colliderList) {
@@ -434,13 +434,36 @@ public class Enemy extends DynamicObject{
 
         Polygon triangleCollider = ((PolygonMapObject) roomSpawn).getPolygon();
         if(!triangleCollider.contains(this.getHitbox().getX(), this.getHitbox().getY())
-        && !triangleCollider.contains(this.getHitbox().getX() + this.getHitbox().getWidth(), this.getHitbox().getY())) {
-          Vector2 backToMap = room.entitySpawn(map, this.width, 0);
-          sprite.setPosition(backToMap.x, backToMap.y);
-          hitbox.setPosition(backToMap);
+        || !triangleCollider.contains(this.getHitbox().getX() + this.getHitbox().getWidth(), this.getHitbox().getY())) {
+          
+          this.moveBack(this.getPreviousPos(), this.getPreviousSprite());
         }
       }
     }
+  }
+  /*
+  * Method that will return a different speed direction according to where the enemy is
+  * w.r.t. the player 
+  */
+  public void whereIsPlayer(Player player, Vector2 direction) {
 
+    float playerX = player.getPreviousPos().x;
+    float playerY = player.getPreviousPos().y;
+    float enemyX = position.x;
+    float enemyY = position.y;
+
+
+    if(playerX - enemyX >= 0 && playerY - enemyY >= 0) {
+      velocity.set(direction.x * -speed * 5, direction.y * -speed);
+
+    } else if (playerX - enemyX < 0 && playerY - enemyY >= 0) {
+      velocity.set(direction.x * -speed, direction.y * -speed * 5);
+
+    } else if (playerX - enemyX < 0 && playerY - enemyY < 0) {
+      velocity.set(direction.x * -speed * 5, direction.y * -speed);
+
+    } else if (playerX - enemyX >= 0 && playerY - enemyY  < 0) {
+      velocity.set(direction.x * -speed * 5, direction.y * -speed);
+    }
   }
 }
