@@ -109,7 +109,9 @@ public class Overlay implements Screen {
     public void show() {
         nextRound_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                stage.dispose();
+                foodGame.gameMusic.stop();
+				foodGame.gameMusic.dispose();
+				stage.dispose();
                 foodGame.getEnemiesGenerator().reset();
                 game.setScreen(new NewRound(game));
             }

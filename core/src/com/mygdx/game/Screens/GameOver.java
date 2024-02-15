@@ -19,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import com.mygdx.game.helpers.SoundPaths;
+import com.badlogic.gdx.audio.Sound;
 
 public class GameOver implements Screen  
 {
@@ -42,12 +44,19 @@ public class GameOver implements Screen
     // Game object (Menu instance in the constructor)
     final Menu game;
     private FoodGame foodGame;
+	
+	//death sound effect
+	private Sound deathSound;
+	
+	private Sound buttonSound;
 
     // Screen constructor
     public GameOver(final Menu game, FoodGame foodGame) {
         this.renderOpacity = 0f; 
         this.game = game;
         this.foodGame = foodGame;
+		this.deathSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.PLAYERDEAD_PATH));
+		this.buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
     }
 
     // Methods necessary to implement Screen interface
@@ -63,6 +72,9 @@ public class GameOver implements Screen
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
+		
+		foodGame.gameMusic.stop();
+		foodGame.gameMusic.dispose();
 
         background = new Texture("cover/black.png");
         logo = new Texture("cover/GameOver_logo.png");
@@ -73,7 +85,7 @@ public class GameOver implements Screen
         1/8f, 
         gameOverAtlas.createSprite("GameOver_logo1"),
         gameOverAtlas.createSprite("GameOver_logo2"));
-
+		deathSound.loop(0.75f);
 
         exit = new TextButtonStyle();
         exit.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_NotClicked.png")));
@@ -86,7 +98,9 @@ public class GameOver implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-
+				buttonSound.play(0.5f);
+				deathSound.stop();
+				deathSound.dispose();
                 foodGame.dispose();
                 foodGame.getEnemiesGenerator().reset();
                 game.resetGame();
@@ -112,7 +126,7 @@ public class GameOver implements Screen
 
         game.batch.setColor(1f, 1f, 1f, renderOpacity);
 
-
+		
         game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         game.batch.draw(gameOverAnimation.getKeyFrame(timePassed, true), 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);

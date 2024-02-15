@@ -28,6 +28,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+import com.badlogic.gdx.audio.Sound;
+import com.mygdx.game.helpers.SoundPaths;
 
 public class NewRound implements Screen  
 {
@@ -61,12 +63,17 @@ public class NewRound implements Screen
     private StatsHelper statsHelper;
     private ArrayList<AnimationParameters> xpAnimation;
     private float timePassed;
+	
+	private Sound buttonSound;
+	private Sound buySound;
 
     // Screen constructor
     public NewRound(Menu game) {
         this.game = game;
         this.statsHelper = game.getStatsHelper();
         xpAnimation = new ArrayList<>();
+		this.buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+		this.buySound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUYUPGRADE_PATH));;
     }
 
     // Methods necessary to implement Screen interface
@@ -165,6 +172,7 @@ public class NewRound implements Screen
 
         add_damage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+				buySound.play(0.75f);
                 AnimationParameters animation = new AnimationParameters(
                     game.getXpAnimationHelper().get50xp(),
                     -10,
@@ -181,6 +189,7 @@ public class NewRound implements Screen
 
         add_health.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+				buySound.play(0.75f);
                 AnimationParameters animation = new AnimationParameters(
                     game.getXpAnimationHelper().get50xp(),
                     -10,
@@ -206,7 +215,8 @@ public class NewRound implements Screen
 
         nextRound_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                stage.dispose();
+                buttonSound.play(0.5f);
+				stage.dispose();
                 //foodGame.getEnemiesGenerator().reset();
                 game.incrementRound();
                 game.setScreen(new FoodGame(game));

@@ -20,6 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+import com.badlogic.gdx.audio.Sound;
+import com.mygdx.game.helpers.SoundPaths;
 
 public class Cover implements Screen  
 {
@@ -51,6 +53,8 @@ public class Cover implements Screen
 
     // Game object (Menu instance in the constructor)
     private Menu game;
+	
+	private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
 
     // Screen constructor
     public Cover() {
@@ -172,6 +176,7 @@ public class Cover implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+				buttonSound.play(0.5f);//when the option and about buttons are added, just paste this 'buttonSound.play(0.5f);' in there
                 Gdx.app.exit();
             }
         });
@@ -179,6 +184,7 @@ public class Cover implements Screen
         start_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 // Start the animation
+				buttonSound.play(0.5f);
                 logo_animation.setPlayMode(Animation.PlayMode.NORMAL);
                 timePassed = 0;
             

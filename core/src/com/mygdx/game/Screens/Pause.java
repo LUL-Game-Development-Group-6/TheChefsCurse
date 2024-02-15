@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+import com.badlogic.gdx.audio.Sound;
+import com.mygdx.game.helpers.SoundPaths;
 
 public class Pause implements Screen  
 {
@@ -36,6 +38,8 @@ public class Pause implements Screen
     // Game object (Menu instance in the constructor)
     Menu game;
     private FoodGame foodGame;
+	
+	private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
 
     // Screen constructor
     public Pause(Menu game, FoodGame foodGame) {
@@ -86,14 +90,17 @@ public class Pause implements Screen
 
         resume_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                foodGame.setPaused(false);
+                buttonSound.play(0.5f);
+				foodGame.gameMusic.play();
+				foodGame.setPaused(false);
                 game.setScreen(foodGame);
             }
         });
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                game.resetGame();
+                buttonSound.play(0.5f);
+				game.resetGame();
                 foodGame.getEnemiesGenerator().reset();
                 game.setScreen(Cover.getInstance());
             }

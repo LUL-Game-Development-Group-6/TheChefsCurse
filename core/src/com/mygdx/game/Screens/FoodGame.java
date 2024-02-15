@@ -37,6 +37,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
+import com.mygdx.game.helpers.SoundPaths;
+
 public class FoodGame implements Screen
 {
 
@@ -61,6 +65,10 @@ public class FoodGame implements Screen
 	private ArrayList<Object> entityList; // List of all the current enemies player and furniture
 	private ArrayList<AnimationParameters> xpList;
 	private FurnitureBuilder furnitureBuilder;
+	
+	//sound stuff
+	private Sound enemyDies;
+	public Music gameMusic;
 
 	public FoodGame(Menu game) {
         this.game = Menu.getInstance();
@@ -69,6 +77,13 @@ public class FoodGame implements Screen
 		shadersHelper = new ShadersHelper();
 		furnitureBuilder = new FurnitureBuilder();
 		pausedGameplay = false;
+		
+		this.enemyDies = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.ENEMYDEAD_PATH));
+		this.gameMusic = Gdx.audio.newMusic(Gdx.files.internal(SoundPaths.MUSIC_PATH));
+		gameMusic.setVolume(0.3f);//this is the only place that music volume is controlled from. If we want to set music volume separately, should be quite easy
+		gameMusic.setLooping(true);
+		gameMusic.play();
+
 
 		// Random Room from the 9 choices
 		currentRoom = RoomBuilder.init().withRandomRoomType().create(game).get();
@@ -91,6 +106,7 @@ public class FoodGame implements Screen
     }
 
     public void pause() {
+		gameMusic.pause();
 		pausedGameplay = !pausedGameplay;
 		if(!pausedGameplay) return;
 		game.setScreen(new Pause(game, this));
@@ -107,10 +123,12 @@ public class FoodGame implements Screen
 	}
 
 	public void dispose() {
+		//gameMusic.stop();
 		game.batch.dispose();
 		player1.dispose();
 		shapeRenderer.dispose();
 		entityList = null;
+		//gameMusic.dispose();
 	}
 
 	public boolean getPaused() {
@@ -176,11 +194,12 @@ public class FoodGame implements Screen
 		}
 
 		// Dead enemies (create XP animation)
-		for (int i = entityList.size() - 1; i >= 0; i--){
+		for (int i = entityList.size() - 1; i >= 0; i--){//enemy die sound effect here
 			if (entityList.get(i) instanceof Enemy){
 				Enemy temp = (Enemy)entityList.get(i);
 				if (temp.getIsDead()) {
 					// CreateXP Animation
+					enemyDies.play(0.75f);
 					AnimationParameters animation = new AnimationParameters(
 						game.getXpAnimationHelper().get10xp(),
 						temp.getHitbox().getX() + temp.getHitbox().getWidth()/2,
