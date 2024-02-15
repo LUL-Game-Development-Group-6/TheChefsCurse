@@ -27,6 +27,9 @@ import com.mygdx.game.physics.Enemy;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
+import com.mygdx.game.helpers.SoundPaths;
 
 public class FoodGame implements Screen
 {
@@ -60,6 +63,12 @@ public class FoodGame implements Screen
 	private ArrayList<Object> entityList;
 	private ArrayList<AnimationParameters> xpList;
 
+	// Sound Effects
+	private Sound enemyDies = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.ENEMYDEAD_PATH));
+	public Music gameMusic = Gdx.audio.newMusic(Gdx.files.internal(SoundPaths.MUSIC_PATH));
+	public SoundPaths soundPaths = SoundPaths.getInstance();
+	
+
 	public FoodGame(Menu game) {
 
         this.game = Menu.getInstance();
@@ -78,20 +87,26 @@ public class FoodGame implements Screen
 		player1 = new Player(spawn.x, spawn.y, 450, 500, game);
 		entityList.add(player1);
 
+		// Add music settings
+		gameMusic.setLooping(true);
+		gameMusic.setVolume(soundPaths.getMusicVolume());
+
 		// Camera & Overlay
 		camera = new OrthographicCamera(2560,1440);
-		overlay = new Overlay(this);
+		overlay = new Overlay(this, gameMusic);
 
 		// Initializing Helpers
 		shapeRenderer = new ShapeRenderer();
 		enemiesGenerator = new EnemiesGenerator(entityList, currentRoom, game);
 		furnitureBuilder.create(currentRoom.getRoomType(), entityList);
 		enemiesGenerator.generate();
+
     }
 
     public void pause() {
 		pausedGameplay = !pausedGameplay;
 		if(!pausedGameplay) return;
+		gameMusic.pause();
 		game.setScreen(new Pause(game, this));
 	}
 
@@ -102,13 +117,16 @@ public class FoodGame implements Screen
     public void hide() {
 		Gdx.input.setInputProcessor(null);
 	}
-	public void show () {}
+	public void show () {
+		gameMusic.play();
+	}
 
 	public void dispose() {
 		game.batch.dispose();
 		player1.dispose();
 		shapeRenderer.dispose();
 		entityList = null;
+		gameMusic.stop();
 	}
 
 	public boolean getPaused() {
@@ -182,6 +200,7 @@ public class FoodGame implements Screen
 			if (entityList.get(i) instanceof Enemy){
 				Enemy temp = (Enemy)entityList.get(i);
 				if (temp.getIsDead()) {
+					enemyDies.play(soundPaths.getVolume());
 					// CreateXP Animation
 					AnimationParameters animation = new AnimationParameters(
 						game.getXpAnimationHelper().get10xp(),
@@ -213,9 +232,7 @@ public class FoodGame implements Screen
 				System.out.println("Bingo");
         		iterator.remove();
     		}
-		}
-
-		
+		}	
         batch.end();
 		
 		
@@ -224,20 +241,18 @@ public class FoodGame implements Screen
 		shapeRenderer.setColor(Color.RED);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		// Render entity hitboxes
-		// for(Object entity_ : entityList) {
-			// DynamicObject entity = (DynamicObject) entity_;
-			// shapeRenderer.rect(entity.getHitbox().getX(), entity.getHitbox().getY(), entity.getHitbox().getWidth(), entity.getHitbox().getHeight());
-		// }
+		for(Object entity_ : entityList) {
+			DynamicObject entity = (DynamicObject) entity_;
+			shapeRenderer.rect(entity.getHitbox().getX(), entity.getHitbox().getY(), entity.getHitbox().getWidth(), entity.getHitbox().getHeight());
+		}
 		shapeRenderer.end();
-
-
+		
 		GameSaveLoader.getInstance()
 			.health(player1.getCurrentHealth())
 			.enemiesLeft(enemiesGenerator.getEnemiesLeft())
 			.withTimestamp(System.currentTimeMillis())
 			.update();
 
-		
 		// Render shaders (red hitmarker when you hit an entity)
 		for (Object object : entityList) {
 			if(object instanceof DynamicObject) {

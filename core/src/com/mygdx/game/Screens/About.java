@@ -2,12 +2,14 @@ package com.mygdx.game.Screens;
 
 // LibGDX libraries
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.helpers.SoundPaths;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
@@ -50,6 +52,10 @@ public class About implements Screen
 
     // Game object (Menu instance in the constructor)
     Menu game;
+
+    // Sound Effects
+    private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private SoundPaths soundPaths = SoundPaths.getInstance();
 
     // Screen constructor
     public About() {
@@ -151,6 +157,7 @@ public class About implements Screen
             default:
                 break;
         }
+        buttonSound.play(soundPaths.getVolume());
     }
 
     public void moveThroughClicksReversed() {
@@ -169,6 +176,7 @@ public class About implements Screen
             default:
                 break;
         }
+        buttonSound.play(soundPaths.getVolume());
     }
     
 }

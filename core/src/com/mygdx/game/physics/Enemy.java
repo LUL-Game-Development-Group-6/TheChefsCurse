@@ -2,6 +2,8 @@ package com.mygdx.game.physics;
 
 import java.util.LinkedList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Room.Room;
 import com.mygdx.game.Screens.FoodGame;
 import com.mygdx.game.Screens.Menu;
+import com.mygdx.game.helpers.SoundPaths;
 
 public class Enemy extends DynamicObject{
   
@@ -51,6 +54,11 @@ public class Enemy extends DynamicObject{
   private boolean isDead;
   private SpriteBatch enemyBatch;
   private Menu game;
+
+  // Sound Effects
+	SoundPaths soundPaths = SoundPaths.getInstance();
+	private Sound damageSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.ENEMYHIT_PATH));
+	private Sound enemyShootSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.ENEMYGUN_PATH));
   
   public static enum EnemyType{
     HAMBURGER,
@@ -74,7 +82,7 @@ public class Enemy extends DynamicObject{
 
       case HAMBURGER:
         this.damage = 10;
-        this.hitDistance = 20;
+        this.hitDistance = 50;
         this.cooldown = 2000;
         offsetX = -25;
         offsetY = 20;
@@ -139,7 +147,7 @@ public class Enemy extends DynamicObject{
 
       case SODA:
         this.damage = 15;
-        this.hitDistance = 20;
+        this.hitDistance = 50;
         this.cooldown = 3000;
         offsetX = -20;
         offsetY = 20;
@@ -251,6 +259,20 @@ public class Enemy extends DynamicObject{
     }
   }
 
+  @Override//had to move this into enemy because it was more trouble than it was worth to try and change the one in dynamic object
+  public void takeDamage(int damage)
+  {
+	  damageSound.play(soundPaths.getVolume());
+	  this.setCurrentHealth(this.getCurrentHealth() - damage);
+	  if(this.getCurrentHealth() <= 0){
+		  damageSound.dispose();
+		  enemyShootSound.dispose();
+		  System.out.println("Enemy should die");
+		  isDead = true;
+	  }
+  }
+  
+
   public Vector2 getPosition() {
     return position;
   }
@@ -281,16 +303,6 @@ public class Enemy extends DynamicObject{
 	public Vector2 getPreviousSprite() {
 		return this.previousSprite;
 	}
-  
-  @Override
-  public void takeDamage(int damage)
-  {
-	  this.setCurrentHealth(this.getCurrentHealth() - damage);
-	  if(this.getCurrentHealth() <= 0){
-		  System.out.println("Enemy should die");
-		  isDead = true;
-	  }
-  }
   
   public void setIsDead(boolean isDead)
   {
@@ -339,12 +351,14 @@ public class Enemy extends DynamicObject{
           player.setTimeHit();
 				  break;
 			  case POPCORN:
+          enemyShootSound.play(soundPaths.getVolume());
           Bullet nextBullet1 = new Bullet(bulletSpeed.x, bulletSpeed.y, position.x, position.y + 50, Bullet.EnemyBullet.POPCORN_BULLET);
           nextBullet1.setSpeed(0.15f);
           nextBullet1.setDespawnTime(Bullet.EnemyBullet.HOTDOG_BULLET);
           enemyAmmunition.add(nextBullet1);
 				  break;
 			  case HOTDOG:
+          enemyShootSound.play(soundPaths.getVolume());
 				  Bullet nextBullet2 = new Bullet(bulletSpeed.x, bulletSpeed.y, position.x, position.y + 50, Bullet.EnemyBullet.HOTDOG_BULLET);
 				  nextBullet2.setSpeed(0.2f);
 				  nextBullet2.setDespawnTime(Bullet.EnemyBullet.HOTDOG_BULLET);
@@ -360,43 +374,6 @@ public class Enemy extends DynamicObject{
   public void setBulletSpeed(Vector2 direction) {
     bulletSpeed.set(direction.x * normalSpeed, direction.y * normalSpeed);
   }
-
-  public boolean shouldChangeDirection(DynamicObject entity, TiledMap map) {
-    
-    MapObjects colliderList = map.getLayers().get("colliders").getObjects();
-		MapObjects furnitureList = map.getLayers().get("furniture").getObjects();
-
-		for(MapObject furniture : furnitureList) {
-
-			if(furniture instanceof PolygonMapObject) {
-
-				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
-
-				if(furniturePolygon.contains(entity.getHitbox().x, entity.getHitbox().y)
-        || furniturePolygon.contains(entity.getHitbox().x 
-        + entity.getHitbox().width, entity.getHitbox().y)) {
-          System.out.println("Enemy collided with furniture");
-					return true;
-				}
-      }
-		}
-
-    for(MapObject roomSpawn : colliderList) {
-      
-      if(roomSpawn instanceof PolygonMapObject) {
-
-        Polygon triangleCollider = ((PolygonMapObject) roomSpawn).getPolygon();
-				
-				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y) ||
-				 !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)) {
-          
-          System.out.println("Enemy collided with walls");
-          return true;
-        }
-      }
-    }
-		return false;
-	}
 
   public void randomizeEnemyDirection(float lastHitObject, Player player, float deltaTime, TiledMap map) {
 
@@ -429,9 +406,7 @@ public class Enemy extends DynamicObject{
     MapObjects colliderList = map.getLayers().get("colliders").getObjects();
 
     for(MapObject roomSpawn : colliderList) {
-      
       if(roomSpawn instanceof PolygonMapObject) {
-
         Polygon triangleCollider = ((PolygonMapObject) roomSpawn).getPolygon();
         if(!triangleCollider.contains(this.getHitbox().getX(), this.getHitbox().getY())
         || !triangleCollider.contains(this.getHitbox().getX() + this.getHitbox().getWidth(), this.getHitbox().getY())) {
@@ -441,6 +416,7 @@ public class Enemy extends DynamicObject{
       }
     }
   }
+  
   /*
   * Method that will return a different speed direction according to where the enemy is
   * w.r.t. the player 

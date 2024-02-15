@@ -19,7 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
+import com.badlogic.gdx.audio.Sound;
+import com.mygdx.game.helpers.SoundPaths;
 
 public class Cover implements Screen  
 {
@@ -50,6 +51,10 @@ public class Cover implements Screen
 
     // Game object (Menu instance in the constructor)
     private Menu game;
+
+    // Sound Effects
+    private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private SoundPaths soundPaths = SoundPaths.getInstance();
 
     // Screen constructor
     public Cover() {
@@ -162,12 +167,14 @@ public class Cover implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
                 Gdx.app.exit();
             }
         });
 
         about_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
                 game.setScreen(About.getInstance());
             }
         });
@@ -175,6 +182,7 @@ public class Cover implements Screen
         start_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 // Start the animation
+                buttonSound.play(soundPaths.getVolume());
                 logo_animation.setPlayMode(Animation.PlayMode.NORMAL);
                 timePassed = 0;
             
@@ -183,6 +191,7 @@ public class Cover implements Screen
                     @Override
                     public void run() {
                         if (logo_animation.isAnimationFinished(timePassed)) {
+                            logo_animation.setPlayMode(Animation.PlayMode.REVERSED);
                             game.dispose();
                             game.setScreen(new FoodGame(game));
                         }

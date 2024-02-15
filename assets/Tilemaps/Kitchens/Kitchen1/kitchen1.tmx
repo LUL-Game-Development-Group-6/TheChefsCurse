@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="35">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="40">
  <imagelayer id="2" name="Image Layer 1" offsetx="16" offsety="32">
   <image source="kitchen_1.png" width="4330" height="3050"/>
  </imagelayer>
@@ -35,6 +35,18 @@
   </object>
   <object id="21" x="1641" y="2198.5">
    <polygon points="-3,118.833 205.333,117.833 192.167,-116.333 27.3333,-114"/>
+  </object>
+  <object id="36" x="2126" y="2934">
+   <polygon points="0,0 252.667,-131.333 -216,-110"/>
+  </object>
+  <object id="37" x="320" y="1990">
+   <polygon points="0,0 -16,-838 -136,-850 -172,34"/>
+  </object>
+  <object id="38" x="4209" y="1877">
+   <polygon points="0,0 6.15152,-822.455 -87.7879,-795.182 -66.5758,19.9697"/>
+  </object>
+  <object id="39" x="3043.33" y="1212">
+   <polygon points="0,0 -124.667,-73.3333 -237.333,28.6667 112,46.6667"/>
   </object>
  </objectgroup>
  <objectgroup id="12" name="spawn">

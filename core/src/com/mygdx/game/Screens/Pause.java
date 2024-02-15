@@ -2,12 +2,14 @@ package com.mygdx.game.Screens;
 
 // LibGDX libraries
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.helpers.SoundPaths;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
@@ -36,6 +38,10 @@ public class Pause implements Screen
     // Game object (Menu instance in the constructor)
     Menu game;
     private FoodGame foodGame;
+
+    // Sound Effects
+    private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private SoundPaths soundPaths = SoundPaths.getInstance();
 
     // Screen constructor
     public Pause(Menu game, FoodGame foodGame) {
@@ -86,6 +92,7 @@ public class Pause implements Screen
 
         resume_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
                 foodGame.setPaused(false);
                 game.setScreen(foodGame);
             }
@@ -93,6 +100,7 @@ public class Pause implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
                 game.resetGame();
                 foodGame.getEnemiesGenerator().reset();
                 game.setScreen(Cover.getInstance());
@@ -110,9 +118,6 @@ public class Pause implements Screen
         ScreenUtils.clear(1, 0, 0, 1);
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(logo, 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) game.setScreen(foodGame);
         batch.end();
         stage.draw();
     }

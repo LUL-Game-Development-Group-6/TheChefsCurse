@@ -2,6 +2,7 @@ package com.mygdx.game.Screens;
 
 // LibGDX libraries
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.helpers.AnimationParameters;
 import com.mygdx.game.helpers.Fonts;
+import com.mygdx.game.helpers.SoundPaths;
 import com.mygdx.game.helpers.StatsHelper;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -61,6 +63,11 @@ public class NewRound implements Screen
     private StatsHelper statsHelper;
     private ArrayList<AnimationParameters> xpAnimation;
     private float timePassed;
+
+    // Sound effects
+    private Sound buySound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUYUPGRADE_PATH));
+    private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private SoundPaths soundPaths = SoundPaths.getInstance();
 
     // Screen constructor
     public NewRound(Menu game) {
@@ -165,6 +172,7 @@ public class NewRound implements Screen
 
         add_damage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buySound.play(soundPaths.getVolume());
                 AnimationParameters animation = new AnimationParameters(
                     game.getXpAnimationHelper().get50xp(),
                     -10,
@@ -181,6 +189,7 @@ public class NewRound implements Screen
 
         add_health.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buySound.play(soundPaths.getVolume());
                 AnimationParameters animation = new AnimationParameters(
                     game.getXpAnimationHelper().get50xp(),
                     -10,
@@ -206,6 +215,7 @@ public class NewRound implements Screen
 
         nextRound_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
                 stage.dispose();
                 //foodGame.getEnemiesGenerator().reset();
                 game.incrementRound();
