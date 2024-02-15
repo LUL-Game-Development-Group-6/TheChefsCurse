@@ -90,7 +90,8 @@ public class Pause implements Screen
 
         resume_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                buttonSound.play(0.5f);
+                buttonSound.play(0.3f);
+				buttonSound.dispose();
 				foodGame.gameMusic.play();
 				foodGame.setPaused(false);
                 game.setScreen(foodGame);
@@ -99,7 +100,8 @@ public class Pause implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                buttonSound.play(0.5f);
+                buttonSound.play(0.3f);
+				buttonSound.dispose();
 				game.resetGame();
                 foodGame.getEnemiesGenerator().reset();
                 game.setScreen(Cover.getInstance());

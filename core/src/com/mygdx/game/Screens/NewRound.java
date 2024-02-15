@@ -215,7 +215,9 @@ public class NewRound implements Screen
 
         nextRound_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                buttonSound.play(0.5f);
+                buttonSound.play(0.3f);
+				buttonSound.dispose();
+				buySound.dispose();
 				stage.dispose();
                 //foodGame.getEnemiesGenerator().reset();
                 game.incrementRound();

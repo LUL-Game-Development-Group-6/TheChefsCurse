@@ -123,12 +123,13 @@ public class FoodGame implements Screen
 	}
 
 	public void dispose() {
-		//gameMusic.stop();
+		gameMusic.stop();
 		game.batch.dispose();
 		player1.dispose();
 		shapeRenderer.dispose();
 		entityList = null;
-		//gameMusic.dispose();
+		gameMusic.dispose();
+		enemyDies.dispose();
 	}
 
 	public boolean getPaused() {

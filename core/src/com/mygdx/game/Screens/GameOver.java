@@ -98,10 +98,11 @@ public class GameOver implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-				buttonSound.play(0.5f);
+				buttonSound.play(0.3f);
 				deathSound.stop();
 				deathSound.dispose();
                 foodGame.dispose();
+				buttonSound.dispose();
                 foodGame.getEnemiesGenerator().reset();
                 game.resetGame();
                 foodGame = null;
