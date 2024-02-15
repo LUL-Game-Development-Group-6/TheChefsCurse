@@ -17,6 +17,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import com.badlogic.gdx.audio.Sound;
+import com.mygdx.game.helpers.SoundPaths;
 
 public class Player extends DynamicObject {
 
@@ -116,6 +118,11 @@ public class Player extends DynamicObject {
 	}
 
 	private WeaponType weaponType;
+	
+	//player sounds
+	private Sound shotgunSound;
+	private Sound redgunSound;
+	private Sound playerHit;
 
     public Player(float x, float y, float width, float height, Menu globalGame)
     {
@@ -124,6 +131,10 @@ public class Player extends DynamicObject {
 		this.height = height;
 		this.globalGame = globalGame;
 		this.setHit(false);
+		
+		this.playerHit = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.PLAYERHIT_PATH));;
+		this.shotgunSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.SHOTGUN_PATH));
+		this.redgunSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.REDGUN_PATH));
 		
 		allAnimations = new ArrayList<Animation<Sprite>>();
 		allStatics = new ArrayList<Sprite>();
@@ -153,6 +164,13 @@ public class Player extends DynamicObject {
 		// Cursor vector
 		cursorVector = new Vector3();
     }
+	
+	@Override
+	public void takeDamage(int damage)
+	{
+		playerHit.play(0.8f);
+		this.setCurrentHealth(this.getCurrentHealth() - damage);
+	}
 
 	public void flipAnimation() {
 		for (Animation<Sprite> animation : allAnimations) {
@@ -414,14 +432,16 @@ public class Player extends DynamicObject {
 		}
 
 		// Hablde redgun's bullet
-		if(this.weaponType == WeaponType.REDGUN) {
+		if(this.weaponType == WeaponType.REDGUN) {//the redgun fire goes here
 			bulletDirection(90, batch, game);
+			redgunSound.play(0.45f);
 			lastShot = System.currentTimeMillis();
 			return false;
 		}
 		// Habndle shotgun
-		if(this.weaponType == WeaponType.SHOTGUN) {
+		if(this.weaponType == WeaponType.SHOTGUN) {//the shotgun fire goes here
 			bulletDirection(95, batch, game);
+			shotgunSound.play(0.75f);
 			lastShot = System.currentTimeMillis();
 			flag = true;
 			return false;	

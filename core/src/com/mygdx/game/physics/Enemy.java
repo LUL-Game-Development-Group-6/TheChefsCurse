@@ -15,6 +15,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Screens.FoodGame;
 import com.mygdx.game.Screens.Menu;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.mygdx.game.helpers.SoundPaths;
+
 public class Enemy extends DynamicObject{
   
   private Vector2 position;
@@ -22,7 +26,7 @@ public class Enemy extends DynamicObject{
   private Vector2 bulletSpeed;
 
   private Vector2 previousSprite;
-	private Vector2 previousPos;
+  private Vector2 previousPos;
 
   private float normalSpeed;
 
@@ -56,6 +60,9 @@ public class Enemy extends DynamicObject{
   }
 
   private EnemyType enemyType;
+  
+  private Sound damageSound;
+  private Sound enemyShootSound;
 
   public Enemy(Menu game, Vector2 position, float width, float height, EnemyType enemyType){
   
@@ -65,6 +72,8 @@ public class Enemy extends DynamicObject{
     enemyAmmunition = new LinkedList<Bullet>();
     enemyBatch = new SpriteBatch();
 	
+	this.damageSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.ENEMYHIT_PATH));
+	this.enemyShootSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.ENEMYGUN_PATH));
 	
     switch(enemyType){
 
@@ -293,6 +302,7 @@ public class Enemy extends DynamicObject{
   @Override//had to move this into enemy because it was more trouble than it was worth to try and change the one in dynamic object
   public void takeDamage(int damage)
   {
+	  damageSound.play(0.8f);
 	  this.setCurrentHealth(this.getCurrentHealth() - damage);
 	  if(this.getCurrentHealth() <= 0){
 		  System.out.println("Enemy should die");
@@ -348,12 +358,14 @@ public class Enemy extends DynamicObject{
           player.setTimeHit();
 				  break;
 			  case POPCORN:
+		  enemyShootSound.play(0.5f);
           Bullet nextBullet1 = new Bullet(bulletSpeed.x, bulletSpeed.y, position.x, position.y + 50, Bullet.EnemyBullet.POPCORN_BULLET);
           nextBullet1.setSpeed(0.15f);
           nextBullet1.setDespawnTime(Bullet.EnemyBullet.HOTDOG_BULLET);
           enemyAmmunition.add(nextBullet1);
 				  break;
 			  case HOTDOG:
+				  enemyShootSound.play(0.5f);
 				  Bullet nextBullet2 = new Bullet(bulletSpeed.x, bulletSpeed.y, position.x, position.y + 50, Bullet.EnemyBullet.HOTDOG_BULLET);
 				  nextBullet2.setSpeed(0.2f);
 				  nextBullet2.setDespawnTime(Bullet.EnemyBullet.HOTDOG_BULLET);
