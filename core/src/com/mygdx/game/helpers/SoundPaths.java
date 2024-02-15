@@ -40,7 +40,7 @@ public class SoundPaths
 	}
 
 	public void setMusicVolume(float newVol) {
-		volume = newVol;
+		musicVolume = newVol;
 	}
 
 	public float getMusicVolume() {
