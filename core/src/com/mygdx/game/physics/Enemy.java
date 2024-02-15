@@ -305,6 +305,8 @@ public class Enemy extends DynamicObject{
 	  damageSound.play(0.8f);
 	  this.setCurrentHealth(this.getCurrentHealth() - damage);
 	  if(this.getCurrentHealth() <= 0){
+		  damageSound.dispose();
+		  enemyShootSound.dispose();
 		  System.out.println("Enemy should die");
 		  isDead = true;
 	  }
