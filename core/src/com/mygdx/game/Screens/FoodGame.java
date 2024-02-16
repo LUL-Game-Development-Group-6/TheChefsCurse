@@ -127,6 +127,8 @@ public class FoodGame implements Screen
 		shapeRenderer.dispose();
 		entityList = null;
 		gameMusic.stop();
+		gameMusic.dispose();
+		enemyDies.dispose();
 	}
 
 	public boolean getPaused() {
@@ -241,10 +243,10 @@ public class FoodGame implements Screen
 		shapeRenderer.setColor(Color.RED);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		// Render entity hitboxes
-		for(Object entity_ : entityList) {
-			DynamicObject entity = (DynamicObject) entity_;
-			shapeRenderer.rect(entity.getHitbox().getX(), entity.getHitbox().getY(), entity.getHitbox().getWidth(), entity.getHitbox().getHeight());
-		}
+		// for(Object entity_ : entityList) {
+		// 	DynamicObject entity = (DynamicObject) entity_;
+		// 	shapeRenderer.rect(entity.getHitbox().getX(), entity.getHitbox().getY(), entity.getHitbox().getWidth(), entity.getHitbox().getHeight());
+		// }
 		shapeRenderer.end();
 		
 		GameSaveLoader.getInstance()

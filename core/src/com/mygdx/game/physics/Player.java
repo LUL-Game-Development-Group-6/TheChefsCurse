@@ -235,7 +235,11 @@ public class Player extends DynamicObject {
 	}
 
 	public void dispose() {
+		
 		currentAtlas.dispose();
+		shotgunSound.dispose();
+		redgunSound.dispose();
+		playerHit.dispose();
 	}
 
 	@Override

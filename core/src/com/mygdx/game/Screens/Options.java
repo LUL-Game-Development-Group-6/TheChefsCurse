@@ -158,5 +158,7 @@ public class Options implements Screen
         background.dispose();
         stage.dispose();
         font.dispose();
+        buttonSound.dispose();
+        
     }
 }

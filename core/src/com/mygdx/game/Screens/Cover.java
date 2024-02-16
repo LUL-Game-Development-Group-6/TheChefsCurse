@@ -111,6 +111,7 @@ public class Cover implements Screen
         stage.dispose();
         font.dispose();
         logoAtlas.dispose();
+        buttonSound.dispose();
     }
  
     private void logoAnimated() {

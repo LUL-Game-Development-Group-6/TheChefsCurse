@@ -131,5 +131,7 @@ public class GameOver implements Screen
         background.dispose();
         stage.dispose();
         font.dispose();
+        deathSound.dispose();
+        buttonSound.dispose();
     }
 }

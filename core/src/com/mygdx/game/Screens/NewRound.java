@@ -134,6 +134,8 @@ public class NewRound implements Screen
         background.dispose();
         stage.dispose();
         font.dispose();
+        buttonSound.dispose();
+        buySound.dispose();
     }
 
     public void createButtons() {
