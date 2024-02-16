@@ -259,7 +259,7 @@ public class Enemy extends DynamicObject{
     }
   }
 
-  @Override//had to move this into enemy because it was more trouble than it was worth to try and change the one in dynamic object
+  @Override
   public void takeDamage(int damage)
   {
 	  damageSound.play(soundPaths.getVolume());
@@ -381,7 +381,8 @@ public class Enemy extends DynamicObject{
     direction.nor();
 
     if(this.getCollided()) {
-      whereIsPlayer(player, direction);
+      whereIsPlayer(direction);
+      if(isOutsideMap(map)) velocity.set(direction.x * -speed*5, direction.y * -speed*5);
     } else {
 
       /*
@@ -396,13 +397,14 @@ public class Enemy extends DynamicObject{
       setBulletSpeed(direction);
     }
     // Update enemy position
+    isOutsideMap(map);
     position.add(velocity.x * deltaTime, velocity.y * deltaTime);   
     move(position.x, position.y);
     enemyHit(player);
   }
 
   // With new AI logic, enemies sometimes jump out the map, this will teleport them back
-  public void isOutsideMap(TiledMap map, Room room) {
+  public boolean isOutsideMap(TiledMap map) {
     MapObjects colliderList = map.getLayers().get("colliders").getObjects();
 
     for(MapObject roomSpawn : colliderList) {
@@ -410,36 +412,30 @@ public class Enemy extends DynamicObject{
         Polygon triangleCollider = ((PolygonMapObject) roomSpawn).getPolygon();
         if(!triangleCollider.contains(this.getHitbox().getX(), this.getHitbox().getY())
         || !triangleCollider.contains(this.getHitbox().getX() + this.getHitbox().getWidth(), this.getHitbox().getY())) {
-          
           this.moveBack(this.getPreviousPos(), this.getPreviousSprite());
+          return true;
         }
       }
     }
+    return false;
   }
-  
   /*
   * Method that will return a different speed direction according to where the enemy is
   * w.r.t. the player 
   */
-  public void whereIsPlayer(Player player, Vector2 direction) {
+  public void whereIsPlayer(Vector2 direction) {
 
-    float playerX = player.getPreviousPos().x;
-    float playerY = player.getPreviousPos().y;
-    float enemyX = position.x;
-    float enemyY = position.y;
+    if(direction.x >= 0 && direction.y >= 0) {
+      velocity.set(direction.x * -speed * 2, direction.y * -speed);
 
+    } else if (direction.x < 0 && direction.y >= 0) {
+      velocity.set(direction.x * -speed, direction.y * -speed * 2);
 
-    if(playerX - enemyX >= 0 && playerY - enemyY >= 0) {
+    } else if (direction.x < 0 && direction.y < 0) {
       velocity.set(direction.x * -speed * 5, direction.y * -speed);
-
-    } else if (playerX - enemyX < 0 && playerY - enemyY >= 0) {
-      velocity.set(direction.x * -speed, direction.y * -speed * 5);
-
-    } else if (playerX - enemyX < 0 && playerY - enemyY < 0) {
-      velocity.set(direction.x * -speed * 5, direction.y * -speed);
-
-    } else if (playerX - enemyX >= 0 && playerY - enemyY  < 0) {
-      velocity.set(direction.x * -speed * 5, direction.y * -speed);
+      
+    } else if (direction.x >= 0 && direction.y  < 0) {
+      velocity.set(direction.x * -speed * 2, direction.y * -speed);
     }
   }
 }

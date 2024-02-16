@@ -56,6 +56,7 @@ public class Options implements Screen
 
     // Screen constructor
     public Options() {
+        
         this.game = Menu.getInstance();
         background = new Texture("cover/options_1.png");
 
@@ -103,12 +104,12 @@ public class Options implements Screen
         musicSlider = new Slider(0f, 1f, 0.01f, false, sliderStyle);
         sfxSlider = new Slider(0f, 1f, 0.01f, false, sliderStyle);
 
-        sfxSlider.setPosition(120, 180);
-        sfxSlider.setSize(600, 10);
+        sfxSlider.setPosition(120, 160);
+        sfxSlider.setSize(600, 50);
         sfxSlider.setValue(soundPaths.getVolume());
 
-        musicSlider.setPosition(120, 335);
-        musicSlider.setSize(600, 10);
+        musicSlider.setPosition(120, 315);
+        musicSlider.setSize(600, 50);
         musicSlider.setValue(soundPaths.getMusicVolume());
         
 

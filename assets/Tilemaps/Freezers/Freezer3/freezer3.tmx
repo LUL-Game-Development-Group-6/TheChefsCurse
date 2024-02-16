@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="44">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="45">
  <imagelayer id="2" name="Image Layer 1">
   <image source="freezer_3.png" width="11840" height="4960"/>
  </imagelayer>
@@ -66,8 +66,8 @@
   <object id="16" x="6588.79" y="4395.22">
    <polygon points="-78.1417,45.1121 -241.287,-168.867 -32.8465,-221.875 561.57,-386.555 638.546,-307.044"/>
   </object>
-  <object id="37" x="2082" y="882">
-   <polygon points="0,0 208,2 166,-780 58,-814"/>
+  <object id="37" x="2016" y="909.931">
+   <polygon points="0,0 294,2.06863 234.635,-806.765 81.9808,-841.931"/>
   </object>
   <object id="38" x="182" y="2082">
    <polygon points="0,0 12,-1000 -50,-1030 -108,-96"/>
@@ -75,17 +75,14 @@
   <object id="39" x="5677.33" y="4948">
    <polygon points="0,0 306.667,-174.667 -322.667,-133.333"/>
   </object>
-  <object id="40" x="7525.33" y="3944">
-   <polygon points="0,0 222.667,-181.333 428,-46.6667 474.667,66.6667"/>
-  </object>
   <object id="41" x="9570" y="4836">
    <polygon points="0,0 74,-16 272,-162 -122,-96 -10,-16"/>
   </object>
   <object id="42" x="11734" y="3748">
    <polygon points="0,0 28,-894 -142,-892 -68,16"/>
   </object>
-  <object id="43" x="6046" y="804">
-   <polygon points="0,0 148,10 112,-796 54,-780"/>
+  <object id="43" x="5998.33" y="840.099">
+   <polygon points="0,0 305,9.90074 230.811,-788.099 111.284,-772.258"/>
   </object>
  </objectgroup>
  <objectgroup id="12" name="spawn">

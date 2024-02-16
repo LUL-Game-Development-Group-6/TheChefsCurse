@@ -13,7 +13,6 @@ import com.mygdx.game.helpers.SoundPaths;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -77,8 +76,7 @@ public class Pause implements Screen
         exit.font = font;
         TextButton exit_button = new TextButton("", exit);
         exit_button.setSize(exit_button.getWidth()/2, exit_button.getHeight()/2);
-        exit_button.setPosition(300, 100);
-
+        exit_button.setPosition(490, 200);
 
         resume = new TextButtonStyle();
         resume.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/resume_NotClicked.png")));
@@ -87,7 +85,7 @@ public class Pause implements Screen
         resume.font = font;
         TextButton resume_button = new TextButton("", resume);
         resume_button.setSize(resume_button.getWidth()/2, resume_button.getHeight()/2);
-        resume_button.setPosition(650, 100);
+        resume_button.setPosition(490, 100);
 
 
         resume_button.addListener(new ClickListener() {
@@ -106,7 +104,6 @@ public class Pause implements Screen
                 game.setScreen(Cover.getInstance());
             }
         });
-
         // Add buttons to the screen
         stage.addActor(resume_button);
         stage.addActor(exit_button);
@@ -117,7 +114,7 @@ public class Pause implements Screen
         batch.begin();
         ScreenUtils.clear(1, 0, 0, 1);
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(logo, 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        batch.draw(logo, 320, 350, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         batch.end();
         stage.draw();
     }

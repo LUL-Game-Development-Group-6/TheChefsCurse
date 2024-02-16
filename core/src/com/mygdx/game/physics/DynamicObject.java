@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.Room.Room;
 import com.mygdx.game.Screens.FoodGame;
 import com.mygdx.game.misc.Coords;
 import com.mygdx.game.misc.Pair;

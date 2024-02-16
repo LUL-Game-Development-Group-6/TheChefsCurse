@@ -294,8 +294,15 @@ public class FoodGame implements Screen
 
 			} else if(entity instanceof Enemy){
 				Enemy enemy = (Enemy) entity;
-				enemy.isOutsideMap(currentRoom.getBackground(), currentRoom);
-				enemy.render(timePassed, timeBetweenRenderCalls, batch, player, this, currentRoom.gTiledMap());
+				
+				enemy.render(
+					timePassed,
+					timeBetweenRenderCalls,
+					batch,
+					player,
+					this,
+					currentRoom.getBackground()
+				);
 			}
 			DynamicObject collission = (DynamicObject) entity;
 			currentRoom.checkCollission(collission, currentRoom.getBackground());

@@ -106,7 +106,6 @@ public class Room {
 			default:
 				break;
 		}
-
 		this.roomType = roomType;
 		pool_size = 10 + game.getStatsHelper().getEnemyScaler();
 		renderer = new OrthogonalTiledMapRenderer(background);
@@ -131,26 +130,25 @@ public class Room {
 				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y)
 				|| !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)
 				|| checkFurnitureCollission(entity, furnitureList)) {
-					if(entity.getPlayerBool()) {
-						playerJitter(entity, map, triangleCollider, furnitureList);
-					}
+					if(entity.getPlayerBool()) playerJitter(entity, map, triangleCollider, furnitureList);
 					entity.setCollided(true);
+
 				} else {
 					entity.setCollided(false);
 				}
 			}
 		}
 	}
-
+	// Roddys function (cleaned) to collide against walls
 	public void playerJitter(DynamicObject entity, TiledMap map, Polygon triangleCollider, MapObjects furnitureList) {
 
 		Player player = (Player) entity;
 		float testJitter = player.getSpeed()/2;
 
 		if( checkFurnitureCollission(entity, furnitureList)) {
-			player.moveBack(player.getPreviousPos(), player.getPreviousSprite());	
-		}
-		else if(!triangleCollider.contains(player.getHitbox().x, player.getHitbox().y)) {
+			player.moveBack(player.getPreviousPos(), player.getPreviousSprite());
+
+		} else if(!triangleCollider.contains(player.getHitbox().x, player.getHitbox().y)) {
 			player.moveBack(player.getPreviousPos(), player.getPreviousSprite());
 
 			if(Gdx.input.isKeyPressed(Input.Keys.S)) {
@@ -231,9 +229,5 @@ public class Room {
 	}
 	public int getPoolSize() {
 		return this.pool_size;
-	}
-
-	public TiledMap gTiledMap() {
-		return this.background;
 	}
 }
