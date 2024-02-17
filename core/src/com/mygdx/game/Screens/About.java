@@ -30,11 +30,15 @@ public class About implements Screen
 
     // Cover images
     private Texture background;
+    private Texture background0;
+    private Texture background01;
     private Texture background1;
     private Texture background2;
     private Texture background3;
 
     private static enum AboutStatus {
+        AB0,
+        AB01,
         AB1,
         AB2,
         AB3,
@@ -60,6 +64,8 @@ public class About implements Screen
     // Screen constructor
     public About() {
         this.game = Menu.getInstance();
+        background0 = new Texture("cover/about_0.png");
+        background01 = new Texture("cover/about_01.png");
         background1 = new Texture("cover/about_1.png");
         background2 = new Texture("cover/about_2.png");
         background3 = new Texture("cover/about_3.png");
@@ -78,8 +84,8 @@ public class About implements Screen
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
-        aboutStatus = AboutStatus.AB1;
-        background = background1;
+        aboutStatus = AboutStatus.AB0;
+        background = background0;
         createButtons();
     }
     
@@ -143,6 +149,14 @@ public class About implements Screen
 
     public void moveThroughClicks() {
         switch (aboutStatus) {
+            case AB0:
+                aboutStatus = AboutStatus.AB01;
+                background = background01;
+                break;
+            case AB01:
+                aboutStatus = AboutStatus.AB1;
+                background = background1;
+                break;
             case AB1:
                 aboutStatus = AboutStatus.AB2;
                 background = background2; 
@@ -152,7 +166,7 @@ public class About implements Screen
                 background = background3;
                 break;
             case AB3:
-                aboutStatus = AboutStatus.AB1;
+                aboutStatus = AboutStatus.AB0;
                 game.setScreen(Cover.getInstance());
                 break;
             default:
@@ -163,8 +177,16 @@ public class About implements Screen
 
     public void moveThroughClicksReversed() {
         switch (aboutStatus) {
-            case AB1:
+            case AB0:
                 game.setScreen(Cover.getInstance()); 
+                break;
+            case AB01:
+                aboutStatus = AboutStatus.AB0;
+                background = background0;
+                break;
+            case AB1:
+                aboutStatus = AboutStatus.AB01;
+                background = background01;
                 break;
             case AB2:
                 aboutStatus = AboutStatus.AB1;
