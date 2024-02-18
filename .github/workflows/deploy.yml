@@ -46,7 +46,7 @@ jobs:
         distribution: 'temurin'
     - run: chmod +x ./gradlew
     - name: Clear cache
-      run: ./gradlew html:clear
+      run: ./gradlew html:clean
     - name: Build html
       run: ./gradlew html:dist  
     - name: Copy html to deployment repository
