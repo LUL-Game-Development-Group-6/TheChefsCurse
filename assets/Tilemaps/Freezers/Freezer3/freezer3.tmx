@@ -1,11 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="3">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="17">
  <imagelayer id="2" name="Image Layer 1">
   <image source="freezer_3.png" width="11840" height="4960"/>
  </imagelayer>
+ <imagelayer id="10" name="Image Layer 5" offsetx="4760" offsety="860">
+  <image source="shelf_1.png" width="480" height="800"/>
+ </imagelayer>
+ <imagelayer id="6" name="Image Layer 3" offsetx="8340.36" offsety="1504.97">
+  <image source="shelf_1.png" width="480" height="800"/>
+ </imagelayer>
+ <imagelayer id="11" name="Image Layer 6" offsetx="11245.5" offsety="3036.36">
+  <image source="shelf_1.png" width="480" height="800"/>
+ </imagelayer>
+ <imagelayer id="5" name="Image Layer 2" offsetx="7185.71" offsety="901.334">
+  <image source="shelf_2.png" width="750" height="950"/>
+ </imagelayer>
+ <imagelayer id="8" name="Image Layer 4" offsetx="2354" offsety="516">
+  <image source="shelf_3.png" width="690" height="920"/>
+ </imagelayer>
  <objectgroup id="3" name="colliders">
-  <object id="2" x="4121.21" y="1818.18">
-   <polygon points="0,0 -48.4848,-3.0303 -1918.18,-981.818 -1945.45,-978.788 -3969.7,106.061 -3978.79,157.576 -3975.76,181.818 1503.03,3057.58 1545.45,3069.7 3630.3,2000 3669.7,2018.18 5475.76,2954.55 5509.09,2954.55 7569.7,1900 7584.85,1860.61 2038.79,-1054.18 2004.79,-1048.18"/>
+  <object id="2" x="4087.88" y="1835.51">
+   <polygon points="240,-106 -17.1092,300.467 -301.485,-91.0303 -1918.18,-981.818 -1945.45,-978.788 -3969.7,106.061 -3978.79,157.576 -3975.76,181.818 1503.03,3057.58 1545.45,3069.7 3630.3,2000 3669.7,2018.18 5475.76,2954.55 5509.09,2954.55 7569.7,1900 7584.85,1860.61 2038.79,-1054.18 2004.79,-1048.18"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="furniture">
+  <object id="3" x="7914" y="1696">
+   <polygon points="0,0 -214,148 -720,-126 -708,-682 -498,-788 -4,-560"/>
+  </object>
+  <object id="4" x="11504" y="3825.33">
+   <polygon points="0,0 -252,-126.667 -250.667,-694.667 2.66667,-801.333 201.333,-689.333 201.333,-105.333"/>
+  </object>
+  <object id="5" x="8802" y="2164">
+   <polygon points="0,0 -203,131 -450,14 -440,-548 -218,-652 -6,-545"/>
+  </object>
+  <object id="6" x="5217.33" y="1525.33">
+   <polygon points="0,0 -208,128 -452,-1.33333 -442.667,-560 -212,-669.333 -6.66667,-560"/>
+  </object>
+  <object id="7" x="3032" y="1289.33">
+   <polygon points="0,0 -209.333,124 -665.333,-109.333 -664,-666.667 -444,-773.333 -4,-562.667"/>
+  </object>
+  <object id="8" x="1910.67" y="2120">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="9" x="3979.33" y="2659.33">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="10" x="4962.67" y="3417.33">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="11" x="5916.67" y="2027.33">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="12" x="7004" y="2749.33">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="13" x="8837.33" y="2948">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="14" x="10465.3" y="3557.33">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="15" x="9338" y="4000">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="16" x="6588.79" y="4395.22">
+   <polygon points="-78.1417,45.1121 -241.287,-168.867 -32.8465,-221.875 561.57,-386.555 638.546,-307.044"/>
   </object>
  </objectgroup>
 </map>

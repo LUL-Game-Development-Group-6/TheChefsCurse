@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="2">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="5">
  <imagelayer id="3" name="Image Layer 1">
   <image source="freezer_1.png" width="4320" height="3040"/>
+ </imagelayer>
+ <imagelayer id="5" name="Image Layer 2" offsetx="440" offsety="1148">
+  <image source="shelf_1.png" width="480" height="800"/>
+ </imagelayer>
+ <imagelayer id="6" name="Image Layer 3" offsetx="2576" offsety="556">
+  <image source="shelf_2.png" width="750" height="950"/>
  </imagelayer>
  <objectgroup id="2" name="colliders">
   <object id="1" x="2300" y="816">
    <polygon points="0,0 -2060,1088 -192,2060 1900,996"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="furniture">
+  <object id="2" x="3302" y="1358">
+   <polygon points="0,0 -216,124 -728,-148 -706,-688 -492,-808 2,-564"/>
+  </object>
+  <object id="3" x="430" y="1806">
+   <polygon points="0,0 250,130 468,-2 462,-568 240,-654 26,-550 -2,-22"/>
+  </object>
+  <object id="4" x="2871.99" y="2162">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
   </object>
  </objectgroup>
 </map>

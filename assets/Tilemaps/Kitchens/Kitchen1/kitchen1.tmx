@@ -1,11 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="13">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="22">
  <imagelayer id="2" name="Image Layer 1" offsetx="16" offsety="32">
   <image source="kitchen_1.png" width="4330" height="3050"/>
  </imagelayer>
+ <imagelayer id="8" name="Image Layer 5" offsetx="3742" offsety="976">
+  <image source="poster1.png" width="290" height="490"/>
+ </imagelayer>
+ <imagelayer id="5" name="Image Layer 2" offsetx="2039.39" offsety="369.697">
+  <image source="fridge.png" width="549" height="799"/>
+ </imagelayer>
+ <imagelayer id="6" name="Image Layer 3" offsetx="2286.67" offsety="341.333">
+  <image source="stove.png" width="700" height="1064"/>
+ </imagelayer>
+ <imagelayer id="10" name="Image Layer 6" offsetx="884.848" offsety="845.455">
+  <image source="table2.png" width="1280" height="790"/>
+ </imagelayer>
+ <imagelayer id="11" name="Image Layer 7" offsetx="224.242" offsety="1181.82">
+  <image source="table1.png" width="1280" height="790"/>
+ </imagelayer>
  <objectgroup id="3" name="colliders">
-  <object id="12" x="287.879" y="1945.45">
+  <object id="12" x="289.879" y="1939.45">
    <polygon points="0,0 1833.33,954.545 3896.97,-106.061 2024.24,-1084.85"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="furniture">
+  <object id="13" x="2977.33" y="1202.67">
+   <polygon points="0,0 -224,138.667 -900,-220 -757.333,-297.333 -58.6667,-34.6667"/>
+  </object>
+  <object id="14" x="464" y="1822">
+   <polygon points="0,0 218,144 1448,-536 1494,-784 1260,-916 -38,-54"/>
+  </object>
+  <object id="20" x="2861" y="2512">
+   <polygon points="-85.3333,46.3333 -265,-54 -324,-103.667 338,-391 419,-400 512,-266"/>
+  </object>
+  <object id="21" x="1641" y="2198.5">
+   <polygon points="-3,118.833 205.333,117.833 192.167,-116.333 27.3333,-114"/>
   </object>
  </objectgroup>
 </map>

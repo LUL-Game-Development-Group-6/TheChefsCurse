@@ -3,20 +3,22 @@ package com.mygdx.game.physics;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.game.Room.Room;
+import com.mygdx.game.Screens.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class EnemiesGenerator {
-    private static final int MAX_ENEMY_POOL_SIZE = 10;
-    private int enemiesLeft = MAX_ENEMY_POOL_SIZE;
+    private int MAX_ENEMY_POOL_SIZE;
+    private int enemiesLeft;
     private EnemyFactory factory;
     private Room room;
     private float timeElapsedSinceLastSpawn;
     private int enemiesSpawned;
     private List<Object> recentlySpawnedEnemies;
+    private Menu game;
 
     public EnemiesGenerator() {
         factory = EnemyFactory.getInstance();
@@ -25,8 +27,12 @@ public class EnemiesGenerator {
         recentlySpawnedEnemies = new ArrayList<>();
     }
 
-    public EnemiesGenerator(List<Object> entityList, Room room) {
+    public EnemiesGenerator(List<Object> entityList, Room room, Menu game) {
+
         this.room = room; 
+        this.game = game;
+        MAX_ENEMY_POOL_SIZE = room.getPoolSize();
+        enemiesLeft = MAX_ENEMY_POOL_SIZE;
         factory = EnemyFactory.getInstance();
         timeElapsedSinceLastSpawn = 0;
         enemiesSpawned = 0;
@@ -37,35 +43,47 @@ public class EnemiesGenerator {
         for(int i = 0; i<MAX_ENEMY_POOL_SIZE; i++) {
             Enemy enemy = factory.withRandomType()
                     .withRandomPosition(room)
-                    .build();
+                    .build(this.game);
         }
     }
 
     public void getNextBatchOfEnemies(float delta) {
-        // every 15 seconds
+        // every 15 seconds generate batch if pool is not full
         if(timeElapsedSinceLastSpawn >= 5 && enemiesSpawned <= MAX_ENEMY_POOL_SIZE) {
-            // spawn random batch of enemies
+            // get random size of enemy chunk
             int enemiesToSpawn = generateNextRandomChuckSize();
+
+            // get new number of enemies
             int diff = enemiesToSpawn + enemiesSpawned;
-            for(int i = enemiesSpawned - 1; i < diff; i++) {
+            for(int i = enemiesSpawned; i < diff; i++) {
                 try {
-                    recentlySpawnedEnemies.add(factory.getEnemies().get(i));
+                    Enemy enemyToAdd = factory.getEnemies().get(i);
+                    if(!recentlySpawnedEnemies.contains(enemyToAdd)) {
+
+                        recentlySpawnedEnemies.add(enemyToAdd);
+                        enemiesSpawned++;
+                    }
+
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
                     System.out.println("[WARN] Unable to spawn enemy. " + e);
                 }
-                enemiesSpawned++;
             }
-
             // reset time tracker
             timeElapsedSinceLastSpawn = 0;
+
         } else if(enemiesSpawned == 0) {
+            
             try {
-                recentlySpawnedEnemies.add(factory.getEnemies().get(0));
+                Enemy enemyToAdd = factory.getEnemies().get(0);
+                if(!recentlySpawnedEnemies.contains(enemyToAdd)) {
+                    recentlySpawnedEnemies.add(enemyToAdd);
+                }
             } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
                 System.out.println("[WARN] Unable to spawn enemy. " + e);
             }
             timeElapsedSinceLastSpawn = 0;
             enemiesSpawned++;
+
         } else {
             timeElapsedSinceLastSpawn += delta;
         }
@@ -73,7 +91,7 @@ public class EnemiesGenerator {
 
     private int generateNextRandomChuckSize() {
         if(MAX_ENEMY_POOL_SIZE - enemiesSpawned > 0) {
-            int maxBound = MAX_ENEMY_POOL_SIZE - enemiesSpawned;
+            int maxBound = Math.min(4, MAX_ENEMY_POOL_SIZE - enemiesSpawned);
             int minBound = 1;
             try {
                 return MathUtils.random(minBound, maxBound);
@@ -81,10 +99,10 @@ public class EnemiesGenerator {
                 return 0;
             }
         }
-        return -1;
+        return 0;
     }
 
-    public static int getPoolSize() {
+    public int getPoolSize() {
         return MAX_ENEMY_POOL_SIZE;
     }
 
@@ -93,11 +111,11 @@ public class EnemiesGenerator {
     }
 
     public int getEnemiesLeft() {
-        return enemiesLeft;
+        return this.enemiesLeft;
     }
 
     public void enemyKilled() {
-        enemiesLeft--;
+        this.enemiesLeft--;
     }
 
     public void reset() {

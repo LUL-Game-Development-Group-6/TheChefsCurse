@@ -11,7 +11,7 @@ public class DesktopLauncher {
 		config.setWindowedMode(1280, 720);
 		config.setResizable(false);
 		try {
-			new Lwjgl3Application(new Menu(), config);
+			new Lwjgl3Application(Menu.getInstance(), config);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

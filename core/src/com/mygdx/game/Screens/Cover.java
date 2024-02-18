@@ -23,6 +23,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Cover implements Screen  
 {
+    private static Cover instance;
+
+    public static Cover getInstance() {
+        if(instance == null) instance = new Cover();
+        return instance;
+    }
 
     // Cover images
     private Texture background;
@@ -44,11 +50,11 @@ public class Cover implements Screen
     private BitmapFont font;
 
     // Game object (Menu instance in the constructor)
-    final Menu game;
+    private Menu game;
 
     // Screen constructor
-    public Cover(final Menu game) {
-        this.game = game;
+    public Cover() {
+        this.game = Menu.getInstance();
         logoAnimated();
     }
 
@@ -56,7 +62,9 @@ public class Cover implements Screen
     public void pause() {}
     public void resume() {}
     public void resize(int width, int height) {}
-    public void hide() {}
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
 
     // Works like create() method
     public void show() {
@@ -69,7 +77,62 @@ public class Cover implements Screen
 
         background = new Texture("cover/Cheffs_Curse_Cover.png");
         logo = new Texture("cover/logo_static.png");
-         //TODO: extract this into createBButton
+        createButtons();
+    }
+
+    public void render(float delta) {
+        stage.act();
+        game.batch.begin();
+        ScreenUtils.clear(1, 0, 0, 1);
+        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    
+        // Draw logo animation in case the start button was pressed 
+        if (logo_animation.getPlayMode() == Animation.PlayMode.NORMAL) {
+            game.batch.draw(logo_animation.getKeyFrame(timePassed), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            timePassed += delta;
+        // Draw the static logo if else
+        } else {
+            game.batch.draw(logo, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+    
+        game.batch.end();
+        stage.draw();
+    }
+
+    public void dispose() {
+        
+        background.dispose();
+        game.batch.dispose();
+        stage.dispose();
+        font.dispose();
+        logoAtlas.dispose();
+    }
+ 
+    private void logoAnimated() {
+
+        logoAtlas = new TextureAtlas(Gdx.files.internal("cover/Logo.atlas"));
+	    logo_animation = new Animation<Sprite>(
+			1/15f,
+            // TODO; FOR LOOP INSTEAD OF THIS
+			logoAtlas.createSprite("logo1"),
+			logoAtlas.createSprite("logo2"),
+			logoAtlas.createSprite("logo3"),
+			logoAtlas.createSprite("logo4"),
+			logoAtlas.createSprite("logo5"),
+			logoAtlas.createSprite("logo6"),
+			logoAtlas.createSprite("logo7"),
+            logoAtlas.createSprite("logo8"),
+            logoAtlas.createSprite("logo9"),
+            logoAtlas.createSprite("logo10"),
+            logoAtlas.createSprite("logo11"),
+			logoAtlas.createSprite("logo12"));
+
+        // Prevent animation to show at runtime (opening the game)
+        logo_animation.setPlayMode(Animation.PlayMode.REVERSED);
+    }  
+    
+    private void createButtons() {
+
         start = new TextButtonStyle();
         start.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Start_NotClicked.png")));
         start.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Start_Clicked.png")));
@@ -115,7 +178,6 @@ public class Cover implements Screen
 
         start_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                
                 // Start the animation
                 logo_animation.setPlayMode(Animation.PlayMode.NORMAL);
                 timePassed = 0;
@@ -125,6 +187,7 @@ public class Cover implements Screen
                     @Override
                     public void run() {
                         if (logo_animation.isAnimationFinished(timePassed)) {
+                            game.dispose();
                             game.setScreen(new FoodGame(game));
                         }
                     }
@@ -136,56 +199,6 @@ public class Cover implements Screen
         stage.addActor(about_button);
         stage.addActor(options_button);
         stage.addActor(exit_button);
+
     }
-
-    public void render(float delta) {
-        stage.act();
-        game.batch.begin();
-        ScreenUtils.clear(1, 0, 0, 1);
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    
-        // Draw logo animation in case the start button was pressed 
-        if (logo_animation.getPlayMode() == Animation.PlayMode.NORMAL) {
-            game.batch.draw(logo_animation.getKeyFrame(timePassed), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            timePassed += delta;
-        // Draw the static logo if else
-        } else {
-            game.batch.draw(logo, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        }
-    
-        game.batch.end();
-        stage.draw();
-    }
-
-    public void dispose() {
-        
-        background.dispose();
-        game.batch.dispose();
-        stage.dispose();
-        font.dispose();
-        logoAtlas.dispose();
-    }
- 
-    private void logoAnimated() {
-
-        logoAtlas = new TextureAtlas(Gdx.files.internal("cover/Logo.atlas"));
-	logo_animation = new Animation<Sprite>(
-			1/15f,
-            // TODO; FOR LOOP INSTEAD OF THIS
-			logoAtlas.createSprite("logo1"),
-			logoAtlas.createSprite("logo2"),
-			logoAtlas.createSprite("logo3"),
-			logoAtlas.createSprite("logo4"),
-			logoAtlas.createSprite("logo5"),
-			logoAtlas.createSprite("logo6"),
-			logoAtlas.createSprite("logo7"),
-            logoAtlas.createSprite("logo8"),
-            logoAtlas.createSprite("logo9"),
-            logoAtlas.createSprite("logo10"),
-            logoAtlas.createSprite("logo11"),
-			logoAtlas.createSprite("logo12"));
-
-        // Prevent animation to show at runtime (opening the game)
-        logo_animation.setPlayMode(Animation.PlayMode.REVERSED);
-    }   
 }

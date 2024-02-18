@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DynamicObject {
-    private static int[] healthLevels = {0,10,25,40,50,60,75,80,100};
+    private static int[] healthLevels = {10,25,40,50,60,75,80,100};
+    private boolean isMoving;
     private int MAX_HEALTH;
     private int currentHealth;
     protected float speed;
@@ -30,17 +31,33 @@ public abstract class DynamicObject {
     protected Sprite sprite;
     protected Texture texture;
 
+    private boolean hit;
+    private long timeHit;
+
     private List<Pair> healthTextures;
 
     private Texture currentEntityHealth;
 
     public void takeDamage(int damage){
 		this.currentHealth = this.currentHealth - damage;
-		if (this.currentHealth <= 0){
-			System.out.println("Entity should die");
-		}
     }
 
+    public boolean getIsMoving() {
+        return isMoving;
+    }
+
+    public void setIsMoving(boolean bool) {
+        isMoving = bool;
+    }
+
+    public long getTimeHit() {
+        return timeHit;
+    }
+
+    public void setTimeHit() {
+        timeHit = System.currentTimeMillis();
+    }
+    
     public int getCurrentHealth() {
         return currentHealth;
     }
@@ -49,7 +66,7 @@ public abstract class DynamicObject {
         this.currentHealth = currentHealth;
     }
 
-    public double getSpeed() {
+    public float getSpeed() {
         return speed;
     }
 
@@ -134,11 +151,16 @@ public abstract class DynamicObject {
 
     // Methods to be overwritten
     public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera) {}
-    public void render(float timePassed, float timeBetweenRenderCalls, Vector2 playerPosition, SpriteBatch batch) {}
+    public void render(float timePassed, float timeBetweenRenderCalls, SpriteBatch batch, Player player, FoodGame game) {}
     public Animation<Sprite> getEnemyAnimation() {return null;}
-    public void enemyHit(Vector2 playerPosition, Player player) {}
     public float getHeight() {return 0;}
     public float getWidth() {return 0;}
+    public Vector2 getPreviousPos() {return null;}
+    public Vector2 getPreviousSprite() {return null;}
+    public void moveBack(Vector2 Hitbox, Vector2 spriteVector) {}
+    public void setHit(boolean isHit) {hit = isHit;}
+    public boolean getHit() {return this.hit;}
+    public Animation<Sprite> getAnimation() {return null;}
 
     // Can't do switch case with ranges, thats why I used this disposition
     public void healthPercentage() {

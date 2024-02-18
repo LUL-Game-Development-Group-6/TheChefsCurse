@@ -1,11 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="3">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="370" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="10">
  <imagelayer id="2" name="Image Layer 1">
   <image source="freezer_2.png" width="8480" height="5280"/>
+ </imagelayer>
+ <imagelayer id="5" name="Image Layer 2" offsetx="6510.45" offsety="494.94">
+  <image source="shelf_3.png" width="690" height="920"/>
+ </imagelayer>
+ <imagelayer id="6" name="Image Layer 3" offsetx="2436" offsety="2756">
+  <image source="shelf_2.png" width="750" height="950"/>
+ </imagelayer>
+ <imagelayer id="7" name="Image Layer 4" offsetx="5046" offsety="914">
+  <image source="shelf_1.png" width="480" height="800"/>
  </imagelayer>
  <objectgroup id="3" name="colliders">
   <object id="2" x="5280" y="2476">
    <polygon points="0,0 -4,-208 -52,-212 -178,-148 -189.091,-139.636 -892.121,-500.242 -876.97,-539.636 -861.818,-569.939 1150.3,-1624.48 1183.64,-1621.45 3029.09,-645.697 3020,-615.394 -3264.85,2620.97 -3313.33,2633.09 -5158.79,1669.45 -5128.48,1630.06 -3110.3,560.364 -3086.06,560.364 -2252.73,1005.82 -2110.3,1187.64 -1992.12,1017.94"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="furniture">
+  <object id="3" x="7196.97" y="1263.64">
+   <polygon points="0,0 -221.212,142.424 -681.818,-103.03 -675.758,-675.758 -451.515,-763.636 -18.1818,-551.515"/>
+  </object>
+  <object id="4" x="3158" y="3560">
+   <polygon points="0,0 -206,126 -716,-136 -716,-706 -502,-804 -2,-568"/>
+  </object>
+  <object id="5" x="5498" y="1580">
+   <polygon points="0,0 -196,126 -432,8 -438,-572 -196,-674 -20,-584 2,-566"/>
+  </object>
+  <object id="6" x="2823.64" y="4540.12">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="8" x="1467.21" y="4039.27">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
+  </object>
+  <object id="9" x="6684" y="1932">
+   <polygon points="-15.3222,-4 -277.989,6 -271.422,-186 -17.5111,-192"/>
   </object>
  </objectgroup>
 </map>
