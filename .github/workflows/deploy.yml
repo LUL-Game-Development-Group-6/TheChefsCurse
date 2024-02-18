@@ -1,0 +1,74 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Deploy game
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - run: chmod +x ./gradlew
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+      with:
+        arguments: build
+    - name: Gradle dist
+      run: ./gradlew dist
+    - name: Run da Game
+      run: ./gradlew run
+  compile:
+    name: "Compile HTML"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - run: chmod +x ./gradlew
+    - name: Clear cache
+      run: ./gradlew html:clear
+    - name: Build html
+      run: ./gradlew html:dist  
+    - name: Copy html to deployment repository
+      run: |
+        mkdir -p destination-folder
+        cp -r /html/build/dist/* destination-folder/
+    - name: Checkout deployment repository
+      uses: actions/checkout@v2
+      with:
+        repository: LUL-Game-Development-Group-6/deployment
+        path: destination-folder
+        ref: main  # Modify this according to your branch     
+    - name: Push to deployment repository
+      run: |
+        cd destination-folder
+        git add .
+        git config --global user.email "github-actions@users.noreply.github.com"
+        git config --global user.name "GitHub Actions"
+        git commit -m "DEPLOYMENT COMMIT"
+        git push origin main  # Modify this according to your branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
