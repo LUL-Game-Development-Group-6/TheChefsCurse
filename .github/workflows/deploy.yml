@@ -38,6 +38,7 @@ jobs:
       run: ./gradlew run
   compile:
     name: "Compile HTML"
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
