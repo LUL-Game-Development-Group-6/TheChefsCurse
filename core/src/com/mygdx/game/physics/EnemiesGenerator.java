@@ -1,5 +1,8 @@
 package com.mygdx.game.physics;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.game.Room.Room;
 import com.mygdx.game.Screens.Menu;
