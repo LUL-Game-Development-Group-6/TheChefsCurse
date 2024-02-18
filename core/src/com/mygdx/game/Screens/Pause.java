@@ -2,16 +2,17 @@ package com.mygdx.game.Screens;
 
 // LibGDX libraries
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.helpers.SoundPaths;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -36,6 +37,10 @@ public class Pause implements Screen
     // Game object (Menu instance in the constructor)
     Menu game;
     private FoodGame foodGame;
+
+    // Sound Effects
+    private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private SoundPaths soundPaths = SoundPaths.getInstance();
 
     // Screen constructor
     public Pause(Menu game, FoodGame foodGame) {
@@ -71,8 +76,7 @@ public class Pause implements Screen
         exit.font = font;
         TextButton exit_button = new TextButton("", exit);
         exit_button.setSize(exit_button.getWidth()/2, exit_button.getHeight()/2);
-        exit_button.setPosition(300, 100);
-
+        exit_button.setPosition(490, 200);
 
         resume = new TextButtonStyle();
         resume.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/resume_NotClicked.png")));
@@ -81,11 +85,12 @@ public class Pause implements Screen
         resume.font = font;
         TextButton resume_button = new TextButton("", resume);
         resume_button.setSize(resume_button.getWidth()/2, resume_button.getHeight()/2);
-        resume_button.setPosition(650, 100);
+        resume_button.setPosition(490, 100);
 
 
         resume_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
                 foodGame.setPaused(false);
                 game.setScreen(foodGame);
             }
@@ -93,12 +98,12 @@ public class Pause implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
                 game.resetGame();
                 foodGame.getEnemiesGenerator().reset();
                 game.setScreen(Cover.getInstance());
             }
         });
-
         // Add buttons to the screen
         stage.addActor(resume_button);
         stage.addActor(exit_button);
@@ -109,10 +114,7 @@ public class Pause implements Screen
         batch.begin();
         ScreenUtils.clear(1, 0, 0, 1);
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(logo, 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) game.setScreen(foodGame);
+        batch.draw(logo, 320, 350, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         batch.end();
         stage.draw();
     }
@@ -122,5 +124,6 @@ public class Pause implements Screen
         background.dispose();
         stage.dispose();
         font.dispose();
+        buttonSound.dispose();
     }
 }

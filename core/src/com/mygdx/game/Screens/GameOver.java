@@ -18,7 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-
+import com.mygdx.game.helpers.SoundPaths;
+import com.badlogic.gdx.audio.Sound;
 
 public class GameOver implements Screen  
 {
@@ -43,6 +44,11 @@ public class GameOver implements Screen
     final Menu game;
     private FoodGame foodGame;
 
+    // Sound effects
+    private Sound deathSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.PLAYERDEAD_PATH));
+	private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private SoundPaths soundPaths = SoundPaths.getInstance();
+
     // Screen constructor
     public GameOver(final Menu game, FoodGame foodGame) {
         this.renderOpacity = 0f; 
@@ -59,6 +65,7 @@ public class GameOver implements Screen
     // Works like create() method
     public void show() {
         // Variables to draw buttons and images into the screen
+        deathSound.play(soundPaths.getVolume());
         game.batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -86,7 +93,8 @@ public class GameOver implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-
+                buttonSound.play(soundPaths.getVolume());
+				deathSound.stop();
                 foodGame.dispose();
                 foodGame.getEnemiesGenerator().reset();
                 game.resetGame();
@@ -101,8 +109,6 @@ public class GameOver implements Screen
 
     public void render(float delta) {
 
-
-
         renderOpacity = Math.min(renderOpacity + delta / 2, 1f); 
         timePassed += delta;
 
@@ -112,9 +118,7 @@ public class GameOver implements Screen
 
         game.batch.setColor(1f, 1f, 1f, renderOpacity);
 
-
         game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
         game.batch.draw(gameOverAnimation.getKeyFrame(timePassed, true), 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         game.batch.end();
 
@@ -127,5 +131,7 @@ public class GameOver implements Screen
         background.dispose();
         stage.dispose();
         font.dispose();
+        deathSound.dispose();
+        buttonSound.dispose();
     }
 }

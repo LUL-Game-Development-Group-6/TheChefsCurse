@@ -18,6 +18,7 @@ public class FurnitureBuilder {
                 entityList.add(table);
                 entityList.add(chair);
                 break;
+
             case KITCHEN_2:
                 Furniture box1 = new Furniture(3263, 2351, FurnitureType.BOX);
                 Furniture box2 = new Furniture(5685, 2586, FurnitureType.BOX);
@@ -36,6 +37,7 @@ public class FurnitureBuilder {
                 entityList.add(chair2_2);
                 entityList.add(chair3_3);
                 break;
+
             case KITCHEN_3:
                 Furniture table2 = new Furniture(5250, 3129, FurnitureType.METAL_TABLE);
                 Furniture box3 = new Furniture(3827, 4216, FurnitureType.BOX);
@@ -50,10 +52,12 @@ public class FurnitureBuilder {
                 entityList.add(chair6);
                 entityList.add(chair7);
                 break;
+
             case FREEZER_1:
                 Furniture ice1 = new Furniture(2591, 4242, FurnitureType.ICE);
                 entityList.add(ice1);
                 break;
+
             case FREEZER_2:
                 Furniture ice2 = new Furniture(1176, 2390, FurnitureType.ICE);
                 Furniture ice3 = new Furniture(2526, 1913, FurnitureType.ICE);
@@ -62,6 +66,7 @@ public class FurnitureBuilder {
                 entityList.add(ice3);
                 entityList.add(ice4);
                 break;
+
             case FREEZER_3:
                 Furniture ice5 = new Furniture(1598, 4318, FurnitureType.ICE);
                 Furniture ice6 = new Furniture(3650, 3769, FurnitureType.ICE);
@@ -84,12 +89,14 @@ public class FurnitureBuilder {
                 entityList.add(shelf1);
                 entityList.add(shelf2);
                 break;
+
             case RESTAURANT_1:
                 Furniture resTable1 = new Furniture(1318, 4549, FurnitureType.RESTAURANT_TABLE);
                 Furniture resTable2 = new Furniture(2096, 3979, FurnitureType.RESTAURANT_TABLE);
                 entityList.add(resTable1);
                 entityList.add(resTable2);
                 break;
+
             case RESTAURANT_2:
                 Furniture resTable3 = new Furniture(937, 4535, FurnitureType.RESTAURANT_TABLE);
                 Furniture resTable4 = new Furniture(1981, 4778, FurnitureType.RESTAURANT_TABLE);
@@ -110,6 +117,7 @@ public class FurnitureBuilder {
                 entityList.add(resTable10);
                 entityList.add(resTable12);
                 break;
+
             case RESTAURANT_3:
                 Furniture resTable13 = new Furniture(779, 3893, FurnitureType.RESTAURANT_TABLE);
                 Furniture resTable14 = new Furniture(2066, 3884, FurnitureType.RESTAURANT_TABLE);

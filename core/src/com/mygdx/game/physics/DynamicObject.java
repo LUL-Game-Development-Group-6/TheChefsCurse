@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.Room.Room;
 import com.mygdx.game.Screens.FoodGame;
 import com.mygdx.game.misc.Coords;
 import com.mygdx.game.misc.Pair;
@@ -19,6 +21,7 @@ import java.util.List;
 public abstract class DynamicObject {
     private static int[] healthLevels = {10,25,40,50,60,75,80,100};
     private boolean isMoving;
+    private boolean collided;
     private int MAX_HEALTH;
     private int currentHealth;
     protected float speed;
@@ -40,6 +43,14 @@ public abstract class DynamicObject {
 
     public void takeDamage(int damage){
 		this.currentHealth = this.currentHealth - damage;
+    }
+
+    public boolean getCollided() {
+        return collided;
+    }
+
+    public void setCollided(boolean bool) {
+        collided = bool;
     }
 
     public boolean getIsMoving() {
@@ -151,7 +162,7 @@ public abstract class DynamicObject {
 
     // Methods to be overwritten
     public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera) {}
-    public void render(float timePassed, float timeBetweenRenderCalls, SpriteBatch batch, Player player, FoodGame game) {}
+    public void render(float timePassed, float timeBetweenRenderCalls, SpriteBatch batch, Player player, FoodGame game, TiledMap map) {}
     public Animation<Sprite> getEnemyAnimation() {return null;}
     public float getHeight() {return 0;}
     public float getWidth() {return 0;}

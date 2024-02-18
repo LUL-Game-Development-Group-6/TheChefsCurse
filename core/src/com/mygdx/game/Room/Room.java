@@ -9,17 +9,18 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Screens.Menu;
 import com.mygdx.game.physics.DynamicObject;
 import com.mygdx.game.physics.Player;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 // Collider imports
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 
 
 public class Room {
@@ -45,7 +46,6 @@ public class Room {
 	protected OrthogonalTiledMapRenderer renderer;
 	protected ShapeRenderer shapeRenderer;
 	protected Vector2 spawnableCoords;
-	private FurnitureBuilder furnitureBuilder;
 	private RoomType roomType;
 
 	private int pool_size;
@@ -57,7 +57,6 @@ public class Room {
 		renderer.setMap(background);
 		renderer.render();
 		renderer.setView(camera);
-
 	}
 
 	
@@ -70,34 +69,43 @@ public class Room {
 
 			case KITCHEN_1:
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen1/kitchen1.tmx");
+				break;
+
 			case KITCHEN_2:
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen2/kitchen2.tmx");
 				break;
+
 			case KITCHEN_3:
 				background = mapLoader.load("Tilemaps/Kitchens/Kitchen3/kitchen3.tmx");
 				break;
+
 			case FREEZER_1:
 				background = mapLoader.load("Tilemaps/Freezers/Freezer1/freezer1.tmx");
 				break;
+
 			case FREEZER_2:
 				background = mapLoader.load("Tilemaps/Freezers/Freezer2/freezer2.tmx");
 				break;
+
 			case FREEZER_3:
 				background = mapLoader.load("Tilemaps/Freezers/Freezer3/freezer3.tmx");
 				break;	
+
 			case  RESTAURANT_1:
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant1/restaurant1.tmx");
 				break;
+
 			case  RESTAURANT_2:
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant2/restaurant2.tmx");
 				break;
+
 			case RESTAURANT_3:
 				background = mapLoader.load("Tilemaps/Restaurants/Restaurant3/restaurant3.tmx");
 				break;
+				
 			default:
 				break;
 		}
-
 		this.roomType = roomType;
 		pool_size = 10 + game.getStatsHelper().getEnemyScaler();
 		renderer = new OrthogonalTiledMapRenderer(background);
@@ -111,7 +119,7 @@ public class Room {
 
 		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
 		MapObjects furnitureList = map.getLayers().get("furniture").getObjects();
-	
+
 		for(MapObject collider : colliderList) {
 
 			// If collider is a triangle
@@ -119,52 +127,84 @@ public class Room {
 
 				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
 				
-				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y) ||
-				 !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y) || checkFurnitureCollission(entity, furnitureList)) {
-					entity.moveBack(entity.getPreviousPos(), entity.getPreviousSprite());
+				if(!triangleCollider.contains(entity.getHitbox().x, entity.getHitbox().y)
+				|| !triangleCollider.contains(entity.getHitbox().x + entity.getHitbox().width, entity.getHitbox().y)
+				|| checkFurnitureCollission(entity, furnitureList)) {
+					if(entity.getPlayerBool()) playerJitter(entity, map, triangleCollider, furnitureList);
+					entity.setCollided(true);
+
+				} else {
+					entity.setCollided(false);
 				}
 			}
 		}
 	}
-	// Returns a vector inside the map's collider coordinates
-	public Vector2 entitySpawn(TiledMap map) {
+	// Roddys function (cleaned) to collide against walls
+	public void playerJitter(DynamicObject entity, TiledMap map, Polygon triangleCollider, MapObjects furnitureList) {
 
-		MapObjects colliderList = map.getLayers().get("colliders").getObjects();
-		MapObjects furnitureList = map.getLayers().get("furniture").getObjects();
+		Player player = (Player) entity;
+		float testJitter = player.getSpeed()/2;
 
+		if( checkFurnitureCollission(entity, furnitureList)) {
+			player.moveBack(player.getPreviousPos(), player.getPreviousSprite());
+
+		} else if(!triangleCollider.contains(player.getHitbox().x, player.getHitbox().y)) {
+			player.moveBack(player.getPreviousPos(), player.getPreviousSprite());
+
+			if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+				player.move(player.getSpeed(), -testJitter);
+
+			} else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+				player.move(player.getSpeed(), testJitter);
+
+			} else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+
+				if(triangleCollider.contains(player.getHitbox().x, player.getHitbox().y - 10)) {
+					player.move(-testJitter * 2, -player.getSpeed());
+				} else {
+					player.move(-testJitter * 2, player.getSpeed());
+				}
+
+			}
+
+		} else if (!triangleCollider.contains(player.getHitbox().x + player.getHitbox().width, player.getHitbox().y)) {
+
+			player.moveBack(player.getPreviousPos(), player.getPreviousSprite());
+			if(Gdx.input.isKeyPressed(Input.Keys.S)){
+				player.move(-player.getSpeed(), -testJitter);
+
+			}
+			else if(Gdx.input.isKeyPressed(Input.Keys.W)) {				
+				player.move(-player.getSpeed(), testJitter);
+			}
+			else if(Gdx.input.isKeyPressed(Input.Keys.D)){
+				
+				if (triangleCollider.contains(player.getHitbox().x + player.getHitbox().width, player.getHitbox().y - 10)){
+					player.move(testJitter * 2, -player.getSpeed());
+				}
+				else {
+					player.move(testJitter * 2, player.getSpeed());
+				}
+			}
+		}
+	}
+
+	public Vector2 entitySpawn(TiledMap map, float entityWidth, int b) {
+
+		MapObjects spawnlist = map.getLayers().get("spawn").getObjects();
+	
 		Vector2 spawn = new Vector2(0, 0);
+		RectangleMapObject spawnArea = (RectangleMapObject) spawnlist.get(MathUtils.random(spawnlist.getCount() - 1));
+		Rectangle rectangle = spawnArea.getRectangle();
+	
+		do {
 
-		for(MapObject collider : colliderList) {
+			spawn.x = MathUtils.random(rectangle.x, rectangle.x + rectangle.width - entityWidth);
+			spawn.y = MathUtils.random(rectangle.y, rectangle.y + rectangle.height);
 
-			if(collider instanceof PolygonMapObject) {
-
-				Polygon triangleCollider = ((PolygonMapObject) collider).getPolygon();
-
-				while (!triangleCollider.contains(spawn) || !triangleCollider.contains(spawn.x + 700, spawn.y) 
-				|| checkFurnitureSpawn(spawn, furnitureList)) {
-					
-					spawn.x = MathUtils.random(0, 10000);
-					spawn.y = MathUtils.random(0, 10000);
-
-
-				}
-			}
-		}
+		} while (!(rectangle.contains(spawn.x, spawn.y)));
+	
 		return spawn;
-	}
-
-
-	public boolean checkFurnitureSpawn(Vector2 spawn, MapObjects furnitureList) {
-
-		for(MapObject furniture : furnitureList) {
-			if(furniture instanceof PolygonMapObject) {
-				Polygon furniturePolygon = ((PolygonMapObject) furniture).getPolygon();
-				if(furniturePolygon.contains(spawn) || furniturePolygon.contains(spawn.x + 700, spawn.y)) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	public boolean checkFurnitureCollission(DynamicObject entity, MapObjects furnitureList) {
@@ -183,7 +223,6 @@ public class Room {
 		}
 		return false;
 	}
-
 
 	public TiledMap getBackground() {
 		return background;

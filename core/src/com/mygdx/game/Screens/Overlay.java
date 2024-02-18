@@ -1,13 +1,13 @@
 package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -53,11 +53,14 @@ public class Overlay implements Screen {
     private Stage stage;
     private FoodGame foodGame;
     private Menu game;
+
+    private Music gameMusic;
     
 
     SpriteBatch batch;
 
-    public Overlay(FoodGame foodGame) {
+    public Overlay(FoodGame foodGame, Music gameMusic) {
+        this.gameMusic = gameMusic;
         this.foodGame = foodGame;
         this.game = Menu.getInstance();
         myFont = new Fonts();
@@ -109,6 +112,7 @@ public class Overlay implements Screen {
     public void show() {
         nextRound_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                gameMusic.stop();
                 stage.dispose();
                 foodGame.getEnemiesGenerator().reset();
                 game.setScreen(new NewRound(game));
@@ -160,6 +164,7 @@ public class Overlay implements Screen {
     }
 
     public void nextRound() {
+        
         stage.act();
         Gdx.input.setInputProcessor(stage);
         stage.draw();

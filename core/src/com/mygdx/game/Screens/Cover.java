@@ -19,7 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
+import com.badlogic.gdx.audio.Sound;
+import com.mygdx.game.helpers.SoundPaths;
 
 public class Cover implements Screen  
 {
@@ -41,9 +42,9 @@ public class Cover implements Screen
 
     // Cover buttons
     private TextButtonStyle exit;
-    private TextButtonStyle options;
     private TextButtonStyle about;
     private TextButtonStyle start;
+    private TextButtonStyle options;
 
     // Variabkes to display elements (e.g, buttons)
     private Stage stage;
@@ -51,6 +52,10 @@ public class Cover implements Screen
 
     // Game object (Menu instance in the constructor)
     private Menu game;
+
+    // Sound Effects
+    private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private SoundPaths soundPaths = SoundPaths.getInstance();
 
     // Screen constructor
     public Cover() {
@@ -106,6 +111,7 @@ public class Cover implements Screen
         stage.dispose();
         font.dispose();
         logoAtlas.dispose();
+        buttonSound.dispose();
     }
  
     private void logoAnimated() {
@@ -172,13 +178,29 @@ public class Cover implements Screen
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
                 Gdx.app.exit();
+            }
+        });
+
+        about_button.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
+                game.setScreen(About.getInstance());
+            }
+        });
+
+        options_button.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                buttonSound.play(soundPaths.getVolume());
+                game.setScreen(Options.getInstance());
             }
         });
 
         start_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 // Start the animation
+                buttonSound.play(soundPaths.getVolume());
                 logo_animation.setPlayMode(Animation.PlayMode.NORMAL);
                 timePassed = 0;
             
@@ -187,6 +209,7 @@ public class Cover implements Screen
                     @Override
                     public void run() {
                         if (logo_animation.isAnimationFinished(timePassed)) {
+                            logo_animation.setPlayMode(Animation.PlayMode.REVERSED);
                             game.dispose();
                             game.setScreen(new FoodGame(game));
                         }
@@ -197,8 +220,8 @@ public class Cover implements Screen
         // Add buttons to the screen
         stage.addActor(start_button);
         stage.addActor(about_button);
-        stage.addActor(options_button);
         stage.addActor(exit_button);
+        stage.addActor(options_button);
 
     }
 }

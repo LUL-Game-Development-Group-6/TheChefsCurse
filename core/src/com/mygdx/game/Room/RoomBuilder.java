@@ -1,7 +1,5 @@
 package com.mygdx.game.Room;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.game.Screens.Menu;
 
@@ -79,8 +77,6 @@ public class RoomBuilder {
                 returnRoom = Room.RoomType.RESTAURANT_1;
                 break;
         }
-
         return returnRoom;
     }
-
 }

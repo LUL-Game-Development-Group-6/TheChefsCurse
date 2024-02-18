@@ -3,11 +3,7 @@ package com.mygdx.game.Room;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.mygdx.game.Room.Room.RoomType;
-import com.mygdx.game.misc.Coords;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.mygdx.game.physics.DynamicObject;
 
 public class Furniture extends DynamicObject
@@ -21,28 +17,24 @@ public class Furniture extends DynamicObject
 	private float height;
 	
     public static enum FurnitureType {
-	
         // Kitchen
-		FRIDGE,
+        FRIDGE,
         STOVE,
         METAL_TABLE,
         CHAIR1,
         CHAIR2,
-
         // Freezer
         SINGLE_SHELF,
         DOUBLE_SHELF,
         LONG_SHELF,
         ICE,
         BOX,
-        
         // Restaurant
         RESTAURANT_TABLE,
 	}
 
 	public Furniture(float xPos, float yPos, FurnitureType type)
 	{
-
         switch (type) {
             case FRIDGE:
                 furnitureTexture = new Texture("objects/Utensils/Fridge.png");
@@ -76,33 +68,37 @@ public class Furniture extends DynamicObject
                 furnitureTexture = new Texture("objects/freezer_shelves/shelf_1.png");
                 width = 400;
                 height = 700;
-
                 break;
+
             case DOUBLE_SHELF:
                 furnitureTexture = new Texture("objects/freezer_shelves/shelf_2.png");
                 break;
+
             case LONG_SHELF:
                 furnitureTexture = new Texture("objects/freezer_shelves/shelf_3.png");
                 break;
+
             case ICE:
                 furnitureTexture = new Texture("objects/ice/ice.png");
                 width = 400;
                 height = 350;
                 break;
+
             case BOX:
                 furnitureTexture = new Texture("objects/box/box.png");
                 width = 600;
                 height = 400;
                 break;
+
             case RESTAURANT_TABLE:
                 furnitureTexture = new Texture("objects/Restaurant_Table/restaurant_table.png");
                 width = 370;
                 height = 500;
                 break;
+
             default:
                 break;
         }
-		
 		furnitureSprite = new Sprite(furnitureTexture);
 		furnitureSprite.setPosition(xPos, yPos);
 		xPosition = xPos;

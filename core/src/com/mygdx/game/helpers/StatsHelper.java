@@ -23,7 +23,7 @@ public class StatsHelper {
         this.healthScaler += 2;
     }
     public void incrementDamageScaler() {
-        this.damageScaler++;
+        this.damageScaler += 2;
     }
 
     

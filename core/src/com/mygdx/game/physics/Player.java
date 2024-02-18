@@ -16,6 +16,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import com.badlogic.gdx.audio.Sound;
+import com.mygdx.game.helpers.SoundPaths;
 
 
 public class Player extends DynamicObject {
@@ -109,6 +111,12 @@ public class Player extends DynamicObject {
 	private long fireRate;
 	private boolean flag;
 
+	// Sound Effects
+	SoundPaths soundPaths = SoundPaths.getInstance();
+	private Sound shotgunSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.SHOTGUN_PATH));
+	private Sound redgunSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.REDGUN_PATH));
+	private Sound playerHit = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.PLAYERHIT_PATH));
+
 	public static enum WeaponType {
 		SHOTGUN,
 		REDGUN,
@@ -153,6 +161,13 @@ public class Player extends DynamicObject {
 		// Cursor vector
 		cursorVector = new Vector3();
     }
+
+	@Override
+	public void takeDamage(int damage)
+	{
+		playerHit.play(soundPaths.getVolume());
+		this.setCurrentHealth(this.getCurrentHealth() - damage);
+	}
 
 	public void flipAnimation() {
 		for (Animation<Sprite> animation : allAnimations) {
@@ -220,7 +235,11 @@ public class Player extends DynamicObject {
 	}
 
 	public void dispose() {
+		
 		currentAtlas.dispose();
+		shotgunSound.dispose();
+		redgunSound.dispose();
+		playerHit.dispose();
 	}
 
 	@Override
@@ -415,12 +434,14 @@ public class Player extends DynamicObject {
 
 		// Hablde redgun's bullet
 		if(this.weaponType == WeaponType.REDGUN) {
+			redgunSound.play(soundPaths.getVolume());
 			bulletDirection(90, batch, game);
 			lastShot = System.currentTimeMillis();
 			return false;
 		}
 		// Habndle shotgun
 		if(this.weaponType == WeaponType.SHOTGUN) {
+			shotgunSound.play(soundPaths.getVolume());
 			bulletDirection(95, batch, game);
 			lastShot = System.currentTimeMillis();
 			flag = true;

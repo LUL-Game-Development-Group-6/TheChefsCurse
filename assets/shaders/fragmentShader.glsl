@@ -20,6 +20,7 @@ void main()
        gl_FragColor = vec4(1, 0, 0, max(alpha, 0.0)); 
        
    } else {
+    
        gl_FragColor = color;
    }
 }
