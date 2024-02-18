@@ -29,9 +29,9 @@ jobs:
         distribution: 'temurin'
     - run: chmod +x ./gradlew
     - name: Gradle dist
-      run: ./gradlew dist
+      run: ./gradlew desktop:dist
     - name: Run da Game
-      run: ./gradlew run
+      run: ./gradlew desktop:run
   compile:
     name: "Compile HTML"
     needs: build
