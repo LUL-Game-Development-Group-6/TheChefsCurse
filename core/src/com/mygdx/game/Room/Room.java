@@ -2,7 +2,6 @@ package com.mygdx.game.Room;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -22,32 +21,47 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 
-
+/**
+ * Class of a game room
+ *
+ * Please see the {@link com.mygdx.game.Room.Room}
+ * @author Gines Moratalla, Juozas Skarbalius
+ *
+ */
 public class Room {
-	// TODO: optimize
-	// https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
-	public static enum RoomType {
+	public enum RoomType {
 		
-		KITCHEN_1,
-		KITCHEN_2,
-		KITCHEN_3,
+		KITCHEN_1 ("Tilemaps/Kitchens/Kitchen1/kitchen1.tmx"),
+		KITCHEN_2 ("Tilemaps/Kitchens/Kitchen2/kitchen2.tmx"),
+		KITCHEN_3 ("Tilemaps/Kitchens/Kitchen3/kitchen3.tmx"),
 
-		RESTAURANT_1,
-		RESTAURANT_2,
-		RESTAURANT_3,
+		RESTAURANT_1 ("Tilemaps/Restaurants/Restaurant1/restaurant1.tmx"),
+		RESTAURANT_2 ("Tilemaps/Restaurants/Restaurant1/restaurant2.tmx"),
+		RESTAURANT_3 ("Tilemaps/Restaurants/Restaurant1/restaurant3.tmx"),
 
-		FREEZER_1,
-		FREEZER_2,
-		FREEZER_3,
+		FREEZER_1 ("Tilemaps/Freezers/Freezer1/freezer1.tmx"),
+		FREEZER_2 ("Tilemaps/Freezers/Freezer1/freezer2.tmx"),
+		FREEZER_3 ("Tilemaps/Freezers/Freezer1/freezer3.tmx"),
+		;
+
+		private String path;
+
+		RoomType(String path) {
+			this.path = path;
+		}
+
+		public String getPath() {
+			return path;
+		}
+
+		public void setPath(String path) {
+			this.path = path;
+		}
 	}
-
 	protected TiledMap background;
 	protected TmxMapLoader mapLoader;
 	protected OrthogonalTiledMapRenderer renderer;
-	protected ShapeRenderer shapeRenderer;
-	protected Vector2 spawnableCoords;
 	private RoomType roomType;
-
 	private int pool_size;
 
 	public void render(Player player1, OrthographicCamera camera)
@@ -61,55 +75,14 @@ public class Room {
 
 	
 	public void create(RoomType roomType, Menu game) {
-
 		background = new TiledMap();
 		mapLoader = new TmxMapLoader();
 
-		switch (roomType) {
+		background = mapLoader.load(roomType.getPath());
 
-			case KITCHEN_1:
-				background = mapLoader.load("Tilemaps/Kitchens/Kitchen1/kitchen1.tmx");
-				break;
-
-			case KITCHEN_2:
-				background = mapLoader.load("Tilemaps/Kitchens/Kitchen2/kitchen2.tmx");
-				break;
-
-			case KITCHEN_3:
-				background = mapLoader.load("Tilemaps/Kitchens/Kitchen3/kitchen3.tmx");
-				break;
-
-			case FREEZER_1:
-				background = mapLoader.load("Tilemaps/Freezers/Freezer1/freezer1.tmx");
-				break;
-
-			case FREEZER_2:
-				background = mapLoader.load("Tilemaps/Freezers/Freezer2/freezer2.tmx");
-				break;
-
-			case FREEZER_3:
-				background = mapLoader.load("Tilemaps/Freezers/Freezer3/freezer3.tmx");
-				break;	
-
-			case  RESTAURANT_1:
-				background = mapLoader.load("Tilemaps/Restaurants/Restaurant1/restaurant1.tmx");
-				break;
-
-			case  RESTAURANT_2:
-				background = mapLoader.load("Tilemaps/Restaurants/Restaurant2/restaurant2.tmx");
-				break;
-
-			case RESTAURANT_3:
-				background = mapLoader.load("Tilemaps/Restaurants/Restaurant3/restaurant3.tmx");
-				break;
-				
-			default:
-				break;
-		}
 		this.roomType = roomType;
 		pool_size = 10 + game.getStatsHelper().getEnemyScaler();
 		renderer = new OrthogonalTiledMapRenderer(background);
-
 	}
 
 	public RoomType getRoomType() {

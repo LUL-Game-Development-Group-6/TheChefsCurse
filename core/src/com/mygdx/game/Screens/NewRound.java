@@ -26,14 +26,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-
+/**
+ * Entry class for the logic of the game (core)
+ *
+ * Please see the {@link com.mygdx.game.Screens.Menu}
+ * @author Gines Moratalla
+ *
+ */
 public class NewRound implements Screen  
 {
 
-    // Cover images
+    /**
+     * Cover images
+     */
     private Texture background;
 
-    // Pause Screen buttons
+    /**
+     * Pause screen buttons
+     */
     private TextButtonStyle add;
     private TextButton add_health;
     private TextButton add_damage;
@@ -231,14 +241,14 @@ public class NewRound implements Screen
 
     private void adderVisibility() {
 
-    boolean hideButtons = game.getXP() < 50;
+        boolean hideButtons = game.getXP() < 50;
 
-    for (Actor actor : stage.getActors()) {
-        if (actor instanceof TextButton) {
-            if (actor == add_damage || actor == add_health) {
-                actor.setVisible(!hideButtons);
+        for (Actor actor : stage.getActors()) {
+            if (actor instanceof TextButton) {
+                if (actor == add_damage || actor == add_health) {
+                    actor.setVisible(!hideButtons);
+                }
             }
         }
     }
-}
 }

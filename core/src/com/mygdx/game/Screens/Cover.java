@@ -1,6 +1,4 @@
 package com.mygdx.game.Screens;
-
-// LibGDX libraries
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -21,9 +19,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.helpers.SoundPaths;
-
+/**
+ * Entry class for the logic of the game (core)
+ *
+ * Please see the {@link com.mygdx.game.Screens.Cover}
+ * @author Gines Moratalla, Juozas Skarbalius
+ *
+ */
 public class Cover implements Screen  
 {
+    /**
+     * Singleton declaration
+     */
     private static Cover instance;
 
     public static Cover getInstance() {
@@ -31,39 +38,48 @@ public class Cover implements Screen
         return instance;
     }
 
-    // Cover images
+    /**
+     * Background texture of the menu
+     */
     private Texture background;
+
+    /**
+     * Logo texture
+     */
     private Texture logo;
 
-    // Variables for animation
+    /**
+     * Variables for animation
+     */
     private TextureAtlas logoAtlas;
     private Animation<Sprite> logo_animation;
     private float timePassed;
 
-    // Cover buttons
-    private TextButtonStyle exit;
-    private TextButtonStyle about;
-    private TextButtonStyle start;
-    private TextButtonStyle options;
-
-    // Variabkes to display elements (e.g, buttons)
+    /**
+     * Variables for display elements
+     */
     private Stage stage;
     private BitmapFont font;
 
-    // Game object (Menu instance in the constructor)
+    /**
+     * Game object (Menu instance in the constructor)
+     */
     private Menu game;
 
-    // Sound Effects
+    /**
+     * Sound Effects
+     */
     private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
     private SoundPaths soundPaths = SoundPaths.getInstance();
 
-    // Screen constructor
     public Cover() {
         this.game = Menu.getInstance();
-        logoAnimated();
+        createLogoAnimation();
     }
 
-    // Methods necessary to implement Screen interface
+    /**
+     * Methods that must be implemented from Screen interface
+     */
     public void pause() {}
     public void resume() {}
     public void resize(int width, int height) {}
@@ -71,9 +87,13 @@ public class Cover implements Screen
         Gdx.input.setInputProcessor(null);
     }
 
-    // Works like create() method
+    /**
+     * <p>
+     *     Works similar like create() method from Game interface
+     * </p>
+     * @since 1.0
+     */
     public void show() {
-        
         // Variables to draw buttons and images into the screen
         game.batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
@@ -105,7 +125,6 @@ public class Cover implements Screen
     }
 
     public void dispose() {
-        
         background.dispose();
         game.batch.dispose();
         stage.dispose();
@@ -113,68 +132,79 @@ public class Cover implements Screen
         logoAtlas.dispose();
         buttonSound.dispose();
     }
- 
-    private void logoAnimated() {
 
+    /**
+     * <p>
+     *     Creates logo animation used after start button is clicked
+     * </p>
+     * @since 1.0
+     */
+    private void createLogoAnimation() {
         logoAtlas = new TextureAtlas(Gdx.files.internal("cover/Logo.atlas"));
-	    logo_animation = new Animation<Sprite>(
-			1/15f,
-            // TODO; FOR LOOP INSTEAD OF THIS
-			logoAtlas.createSprite("logo1"),
-			logoAtlas.createSprite("logo2"),
-			logoAtlas.createSprite("logo3"),
-			logoAtlas.createSprite("logo4"),
-			logoAtlas.createSprite("logo5"),
-			logoAtlas.createSprite("logo6"),
-			logoAtlas.createSprite("logo7"),
-            logoAtlas.createSprite("logo8"),
-            logoAtlas.createSprite("logo9"),
-            logoAtlas.createSprite("logo10"),
-            logoAtlas.createSprite("logo11"),
-			logoAtlas.createSprite("logo12"));
+
+        Sprite[] spriteArray = new Sprite[12];
+        for(int i = 0; i<12; i++) {
+            spriteArray[i] = logoAtlas.createSprite("logo"+(i+1));
+        }
+        logo_animation = new Animation<Sprite>(1/15f, spriteArray);
 
         // Prevent animation to show at runtime (opening the game)
         logo_animation.setPlayMode(Animation.PlayMode.REVERSED);
-    }  
-    
+    }
+
+    /**
+     * <p>
+     *     Creates and returns a TextButton
+     * </p>
+     * @param upTexturePath
+     * @param downTexturePath
+     * @param overTexturePath
+     * @param font used on TextButton
+     * @param x coordinate (position) of the button
+     * @param y coordinate (position) of the button
+     * @return created TextButton according to parameters
+     * @since 1.0
+     */
+    private static TextButton createButton(String upTexturePath, String downTexturePath, String overTexturePath, BitmapFont font, int x, int y) {
+        TextButtonStyle buttonSkin = new TextButtonStyle();
+        buttonSkin.up = new TextureRegionDrawable(new TextureRegion((new Texture(upTexturePath))));
+        buttonSkin.down = new TextureRegionDrawable(new TextureRegion((new Texture(downTexturePath))));
+        buttonSkin.over = new TextureRegionDrawable(new TextureRegion((new Texture(overTexturePath))));
+        buttonSkin.font = font;
+        TextButton button = new TextButton("", buttonSkin);
+        button.setSize(button.getWidth()/2, button.getHeight()/2);
+        button.setPosition(x, y);
+        return button;
+    }
+
+    /**
+     * <p>
+     *     Creates all menu buttons with their respective event listeners
+     * </p>
+     * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-92">GD-92: Review Menu Prototype</a>
+     * @since 1.0
+     */
     private void createButtons() {
-
-        start = new TextButtonStyle();
-        start.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Start_NotClicked.png")));
-        start.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Start_Clicked.png")));
-        start.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Start_Hover.png")));
-        start.font = font;
-        TextButton start_button = new TextButton("", start);
-        start_button.setSize(start_button.getWidth()/2, start_button.getHeight()/2);
-        start_button.setPosition(120, 350);
-
-        options = new TextButtonStyle();
-        options.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Options_NotClicked.png")));
-        options.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Option_Clicked.png")));
-        options.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Options_Hover.png")));
-        options.font = font;
-        TextButton options_button = new TextButton("", options);
-        options_button.setSize(options_button.getWidth()/2, options_button.getHeight()/2);
-        options_button.setPosition(120, 250);
-
-        about = new TextButtonStyle();
-        about.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/About_NotClicked.png")));
-        about.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/About_Clicked.png")));
-        about.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/About_Hover.png")));
-        about.font = font;
-        TextButton about_button = new TextButton("", about);
-        about_button.setSize(about_button.getWidth()/2, about_button.getHeight()/2);
-        about_button.setPosition(120, 150);
-
-        exit = new TextButtonStyle();
-        exit.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_NotClicked.png")));
-        exit.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_Clicked.png")));
-        exit.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_Hover.png")));
-        exit.font = font;
-        TextButton exit_button = new TextButton("", exit);
-        exit_button.setSize(exit_button.getWidth()/2, exit_button.getHeight()/2);
-        exit_button.setPosition(120, 50);
-
+        TextButton start_button = createButton(
+                "buttons/Start_NotClicked.png",
+                "buttons/Start_Clicked.png",
+                "buttons/Start_Hover.png",
+                font, 120, 350);
+        TextButton options_button = createButton(
+                "buttons/Options_NotClicked.png",
+                "buttons/Option_Clicked.png",
+                "buttons/Options_Hover.png",
+                font, 120, 250);
+        TextButton about_button = createButton(
+                "buttons/About_NotClicked.png",
+                "buttons/About_Clicked.png",
+                "buttons/About_Hover.png",
+                font, 120, 150);
+        TextButton exit_button = createButton(
+                "buttons/Exit_NotClicked.png",
+                "buttons/Exit_Clicked.png",
+                "buttons/Exit_Hover.png",
+                font, 120, 50);
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -203,7 +233,7 @@ public class Cover implements Screen
                 buttonSound.play(soundPaths.getVolume());
                 logo_animation.setPlayMode(Animation.PlayMode.NORMAL);
                 timePassed = 0;
-            
+
                 // Switch the screen after the animation is finished
                 Timer.schedule(new Timer.Task() {
                     @Override
@@ -217,11 +247,11 @@ public class Cover implements Screen
                 }, logo_animation.getAnimationDuration());
             }
         });
+
         // Add buttons to the screen
         stage.addActor(start_button);
         stage.addActor(about_button);
         stage.addActor(exit_button);
         stage.addActor(options_button);
-
     }
 }

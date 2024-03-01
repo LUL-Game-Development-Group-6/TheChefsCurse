@@ -19,9 +19,6 @@ import com.mygdx.game.physics.EnemiesGenerator;
 import com.mygdx.game.physics.Player;
 
 public class Overlay implements Screen {
-
-    public Overlay() {}
-    
     private Texture OverlayTexture;
     private Sprite OverlaySprite;
 
