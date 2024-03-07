@@ -1,12 +1,12 @@
 package com.mygdx.game.Screens;
 
 // LibGDX libraries
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.helpers.SoundPaths;
@@ -14,70 +14,99 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-
-public class About implements Screen  
-{
+/**
+ * Class for about menu screen
+ * <p>
+ * Please refer to {@link com.mygdx.game.Screens.About}
+ *
+ * @author Gines Moratalla, Juozas Skarbalius
+ */
+public class About implements Screen {
+    /**
+     * Singleton declaration
+     */
     private static About instance;
 
     public static About getInstance() {
-        if(instance == null) instance = new About();
+        if (instance == null) instance = new About();
         return instance;
     }
 
-    // Cover images
+    /**
+     * Covers' current background
+     */
     private Texture background;
-    private Texture background0;
-    private Texture background01;
-    private Texture background1;
-    private Texture background2;
-    private Texture background3;
 
-    private static enum AboutStatus {
-        AB0,
-        AB01,
-        AB1,
-        AB2,
-        AB3,
+    /**
+     * AboutStatus enum used for identifying current about sub-screen. Also contains it's background texture.
+     * <p>
+     * Please refer to {@link com.mygdx.game.Screens.About.AboutStatus}
+     *
+     * @author Gines Moratalla, Juozas Skarbalius
+     * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-181">[Logic] Options screen [S]</a>
+     */
+    private enum AboutStatus {
+        AB0(new Texture("cover/about_0.png")),
+        AB01(new Texture("cover/about_01.png")),
+        AB1(new Texture("cover/about_1.png")),
+        AB2(new Texture("cover/about_2.png")),
+        AB3(new Texture("cover/about_3.png")),
+        ;
+
+        private Texture background;
+
+        AboutStatus(Texture background) {
+            this.background = background;
+        }
+
+        public Texture getBackground() {
+            return background;
+        }
     }
 
+    /**
+     * Current about status screen displayed
+     */
     private AboutStatus aboutStatus;
 
-    // Pause Screen buttons
-    private TextButtonStyle prev;
-    private TextButtonStyle next;
-
-    // Variabkes to display elements (e.g, buttons)
+    /**
+     * Variables to display elements (e.g, buttons)
+     */
     private Stage stage;
     private BitmapFont font;
 
-    // Game object (Menu instance in the constructor)
-    Menu game;
+    /**
+     * Game object reference
+     */
+    final Menu game;
 
-    // Sound Effects
+    /**
+     * Sound effects
+     */
     private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
     private SoundPaths soundPaths = SoundPaths.getInstance();
 
-    // Screen constructor
     public About() {
         this.game = Menu.getInstance();
-        background0 = new Texture("cover/about_0.png");
-        background01 = new Texture("cover/about_01.png");
-        background1 = new Texture("cover/about_1.png");
-        background2 = new Texture("cover/about_2.png");
-        background3 = new Texture("cover/about_3.png");
     }
 
-    // Methods necessary to implement Screen interface
-    public void pause() {}
-    public void resume() {}
-    public void resize(int width, int height) {}
-    public void hide() {}
+    /**
+     * Methods necessary to implement Screen interface
+     */
+    public void pause() {
+    }
 
-    // Works like create() method
+    public void resume() {
+    }
+
+    public void resize(int width, int height) {
+    }
+
+    public void hide() {
+    }
+
     public void show() {
         // Variables to draw buttons and images into the screen
         game.batch = new SpriteBatch();
@@ -85,12 +114,22 @@ public class About implements Screen
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         aboutStatus = AboutStatus.AB0;
-        background = background0;
+        background = AboutStatus.AB0.getBackground();
         createButtons();
     }
-    
-    public void render(float delta) {
 
+    public void render(float delta) {
+        renderScreenBackground(stage, game, background);
+    }
+
+    /**
+     * <p>
+     * Renders screen background
+     * </p>
+     *
+     * @since 1.0
+     */
+    protected static void renderScreenBackground(Stage stage, Menu game, Texture background) {
         stage.act();
         ScreenUtils.clear(1, 0, 0, 1);
         game.batch.begin();
@@ -99,17 +138,16 @@ public class About implements Screen
         stage.draw();
     }
 
+    /**
+     * <p>
+     * Creates and renders buttons on about screen
+     * </p>
+     *
+     * @since 1.0
+     */
     public void createButtons() {
-
-        prev = new TextButtonStyle();
-        prev.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/left_arrow.png")));
-        prev.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/left_arrow_clicked.png")));
-        prev.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/left_arrow_hover.png")));
-        prev.font = font;
-
-        TextButton prev_button = new TextButton("", prev);
-        prev_button.setSize(prev_button.getWidth()/2.5f, prev_button.getHeight()/2.5f);
-        prev_button.setPosition(1030, 570);
+        TextButton prev_button = Cover.createButton("buttons/left_arrow.png", "buttons/left_arrow_clicked.png", "buttons/left_arrow_hover.png", font, 1030, 570);
+        prev_button.setSize(prev_button.getWidth() / 2.5f, prev_button.getHeight() / 2.5f);
         prev_button.addListener(new ClickListener() {
 
             public void clicked(InputEvent event, float x, float y) {
@@ -117,16 +155,8 @@ public class About implements Screen
             }
         });
 
-        
-        next = new TextButtonStyle();
-        next.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/arrow.png")));
-        next.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/arrow_clicked.png")));
-        next.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/arrow_hover.png")));
-        next.font = font;
-
-        TextButton next_button = new TextButton("", next);
-        next_button.setSize(next_button.getWidth()/2.5f, next_button.getHeight()/2.5f);
-        next_button.setPosition(1100, 570);
+        TextButton next_button = Cover.createButton("buttons/arrow.png", "buttons/arrow_clicked.png", "buttons/arrow_hover.png", font, 1100, 570);
+        next_button.setSize(next_button.getWidth() / 2.5f, next_button.getHeight() / 2.5f);
         next_button.addListener(new ClickListener() {
 
             public void clicked(InputEvent event, float x, float y) {
@@ -134,13 +164,12 @@ public class About implements Screen
             }
         });
 
-
         // Add button to the screen
         stage.addActor(prev_button);
         stage.addActor(next_button);
     }
+
     public void dispose() {
-        
         background.dispose();
         stage.dispose();
         font.dispose();
@@ -151,19 +180,15 @@ public class About implements Screen
         switch (aboutStatus) {
             case AB0:
                 aboutStatus = AboutStatus.AB01;
-                background = background01;
                 break;
             case AB01:
                 aboutStatus = AboutStatus.AB1;
-                background = background1;
                 break;
             case AB1:
                 aboutStatus = AboutStatus.AB2;
-                background = background2; 
                 break;
             case AB2:
                 aboutStatus = AboutStatus.AB3;
-                background = background3;
                 break;
             case AB3:
                 aboutStatus = AboutStatus.AB0;
@@ -172,34 +197,32 @@ public class About implements Screen
             default:
                 break;
         }
+        background = aboutStatus.getBackground();
         buttonSound.play(soundPaths.getVolume());
     }
 
     public void moveThroughClicksReversed() {
         switch (aboutStatus) {
             case AB0:
-                game.setScreen(Cover.getInstance()); 
+                game.setScreen(Cover.getInstance());
                 break;
             case AB01:
                 aboutStatus = AboutStatus.AB0;
-                background = background0;
                 break;
             case AB1:
                 aboutStatus = AboutStatus.AB01;
-                background = background01;
                 break;
             case AB2:
                 aboutStatus = AboutStatus.AB1;
-                background = background1;
                 break;
             case AB3:
                 aboutStatus = AboutStatus.AB2;
-                background = background2;
                 break;
             default:
                 break;
         }
+        background = aboutStatus.getBackground();
         buttonSound.play(soundPaths.getVolume());
     }
-    
+
 }

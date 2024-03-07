@@ -8,9 +8,6 @@ public class GameSave {
     public Integer lastPlayerHealth;
     public Integer enemiesLeftInLastRound;
 
-    public GameSave() {
-    }
-
     public GameSave(String version, Integer xp, Integer lastRoundPlayed, long timePlayedInMinutes, Integer lastPlayerHealth, Integer enemiesLeftInLastRound) {
         this.version = version;
         this.xp = xp;
@@ -18,6 +15,10 @@ public class GameSave {
         this.timePlayed = timePlayedInMinutes;
         this.lastPlayerHealth = lastPlayerHealth;
         this.enemiesLeftInLastRound = enemiesLeftInLastRound;
+    }
+
+    public GameSave() {
+
     }
 
     protected void updateHealth(int health) {

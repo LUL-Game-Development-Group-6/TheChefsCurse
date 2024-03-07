@@ -3,11 +3,15 @@ package com.mygdx.game.Room;
 import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.game.Screens.Menu;
 
+/**
+ * Room builder class
+ * Please see the {@link com.mygdx.game.Room.RoomBuilder}
+ *
+ * @author Juozas Skarbalius
+ */
 public class RoomBuilder {
     private static RoomBuilder roomBuilder;
-
-    private Room currentlyBuiltRoom;
-
+    private final Room currentlyBuiltRoom;
     private Room.RoomType roomType;
 
     public RoomBuilder() {
@@ -16,7 +20,7 @@ public class RoomBuilder {
     }
 
     public static RoomBuilder init() {
-        if(roomBuilder == null) roomBuilder = new RoomBuilder();
+        if (roomBuilder == null) roomBuilder = new RoomBuilder();
         return roomBuilder;
     }
 
@@ -26,17 +30,11 @@ public class RoomBuilder {
     }
 
     public RoomBuilder create(Menu game) {
-        if(currentlyBuiltRoom == null && roomType == null) {
-            throw new IllegalStateException("Cannot create room as Room is null or it's type is undefined.");
-        }
         currentlyBuiltRoom.create(roomType, game);
         return this;
     }
 
     public Room get() {
-        if(currentlyBuiltRoom == null) {
-            throw new IllegalStateException("Cannot create room as Room is null.");
-        }
         return currentlyBuiltRoom;
     }
 
@@ -45,7 +43,6 @@ public class RoomBuilder {
         Room.RoomType returnRoom;
 
         switch (a) {
-
             case 1:
                 returnRoom = Room.RoomType.KITCHEN_1;
                 break;
@@ -64,10 +61,10 @@ public class RoomBuilder {
             case 6:
                 returnRoom = Room.RoomType.FREEZER_3;
                 break;
-            case  7:
+            case 7:
                 returnRoom = Room.RoomType.RESTAURANT_1;
                 break;
-            case  8:
+            case 8:
                 returnRoom = Room.RoomType.RESTAURANT_2;
                 break;
             case 9:

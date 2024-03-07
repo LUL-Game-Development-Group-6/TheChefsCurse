@@ -15,6 +15,7 @@ public class StatsHelper {
     public int getHealthScaler() {
         return this.healthScaler;
     }
+
     public int getDamageScaler() {
         return this.damageScaler;
     }
@@ -22,11 +23,12 @@ public class StatsHelper {
     public void incrementHealthScaler() {
         this.healthScaler += 2;
     }
+
     public void incrementDamageScaler() {
         this.damageScaler += 2;
     }
 
-    
+
     // Increase enemy Damage and health by 3 points every round
     public void increaseEnemyScaler() {
         enemyScaler += 3;
@@ -42,5 +44,4 @@ public class StatsHelper {
         this.damageScaler = 0;
         this.enemyScaler = 0;
     }
-    
 }

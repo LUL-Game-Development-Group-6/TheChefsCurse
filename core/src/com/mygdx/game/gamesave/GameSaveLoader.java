@@ -6,16 +6,16 @@ import java.io.*;
 
 public class GameSaveLoader {
     private GameSave gameSave;
-    private ObjectMapper objectMapper;
-    private long gameStartTimestamp;
-    private long firstTimeStamp;
+    private final ObjectMapper objectMapper;
+    private final long firstTimeStamp;
     private static GameSaveLoader gameSaveLoader;
     private static final String FILENAME = "gamesave.json";
 
     public static GameSaveLoader getInstance() {
-        if(gameSaveLoader == null) gameSaveLoader = new GameSaveLoader();
+        if (gameSaveLoader == null) gameSaveLoader = new GameSaveLoader();
         return gameSaveLoader;
     }
+
     public GameSaveLoader() {
         this.gameSave = new GameSave();
         this.objectMapper = new ObjectMapper();
@@ -27,11 +27,11 @@ public class GameSaveLoader {
     }
 
     private void init() {
-        
+
         GameSave InitgameSave = new GameSave("1", 0, 0, 0, 100, 0);
         try {
             File gamesaveAsFile = new File(FILENAME);
-            if(gamesaveAsFile.createNewFile()) {
+            if (gamesaveAsFile.createNewFile()) {
                 updateGamesaveFile(InitgameSave);
             }
         } catch (FileNotFoundException e) {
@@ -52,20 +52,20 @@ public class GameSaveLoader {
             init();
         }
     }
+
     public GameSaveLoader health(int health) {
-        if(gameSave != null) gameSave.updateHealth(health);
+        if (gameSave != null) gameSave.updateHealth(health);
         return this;
     }
 
     public GameSaveLoader enemiesLeft(int enemiesLeft) {
-        if(gameSave != null) gameSave.updateEnemiesLeft(enemiesLeft);
+        if (gameSave != null) gameSave.updateEnemiesLeft(enemiesLeft);
         return this;
     }
 
     public GameSaveLoader withTimestamp(long timestamp) {
-        this.gameStartTimestamp = timestamp;
-        if(gameSave != null) {
-            gameSave.timePlayed += gameStartTimestamp - firstTimeStamp;
+        if (gameSave != null) {
+            gameSave.timePlayed += timestamp - firstTimeStamp;
         }
         return this;
     }
