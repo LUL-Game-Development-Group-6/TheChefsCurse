@@ -24,9 +24,12 @@ Plase, for a good experience, don't miss reading this section before playing!!
 ![2024-03-06_14-40](https://github.com/LUL-Game-Development-Group-6/game/assets/126341997/d401a84d-f68a-43c9-942c-238030b94d7b)
 
 ## Dependencies 🧩
+
+You should have at least **JDK11** to run the game. Recommended JDK version is 17. ☕
+
+
 ## How to run ⌨️
 
-You should have at least JDK11 to run the game. Recommended JDK version is 17.
 To build and run the game locally, execute the following commands:
 ```
 chmod +x ./gradlew
@@ -38,12 +41,14 @@ chmod +x ./gradlew
 ```
 ## Developers 💻
 
-- Gines Moratalla     [github profile](github.com/ginesmoratalla)
-- Juozas Skarbalius   [github profile](github.com/terahidro2003)
-- Roddy McCarron      [github profile](github.com/mcarronr)
-- Patrikas Gabis Modulevas [github profile](github.com/idk2me)
+- Gines Moratalla     ([github.com/ginesmoratalla](https://github.com/ginesmoratalla))
+- Juozas Skarbalius   ([github.com/terahidro2003](https://github.com/terahidro2003))
+- Roddy McCarron      ([github.com/mcarronr](https://github.com/mccarronr))
+- Patrikas Gabis Modulevas ([github.com/idk2me](https://github.com/idk2me))
 
 ## Art 🎨
-- Gines Moratalla     [github profile](github.com/ginesmoratalla)
+- Gines Moratalla     ([github.com/ginesmoratalla](https://github.com/ginesmoratalla))
   
 ## Sound Effects 🔉
+
+- Roddy McCarron  ([github.com/mcarronr](https://github.com/mccarronr))
