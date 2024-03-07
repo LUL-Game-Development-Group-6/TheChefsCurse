@@ -362,7 +362,6 @@ public class Enemy extends DynamicObject {
         previousPos.set(this.getHitbox().x, this.getHitbox().y);
         previousSprite.set(this.getSprite().getX(), this.getSprite().getY());
         this.update(timePassed, timeBetweenRenderCalls, player, batch, map);
-        System.out.println(this.enemyType);
 
         // Render shot bullets by the current Enemy
         for (Bullet bullet : enemyAmmunition) {
@@ -396,7 +395,6 @@ public class Enemy extends DynamicObject {
         if (this.getCurrentHealth() <= 0) {
             damageSound.dispose();
             enemyShootSound.dispose();
-            System.out.println("Enemy should die");
             isDead = true;
         }
     }
@@ -444,7 +442,6 @@ public class Enemy extends DynamicObject {
      * @since 1.0
      */
     private void move(float x, float y) {
-        System.out.println(this.getClass() + "  =====  " + x + ", " + y);
         sprite.setPosition(x - sprite.getWidth() / 2, y - sprite.getHeight() / 4);
         hitbox.setPosition(x - hitbox.getWidth() / 2, y - hitbox.getHeight() / 4);
     }

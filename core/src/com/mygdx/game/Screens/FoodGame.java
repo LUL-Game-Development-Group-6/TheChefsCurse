@@ -278,7 +278,6 @@ public class FoodGame implements Screen {
                 batch.draw(params.geAnimation().getKeyFrame(timePassed, true),
                         params.getX(), params.getY(), 200, 170);
             } else {
-                System.out.println("Bingo");
                 iterator.remove();
             }
         }

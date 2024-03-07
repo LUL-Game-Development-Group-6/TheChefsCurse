@@ -200,7 +200,6 @@ public class NewRound implements Screen {
 
                 statsHelper.incrementDamageScaler();
                 game.useXP(50);
-                System.out.println("Bought damage");
             }
         });
 
@@ -217,7 +216,6 @@ public class NewRound implements Screen {
 
                 statsHelper.incrementHealthScaler();
                 game.useXP(50);
-                System.out.println("Bought health");
             }
         });
 
