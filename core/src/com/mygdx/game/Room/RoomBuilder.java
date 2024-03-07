@@ -6,6 +6,7 @@ import com.mygdx.game.Screens.Menu;
 /**
  * Room builder class
  * Please see the {@link com.mygdx.game.Room.RoomBuilder}
+ *
  * @author Juozas Skarbalius
  */
 public class RoomBuilder {
@@ -19,7 +20,7 @@ public class RoomBuilder {
     }
 
     public static RoomBuilder init() {
-        if(roomBuilder == null) roomBuilder = new RoomBuilder();
+        if (roomBuilder == null) roomBuilder = new RoomBuilder();
         return roomBuilder;
     }
 
@@ -60,10 +61,10 @@ public class RoomBuilder {
             case 6:
                 returnRoom = Room.RoomType.FREEZER_3;
                 break;
-            case  7:
+            case 7:
                 returnRoom = Room.RoomType.RESTAURANT_1;
                 break;
-            case  8:
+            case 8:
                 returnRoom = Room.RoomType.RESTAURANT_2;
                 break;
             case 9:

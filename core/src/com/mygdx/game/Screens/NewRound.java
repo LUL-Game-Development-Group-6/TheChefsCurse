@@ -1,6 +1,7 @@
 package com.mygdx.game.Screens;
 
 // LibGDX libraries
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -8,7 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.helpers.AnimationParameters;
@@ -18,23 +18,23 @@ import com.mygdx.game.helpers.StatsHelper;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 /**
  * Entry class for the logic of the game (core)
- *
+ * <p>
  * Please see the {@link com.mygdx.game.Screens.Menu}
- * @author Gines Moratalla
  *
+ * @author Gines Moratalla
  */
-public class NewRound implements Screen  
-{
+public class NewRound implements Screen {
     /**
      * Cover images
      */
@@ -84,9 +84,15 @@ public class NewRound implements Screen
         xpAnimation = new ArrayList<>();
     }
 
-    public void pause() {}
-    public void resume() {}
-    public void resize(int width, int height) {}
+    public void pause() {
+    }
+
+    public void resume() {
+    }
+
+    public void resize(int width, int height) {
+    }
+
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
@@ -113,16 +119,16 @@ public class NewRound implements Screen
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // render damage icon texture
-        batch.draw(damageIcon, 120, 250, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/8);
+        batch.draw(damageIcon, 120, 250, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 8);
 
         // render health texture
-        batch.draw(healthIcon, 120, 150, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/8);
+        batch.draw(healthIcon, 120, 150, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 8);
 
         // render text
-        font1.draw(batch, "Gear Up!\n\nupgrade your stats using \nthe XP points you gained.",120,  500);
-        font3.draw(batch, "Cost:        XP left: ",120,  380);
-        font2.draw(batch, "50xp",230,  380);
-        font2.draw(batch, game.getStrXP(),490,  380);
+        font1.draw(batch, "Gear Up!\n\nupgrade your stats using \nthe XP points you gained.", 120, 500);
+        font3.draw(batch, "Cost:        XP left: ", 120, 380);
+        font2.draw(batch, "50xp", 230, 380);
+        font2.draw(batch, game.getStrXP(), 490, 380);
 
         timePassed += Gdx.graphics.getDeltaTime();
 
@@ -136,6 +142,7 @@ public class NewRound implements Screen
 
     /**
      * <p>Draws and renders animations on the next round screen</p>
+     *
      * @since 1.0
      */
     private void renderAnimation() {
@@ -168,27 +175,27 @@ public class NewRound implements Screen
 
         // Health and damage Icon
         Texture damageTexture = new Texture("buttons/damage.png");
-		damageIcon = new Sprite(damageTexture);
+        damageIcon = new Sprite(damageTexture);
 
         Texture healthTexture = new Texture("buttons/health.png");
-		healthIcon = new Sprite(healthTexture);
+        healthIcon = new Sprite(healthTexture);
 
         // Adder buttons
         add_damage = Cover.createButton("buttons/add_NoClick.png", "buttons/add_Clicked.png", "buttons/add_Hover.png", font, 470, 250);
-        add_damage.setSize(add_damage.getWidth()/2, add_damage.getHeight()/2);
+        add_damage.setSize(add_damage.getWidth() / 2, add_damage.getHeight() / 2);
 
-        add_health =  Cover.createButton("buttons/add_NoClick.png", "buttons/add_Clicked.png", "buttons/add_Hover.png", font, 470, 150);
-        add_health.setSize(add_health.getWidth()/2, add_health.getHeight()/2);
+        add_health = Cover.createButton("buttons/add_NoClick.png", "buttons/add_Clicked.png", "buttons/add_Hover.png", font, 470, 150);
+        add_health.setSize(add_health.getWidth() / 2, add_health.getHeight() / 2);
 
         add_damage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 buySound.play(soundPaths.getVolume());
                 AnimationParameters animation = new AnimationParameters(
-                    game.getXpAnimationHelper().get50xp(),
-                    -10,
-                    250,
-                    System.currentTimeMillis());
-                
+                        game.getXpAnimationHelper().get50xp(),
+                        -10,
+                        250,
+                        System.currentTimeMillis());
+
                 xpAnimation.add(animation);
 
                 statsHelper.incrementDamageScaler();
@@ -201,11 +208,11 @@ public class NewRound implements Screen
             public void clicked(InputEvent event, float x, float y) {
                 buySound.play(soundPaths.getVolume());
                 AnimationParameters animation = new AnimationParameters(
-                    game.getXpAnimationHelper().get50xp(),
-                    -10,
-                    150,
-                    System.currentTimeMillis());
-                
+                        game.getXpAnimationHelper().get50xp(),
+                        -10,
+                        150,
+                        System.currentTimeMillis());
+
                 xpAnimation.add(animation);
 
                 statsHelper.incrementHealthScaler();
@@ -214,8 +221,8 @@ public class NewRound implements Screen
             }
         });
 
-        TextButton nextRound_button =  Cover.createButton("buttons/next_round_NoClick.png", "buttons/next_round_Clicked.png", "buttons/next_round_Hover.png", font, 120, 30);
-        nextRound_button.setSize(nextRound_button.getWidth()/2, nextRound_button.getHeight()/2);
+        TextButton nextRound_button = Cover.createButton("buttons/next_round_NoClick.png", "buttons/next_round_Clicked.png", "buttons/next_round_Hover.png", font, 120, 30);
+        nextRound_button.setSize(nextRound_button.getWidth() / 2, nextRound_button.getHeight() / 2);
         nextRound_button.setPosition(120, 30);
 
         nextRound_button.addListener(new ClickListener() {

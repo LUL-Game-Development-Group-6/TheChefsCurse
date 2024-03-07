@@ -1,4 +1,5 @@
 package com.mygdx.game.Screens;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamesave.GameSaveLoader;
@@ -7,10 +8,10 @@ import com.mygdx.game.helpers.XpAnimationHelper;
 
 /**
  * Entry class for the logic of the game (core)
- *
+ * <p>
  * Please see the {@link com.mygdx.game.Screens.Menu}
- * @author Gines Moratalla
  *
+ * @author Gines Moratalla
  */
 public class Menu extends Game {
 
@@ -20,10 +21,10 @@ public class Menu extends Game {
     private static Menu game;
 
     public static Menu getInstance() {
-        if(game == null) game = new Menu();
+        if (game == null) game = new Menu();
         return game;
     }
-    
+
     public SpriteBatch batch;
     private StatsHelper statsHelper;
     private XpAnimationHelper xpAnimation;
@@ -33,14 +34,15 @@ public class Menu extends Game {
 
     /**
      * <p>
-     *     Method that is called once the application is started
+     * Method that is called once the application is started
      * </p>
+     *
      * @since 1.0
      */
     public void create() {
         xpAnimation = new XpAnimationHelper();
         statsHelper = new StatsHelper();
-        XP= 0;
+        XP = 0;
         totalXP = 0;
         round = 1;
         GameSaveLoader.getInstance().load();
@@ -51,14 +53,16 @@ public class Menu extends Game {
     public void render() {
         super.render();
     }
+
     public void dispose() {
         super.dispose();
     }
 
     /**
      * <p>
-     *     Get round number as a String
+     * Get round number as a String
      * </p>
+     *
      * @return Round number as String
      * @since 1.0
      */
@@ -69,8 +73,9 @@ public class Menu extends Game {
 
     /**
      * <p>
-     *     Get XP as a String
+     * Get XP as a String
      * </p>
+     *
      * @return XP as String
      * @since 1.0
      */
@@ -85,8 +90,9 @@ public class Menu extends Game {
 
     /**
      * <p>
-     *     Resets the game's fields and settings
+     * Resets the game's fields and settings
      * </p>
+     *
      * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-101">GD-101</a>
      * @since 1.0
      */
@@ -104,9 +110,10 @@ public class Menu extends Game {
 
     /**
      * <p>
-     *     Decrement user's XP score.
-     *     Usually for purchases made for upgrades in health and damage before the start of next round
+     * Decrement user's XP score.
+     * Usually for purchases made for upgrades in health and damage before the start of next round
      * </p>
+     *
      * @param XP points used to make a purchase (default: 50)
      * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-156">GD-156</a>
      * @since 1.0

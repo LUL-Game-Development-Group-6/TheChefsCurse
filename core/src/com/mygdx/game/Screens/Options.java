@@ -1,6 +1,7 @@
 package com.mygdx.game.Screens;
 
 // LibGDX libraries
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,18 +24,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
  * Class for options menu screen
  * Provides ability to change music volume and volume of special effects of the game.
  * Please refer to {@link com.mygdx.game.Screens.Options}
- * @author Gines Moratalla, Juozas Skarbalius
  *
+ * @author Gines Moratalla, Juozas Skarbalius
  */
-public class Options implements Screen  
-{
+public class Options implements Screen {
     /**
      * Singleton declaration
      */
     private static Options instance;
 
     public static Options getInstance() {
-        if(instance == null) instance = new Options();
+        if (instance == null) instance = new Options();
         return instance;
     }
 
@@ -68,7 +68,7 @@ public class Options implements Screen
     private final SoundPaths soundPaths = SoundPaths.getInstance();
 
     public Options() {
-        
+
         this.game = Menu.getInstance();
         background = new Texture("cover/options_1.png");
 
@@ -81,16 +81,23 @@ public class Options implements Screen
 
     /**
      * Methods necessary to implement Screen interface
-     * */
-    public void pause() {}
-    public void resume() {}
-    public void resize(int width, int height) {}
-    public void hide() {}
+     */
+    public void pause() {
+    }
+
+    public void resume() {
+    }
+
+    public void resize(int width, int height) {
+    }
+
+    public void hide() {
+    }
 
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
-    
+
     public void render(float delta) {
         About.renderScreenBackground(stage, game, background);
     }
@@ -117,14 +124,14 @@ public class Options implements Screen
         sfxSlider.setValue(soundPaths.getVolume());
 
         TextButton next_button = Cover.createButton("buttons/Normal_X.png", "buttons/Clicked_X.png", "buttons/Hover_X.png", font, 1050, 540);
-        next_button.setSize(next_button.getWidth()/2f, next_button.getHeight()/2f);
+        next_button.setSize(next_button.getWidth() / 2f, next_button.getHeight() / 2f);
         next_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 buttonSound.play(soundPaths.getVolume());
                 game.setScreen(Cover.getInstance());
             }
         });
-        
+
         sfxSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -132,7 +139,7 @@ public class Options implements Screen
                 soundPaths.setVolume(volume);
             }
         });
-        
+
         musicSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -146,6 +153,7 @@ public class Options implements Screen
         stage.addActor(sfxSlider);
         stage.addActor(musicSlider);
     }
+
     public void dispose() {
         background.dispose();
         stage.dispose();
