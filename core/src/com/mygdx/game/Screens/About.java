@@ -1,6 +1,7 @@
 package com.mygdx.game.Screens;
 
 // LibGDX libraries
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,20 +18,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /**
  * Class for about menu screen
- *
+ * <p>
  * Please refer to {@link com.mygdx.game.Screens.About}
- * @author Gines Moratalla, Juozas Skarbalius
  *
+ * @author Gines Moratalla, Juozas Skarbalius
  */
-public class About implements Screen  
-{
+public class About implements Screen {
     /**
      * Singleton declaration
      */
     private static About instance;
 
     public static About getInstance() {
-        if(instance == null) instance = new About();
+        if (instance == null) instance = new About();
         return instance;
     }
 
@@ -41,17 +41,18 @@ public class About implements Screen
 
     /**
      * AboutStatus enum used for identifying current about sub-screen. Also contains it's background texture.
-     *
+     * <p>
      * Please refer to {@link com.mygdx.game.Screens.About.AboutStatus}
+     *
      * @author Gines Moratalla, Juozas Skarbalius
      * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-181">[Logic] Options screen [S]</a>
      */
     private enum AboutStatus {
-        AB0 (new Texture("cover/about_0.png")),
-        AB01 (new Texture("cover/about_01.png")),
-        AB1 (new Texture("cover/about_1.png")),
-        AB2 (new Texture("cover/about_2.png")),
-        AB3 (new Texture("cover/about_3.png")),
+        AB0(new Texture("cover/about_0.png")),
+        AB01(new Texture("cover/about_01.png")),
+        AB1(new Texture("cover/about_1.png")),
+        AB2(new Texture("cover/about_2.png")),
+        AB3(new Texture("cover/about_3.png")),
         ;
 
         private Texture background;
@@ -94,10 +95,17 @@ public class About implements Screen
     /**
      * Methods necessary to implement Screen interface
      */
-    public void pause() {}
-    public void resume() {}
-    public void resize(int width, int height) {}
-    public void hide() {}
+    public void pause() {
+    }
+
+    public void resume() {
+    }
+
+    public void resize(int width, int height) {
+    }
+
+    public void hide() {
+    }
 
     public void show() {
         // Variables to draw buttons and images into the screen
@@ -109,15 +117,16 @@ public class About implements Screen
         background = AboutStatus.AB0.getBackground();
         createButtons();
     }
-    
+
     public void render(float delta) {
         renderScreenBackground(stage, game, background);
     }
 
     /**
      * <p>
-     *     Renders screen background
+     * Renders screen background
      * </p>
+     *
      * @since 1.0
      */
     protected static void renderScreenBackground(Stage stage, Menu game, Texture background) {
@@ -131,13 +140,14 @@ public class About implements Screen
 
     /**
      * <p>
-     *     Creates and renders buttons on about screen
+     * Creates and renders buttons on about screen
      * </p>
+     *
      * @since 1.0
      */
     public void createButtons() {
         TextButton prev_button = Cover.createButton("buttons/left_arrow.png", "buttons/left_arrow_clicked.png", "buttons/left_arrow_hover.png", font, 1030, 570);
-        prev_button.setSize(prev_button.getWidth()/2.5f, prev_button.getHeight()/2.5f);
+        prev_button.setSize(prev_button.getWidth() / 2.5f, prev_button.getHeight() / 2.5f);
         prev_button.addListener(new ClickListener() {
 
             public void clicked(InputEvent event, float x, float y) {
@@ -146,7 +156,7 @@ public class About implements Screen
         });
 
         TextButton next_button = Cover.createButton("buttons/arrow.png", "buttons/arrow_clicked.png", "buttons/arrow_hover.png", font, 1100, 570);
-        next_button.setSize(next_button.getWidth()/2.5f, next_button.getHeight()/2.5f);
+        next_button.setSize(next_button.getWidth() / 2.5f, next_button.getHeight() / 2.5f);
         next_button.addListener(new ClickListener() {
 
             public void clicked(InputEvent event, float x, float y) {
@@ -158,6 +168,7 @@ public class About implements Screen
         stage.addActor(prev_button);
         stage.addActor(next_button);
     }
+
     public void dispose() {
         background.dispose();
         stage.dispose();
@@ -193,7 +204,7 @@ public class About implements Screen
     public void moveThroughClicksReversed() {
         switch (aboutStatus) {
             case AB0:
-                game.setScreen(Cover.getInstance()); 
+                game.setScreen(Cover.getInstance());
                 break;
             case AB01:
                 aboutStatus = AboutStatus.AB0;
@@ -213,5 +224,5 @@ public class About implements Screen
         background = aboutStatus.getBackground();
         buttonSound.play(soundPaths.getVolume());
     }
-    
+
 }

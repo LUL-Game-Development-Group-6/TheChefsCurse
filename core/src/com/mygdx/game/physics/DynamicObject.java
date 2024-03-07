@@ -18,10 +18,11 @@ import java.util.List;
 /**
  * Dynamic Object class.
  * Inherited by Player, Enemy, Bullet and Furniture classes
+ *
  * @author Gines Moratalla, Juozas Skarbalius, Macaron
  */
 public abstract class DynamicObject {
-    private static final int[] healthLevels = {10,25,40,50,60,75,80,100};
+    private static final int[] healthLevels = {10, 25, 40, 50, 60, 75, 80, 100};
     private boolean collided;
     private int MAX_HEALTH;
     private int currentHealth;
@@ -39,8 +40,8 @@ public abstract class DynamicObject {
 
     private Texture currentEntityHealth;
 
-    public void takeDamage(int damage){
-		this.currentHealth = this.currentHealth - damage;
+    public void takeDamage(int damage) {
+        this.currentHealth = this.currentHealth - damage;
     }
 
     public boolean getCollided() {
@@ -58,7 +59,7 @@ public abstract class DynamicObject {
     public void setTimeHit() {
         timeHit = System.currentTimeMillis();
     }
-    
+
     public int getCurrentHealth() {
         return currentHealth;
     }
@@ -110,7 +111,7 @@ public abstract class DynamicObject {
     public void createHealth() {
         healthTextures = new ArrayList<>();
 
-        for(int i = 0; i<healthLevels.length; i++) {
+        for (int i = 0; i < healthLevels.length; i++) {
             healthTextures.add(new Pair(i, new Texture("health/health_" + healthLevels[i] + ".png")));
         }
 
@@ -118,32 +119,62 @@ public abstract class DynamicObject {
     }
 
     // Methods to be overwritten
-    public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera) {}
-    public void render(float timePassed, float timeBetweenRenderCalls, SpriteBatch batch, Player player, FoodGame game, TiledMap map) {}
-    public Animation<Sprite> getEnemyAnimation() {return null;}
-    public float getHeight() {return 0;}
-    public float getWidth() {return 0;}
-    public Vector2 getPreviousPos() {return null;}
-    public Vector2 getPreviousSprite() {return null;}
-    public void moveBack(Vector2 Hitbox, Vector2 spriteVector) {}
-    public void setHit(boolean isHit) {hit = isHit;}
-    public boolean getHit() {return this.hit;}
-    public Animation<Sprite> getAnimation() {return null;}
+    public void render(SpriteBatch batch, FoodGame game, OrthographicCamera camera) {
+    }
+
+    public void render(float timePassed, float timeBetweenRenderCalls, SpriteBatch batch, Player player, FoodGame game, TiledMap map) {
+    }
+
+    public Animation<Sprite> getEnemyAnimation() {
+        return null;
+    }
+
+    public float getHeight() {
+        return 0;
+    }
+
+    public float getWidth() {
+        return 0;
+    }
+
+    public Vector2 getPreviousPos() {
+        return null;
+    }
+
+    public Vector2 getPreviousSprite() {
+        return null;
+    }
+
+    public void moveBack(Vector2 Hitbox, Vector2 spriteVector) {
+    }
+
+    public void setHit(boolean isHit) {
+        hit = isHit;
+    }
+
+    public boolean getHit() {
+        return this.hit;
+    }
+
+    public Animation<Sprite> getAnimation() {
+        return null;
+    }
 
     /**
      * <p>
-     *     Method that updates health bar's texture according to the amount of health left
+     * Method that updates health bar's texture according to the amount of health left
      * </p>
+     *
      * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-98">GD-98: [PHYSICS & LOGIC] The enemy can damage player (through shooting & punching) [M]</a>
      * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-60">GD-60: [LOGIC] Health & damage mechanism [M]</a>
      * @since 1.0
      */
     public void healthPercentage() {
-        if(MAX_HEALTH == 0) MAX_HEALTH = 100;
+        if (MAX_HEALTH == 0) MAX_HEALTH = 100;
         int threshold = (100 * currentHealth) / MAX_HEALTH;
 
-        for(int i = 0; i<healthLevels.length; i++) {
-            if(threshold <= healthLevels[i]) {
+        for (int i = 0; i < healthLevels.length; i++) {
+            if (threshold <= healthLevels[i]) {
                 currentEntityHealth = (Texture) healthTextures.get(i).getSecond();
                 break;
             }
@@ -165,11 +196,12 @@ public abstract class DynamicObject {
 
     /**
      * <p>
-     *     Method that generates sprites for supplied type of Enemy
+     * Method that generates sprites for supplied type of Enemy
      * </p>
-     * @param quantity amount of sprites to generate
+     *
+     * @param quantity    amount of sprites to generate
      * @param initialPath initial path (usually name of enemy type) of enemy type's textures
-     * @param enemyAtlas reference to the enemy atlas
+     * @param enemyAtlas  reference to the enemy atlas
      * @return array of Sprite of fixed size determined by quantity
      * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-97">GD-97: [LOGIC] Spawn certain amount of enemies in a room [M]</a>
      * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-98">GD-98: [PHYSICS & LOGIC] The enemy can damage player (through shooting & punching) [M]</a>
@@ -177,16 +209,16 @@ public abstract class DynamicObject {
      * @since 1.0
      */
     Sprite[] generateEnemyAtlasSprites(int quantity, String initialPath, TextureAtlas enemyAtlas, boolean... flip) {
-        if(quantity < 1)
+        if (quantity < 1)
             throw new IllegalArgumentException("[ERROR] Quantity of sprites must be greater than 0");
-        if(initialPath == null || initialPath.isEmpty())
+        if (initialPath == null || initialPath.isEmpty())
             throw new IllegalArgumentException("[ERROR] initial path of sprites must not be empty or null");
         Sprite[] sprites = new Sprite[quantity];
-        for(int i = 0; i<sprites.length; i++) {
-            if(flip.length > 0 && flip[0]) {
-                sprites[i] = flipUpsideDown(enemyAtlas.createSprite(initialPath+(i+1)));
+        for (int i = 0; i < sprites.length; i++) {
+            if (flip.length > 0 && flip[0]) {
+                sprites[i] = flipUpsideDown(enemyAtlas.createSprite(initialPath + (i + 1)));
             } else {
-                sprites[i] = enemyAtlas.createSprite(initialPath+(i+1));
+                sprites[i] = enemyAtlas.createSprite(initialPath + (i + 1));
             }
 
         }

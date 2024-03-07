@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class AnimationParameters {
-
-    private Animation<Sprite> animation;
-    private float x, y;
-    private long timeStarted;
+    private final Animation<Sprite> animation;
+    private final float x;
+    private final float y;
+    private final long timeStarted;
 
     public AnimationParameters(Animation<Sprite> animation, float x, float y, long timeStarted) {
         this.animation = animation;
@@ -31,5 +31,5 @@ public class AnimationParameters {
     public Animation<Sprite> geAnimation() {
         return animation;
     }
-    
+
 }

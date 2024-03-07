@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Enemy Factory/Builder class. Responsible for generating Enemy according to specifications.
+ *
  * @author Juozas Skarbalius, Gines Moratalla
  */
 public class EnemyFactory {
@@ -33,7 +34,7 @@ public class EnemyFactory {
 
     // an enemy factory must be singleton
     public static EnemyFactory getInstance() {
-        if(singletonEnemyFactory == null) {
+        if (singletonEnemyFactory == null) {
             singletonEnemyFactory = new EnemyFactory();
         }
         return singletonEnemyFactory;
@@ -42,23 +43,23 @@ public class EnemyFactory {
     protected EnemyFactory withRandomType() {
         int randomID = MathUtils.random(0, 3);
 
-        if(randomID == 0) {
+        if (randomID == 0) {
             type = Enemy.EnemyType.HAMBURGER;
             this.width = 300;
             this.height = 320;
         }
-        if(randomID == 1) {
+        if (randomID == 1) {
             type = Enemy.EnemyType.HOTDOG;
             this.width = 400;
             this.height = 300;
         }
-        if(randomID == 2) {
+        if (randomID == 2) {
             type = Enemy.EnemyType.POPCORN;
             this.width = 280;
             this.height = 300;
         }
 
-        if(randomID == 3) {
+        if (randomID == 3) {
             type = Enemy.EnemyType.SODA;
             this.width = 250;
             this.height = 330;

@@ -8,12 +8,13 @@ import com.mygdx.game.Room.Room.RoomType;
 /**
  * Furniture builder class
  * Please see the {@link com.mygdx.game.Room.FurnitureBuilder}
+ *
  * @author Gines Moratalla
  */
 public class FurnitureBuilder {
     public void create(RoomType roomType, ArrayList<Object> entityList) {
         switch (roomType) {
-            
+
             case KITCHEN_1:
                 Furniture table = new Furniture(2500, 3889, FurnitureType.METAL_TABLE);
                 Furniture chair = new Furniture(1543, 4116, FurnitureType.CHAIR1);

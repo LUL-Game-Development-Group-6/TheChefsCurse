@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
-
 public class Fonts {
 
-    private FreeTypeFontGenerator myFont;
+    private final FreeTypeFontGenerator myFont;
 
     public Fonts() {
         myFont = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixelmix_bold.ttf"));
@@ -21,13 +20,10 @@ public class Fonts {
         values.borderColor = Color.BLACK;
         values.borderWidth = border;
         values.color = color;
-        
         return this.myFont.generateFont(values);
     }
 
     public void dispose() {
         this.myFont.dispose();
     }
-
-    
 }

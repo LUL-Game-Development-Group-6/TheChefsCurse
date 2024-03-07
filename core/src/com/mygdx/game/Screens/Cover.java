@@ -1,4 +1,5 @@
 package com.mygdx.game.Screens;
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -19,22 +20,22 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.helpers.SoundPaths;
+
 /**
  * Entry class for the logic of the game (core)
- *
+ * <p>
  * Please see the {@link com.mygdx.game.Screens.Cover}
- * @author Gines Moratalla, Juozas Skarbalius
  *
+ * @author Gines Moratalla, Juozas Skarbalius
  */
-public class Cover implements Screen  
-{
+public class Cover implements Screen {
     /**
      * Singleton declaration
      */
     private static Cover instance;
 
     public static Cover getInstance() {
-        if(instance == null) instance = new Cover();
+        if (instance == null) instance = new Cover();
         return instance;
     }
 
@@ -80,17 +81,24 @@ public class Cover implements Screen
     /**
      * Methods that must be implemented from Screen interface
      */
-    public void pause() {}
-    public void resume() {}
-    public void resize(int width, int height) {}
+    public void pause() {
+    }
+
+    public void resume() {
+    }
+
+    public void resize(int width, int height) {
+    }
+
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
 
     /**
      * <p>
-     *     Works similar like create() method from Game interface
+     * Works similar like create() method from Game interface
      * </p>
+     *
      * @since 1.0
      */
     public void show() {
@@ -110,16 +118,16 @@ public class Cover implements Screen
         game.batch.begin();
         ScreenUtils.clear(1, 0, 0, 1);
         game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    
+
         // Draw logo animation in case the start button was pressed 
         if (logo_animation.getPlayMode() == Animation.PlayMode.NORMAL) {
             game.batch.draw(logo_animation.getKeyFrame(timePassed), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             timePassed += delta;
-        // Draw the static logo if else
+            // Draw the static logo if else
         } else {
             game.batch.draw(logo, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
-    
+
         game.batch.end();
         stage.draw();
     }
@@ -135,18 +143,19 @@ public class Cover implements Screen
 
     /**
      * <p>
-     *     Creates logo animation used after start button is clicked
+     * Creates logo animation used after start button is clicked
      * </p>
+     *
      * @since 1.0
      */
     private void createLogoAnimation() {
         logoAtlas = new TextureAtlas(Gdx.files.internal("cover/Logo.atlas"));
 
         Sprite[] spriteArray = new Sprite[12];
-        for(int i = 0; i<12; i++) {
-            spriteArray[i] = logoAtlas.createSprite("logo"+(i+1));
+        for (int i = 0; i < 12; i++) {
+            spriteArray[i] = logoAtlas.createSprite("logo" + (i + 1));
         }
-        logo_animation = new Animation<Sprite>(1/15f, spriteArray);
+        logo_animation = new Animation<Sprite>(1 / 15f, spriteArray);
 
         // Prevent animation to show at runtime (opening the game)
         logo_animation.setPlayMode(Animation.PlayMode.REVERSED);
@@ -154,14 +163,15 @@ public class Cover implements Screen
 
     /**
      * <p>
-     *     Creates and returns a TextButton
+     * Creates and returns a TextButton
      * </p>
+     *
      * @param upTexturePath
      * @param downTexturePath
      * @param overTexturePath
-     * @param font used on TextButton
-     * @param x coordinate (position) of the button
-     * @param y coordinate (position) of the button
+     * @param font            used on TextButton
+     * @param x               coordinate (position) of the button
+     * @param y               coordinate (position) of the button
      * @return created TextButton according to parameters
      * @since 1.0
      */
@@ -183,8 +193,9 @@ public class Cover implements Screen
 
     /**
      * <p>
-     *     Creates all menu buttons with their respective event listeners
+     * Creates all menu buttons with their respective event listeners
      * </p>
+     *
      * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-92">GD-92: Review Menu Prototype</a>
      * @since 1.0
      */

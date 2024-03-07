@@ -1,21 +1,19 @@
 package com.mygdx.game.Screens;
 
 // LibGDX libraries
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.game.helpers.SoundPaths;
@@ -23,16 +21,15 @@ import com.badlogic.gdx.audio.Sound;
 
 /**
  * Class for game over screen
- *
+ * <p>
  * Please see the {@link com.mygdx.game.Screens.GameOver}
- * @author Gines Moratalla, Juozas Skarbalius
  *
+ * @author Gines Moratalla, Juozas Skarbalius
  */
-public class GameOver implements Screen  
-{
-    /**Cover images
-     *
-      */
+public class GameOver implements Screen {
+    /**
+     * Cover images
+     */
     private Texture background;
     private Animation<Sprite> gameOverAnimation;
 
@@ -50,19 +47,26 @@ public class GameOver implements Screen
 
     // Sound effects
     private final Sound deathSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.PLAYERDEAD_PATH));
-	private final Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private final Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
     private final SoundPaths soundPaths = SoundPaths.getInstance();
 
     public GameOver(final Menu game, FoodGame foodGame) {
-        this.renderOpacity = 0f; 
+        this.renderOpacity = 0f;
         this.game = game;
         this.foodGame = foodGame;
     }
 
-    public void pause() {}
-    public void resume() {}
-    public void resize(int width, int height) {}
-    public void hide() {}
+    public void pause() {
+    }
+
+    public void resume() {
+    }
+
+    public void resize(int width, int height) {
+    }
+
+    public void hide() {
+    }
 
     public void show() {
         // Variables to draw buttons and images into the screen
@@ -78,19 +82,19 @@ public class GameOver implements Screen
         TextureAtlas gameOverAtlas = new TextureAtlas("cover/gameOver.atlas");
 
         gameOverAnimation = new Animation<>(
-        1/8f, 
-        gameOverAtlas.createSprite("GameOver_logo1"),
-        gameOverAtlas.createSprite("GameOver_logo2"));
+                1 / 8f,
+                gameOverAtlas.createSprite("GameOver_logo1"),
+                gameOverAtlas.createSprite("GameOver_logo2"));
 
         // Pause Screen buttons
         TextButton exit_button =
-                Cover.createButton("buttons/Exit_NotClicked.png", "buttons/Exit_Clicked.png","buttons/Exit_Hover.png", font, 500, 100);
-        exit_button.setSize(exit_button.getWidth()/2, exit_button.getHeight()/2);
+                Cover.createButton("buttons/Exit_NotClicked.png", "buttons/Exit_Clicked.png", "buttons/Exit_Hover.png", font, 500, 100);
+        exit_button.setSize(exit_button.getWidth() / 2, exit_button.getHeight() / 2);
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 buttonSound.play(soundPaths.getVolume());
-				deathSound.stop();
+                deathSound.stop();
                 foodGame.dispose();
                 foodGame.getEnemiesGenerator().reset();
                 game.resetGame();
@@ -105,7 +109,7 @@ public class GameOver implements Screen
 
     public void render(float delta) {
 
-        renderOpacity = Math.min(renderOpacity + delta / 2, 1f); 
+        renderOpacity = Math.min(renderOpacity + delta / 2, 1f);
         timePassed += delta;
 
         stage.act();
@@ -115,7 +119,7 @@ public class GameOver implements Screen
         game.batch.setColor(1f, 1f, 1f, renderOpacity);
 
         game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        game.batch.draw(gameOverAnimation.getKeyFrame(timePassed, true), 320, 270, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        game.batch.draw(gameOverAnimation.getKeyFrame(timePassed, true), 320, 270, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         game.batch.end();
 
         game.batch.setColor(1f, 1f, 1f, 1f);
