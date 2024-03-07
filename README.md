@@ -26,11 +26,13 @@ Plase, for a good experience, don't miss reading this section before playing!!
 ## Dependencies 🧩
 ## How to run ⌨️
 
-A run script is provided within the scripts directory. Within the project directory
-
+You should have at least JDK11 to run the game. Recommended JDK version is 17.
+To build and run the game locally, execute the following commands:
 ```
-cd scripts
-./run.sh
+chmod +x ./gradlew
+./gradlew
+./gradlew desktop:dist
+./gradlew desktop:run
 
 # must give permissions to run the script (if required by your OS) 
 ```
