@@ -35,7 +35,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
  */
 public class NewRound implements Screen  
 {
-
     /**
      * Cover images
      */
@@ -49,39 +48,42 @@ public class NewRound implements Screen
     private TextButton add_damage;
     private TextButtonStyle nextRound;
 
-    private Texture damageTexture;
-	private Sprite damageIcon;
+    /**
+     * Icon sprite fields
+     */
+    private Sprite damageIcon;
+    private Sprite healthIcon;
 
-    private Texture healthTexture;
-	private Sprite healthIcon;
-
-    // Variabkes to display elements (e.g, buttons)
     private Stage stage;
+
+    /**
+     * Font fields
+     */
     private BitmapFont font;
     private BitmapFont font1;
     private BitmapFont font2;
     private BitmapFont font3;
     private Fonts myFont;
     private SpriteBatch batch;
-    // Game object (Menu instance in the constructor)
-    Menu game;
-    private StatsHelper statsHelper;
-    private ArrayList<AnimationParameters> xpAnimation;
+
+    final Menu game;
+    private final StatsHelper statsHelper;
+    private final ArrayList<AnimationParameters> xpAnimation;
     private float timePassed;
 
-    // Sound effects
-    private Sound buySound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUYUPGRADE_PATH));
-    private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
-    private SoundPaths soundPaths = SoundPaths.getInstance();
+    /**
+     * Sound Effects
+     */
+    private final Sound buySound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUYUPGRADE_PATH));
+    private final Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private final SoundPaths soundPaths = SoundPaths.getInstance();
 
-    // Screen constructor
     public NewRound(Menu game) {
         this.game = game;
         this.statsHelper = game.getStatsHelper();
         xpAnimation = new ArrayList<>();
     }
 
-    // Methods necessary to implement Screen interface
     public void pause() {}
     public void resume() {}
     public void resize(int width, int height) {}
@@ -89,9 +91,7 @@ public class NewRound implements Screen
         Gdx.input.setInputProcessor(null);
     }
 
-    // Works like create() method
     public void show() {
-        
         // Variables to draw buttons and images into the screen
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
@@ -108,28 +108,25 @@ public class NewRound implements Screen
         stage.act();
         batch.begin();
         ScreenUtils.clear(1, 0, 0, 1);
-        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(damageIcon, 120, 250, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/8);
-        batch.draw(healthIcon, 120, 150, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/8);
-        font1.draw(batch, "Gear Up!\n\nupgrade your stats using \nthe XP points you gained.",120,  500);
 
+        // render background texture
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // render damage icon texture
+        batch.draw(damageIcon, 120, 250, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/8);
+
+        // render health texture
+        batch.draw(healthIcon, 120, 150, Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/8);
+
+        // render text
+        font1.draw(batch, "Gear Up!\n\nupgrade your stats using \nthe XP points you gained.",120,  500);
         font3.draw(batch, "Cost:        XP left: ",120,  380);
         font2.draw(batch, "50xp",230,  380);
         font2.draw(batch, game.getStrXP(),490,  380);
 
         timePassed += Gdx.graphics.getDeltaTime();
 
-        Iterator<AnimationParameters> iterator = xpAnimation.iterator();
-		while (iterator.hasNext()) {
-    		AnimationParameters params = iterator.next();
-    		long elapsedTime = System.currentTimeMillis() - params.getTimeStarted();
-    		if (elapsedTime < 400) {
-        		batch.draw(params.geAnimation().getKeyFrame(timePassed, true),
-                params.getX(), params.getY(), 120, 100);
-    		} else {
-        		iterator.remove();
-    		}
-		}
+        renderAnimation();
 
         Gdx.input.setInputProcessor(stage);
         batch.end();
@@ -137,10 +134,25 @@ public class NewRound implements Screen
         adderVisibility();
     }
 
-
+    /**
+     * <p>Draws and renders animations on the next round screen</p>
+     * @since 1.0
+     */
+    private void renderAnimation() {
+        Iterator<AnimationParameters> iterator = xpAnimation.iterator();
+        while (iterator.hasNext()) {
+            AnimationParameters params = iterator.next();
+            long elapsedTime = System.currentTimeMillis() - params.getTimeStarted();
+            if (elapsedTime < 400) {
+                batch.draw(params.geAnimation().getKeyFrame(timePassed, true),
+                        params.getX(), params.getY(), 120, 100);
+            } else {
+                iterator.remove();
+            }
+        }
+    }
 
     public void dispose() {
-        
         background.dispose();
         stage.dispose();
         font.dispose();
@@ -149,33 +161,24 @@ public class NewRound implements Screen
     }
 
     public void createButtons() {
-
         myFont = new Fonts();
         font1 = myFont.getFont(Color.WHITE, 23, 3);
         font2 = myFont.getFont(Color.RED, 23, 3);
         font3 = myFont.getFont(Color.GREEN, 23, 3);
 
         // Health and damage Icon
-        damageTexture = new Texture("buttons/damage.png");
+        Texture damageTexture = new Texture("buttons/damage.png");
 		damageIcon = new Sprite(damageTexture);
 
-        healthTexture = new Texture("buttons/health.png");
+        Texture healthTexture = new Texture("buttons/health.png");
 		healthIcon = new Sprite(healthTexture);
 
         // Adder buttons
-        add = new TextButtonStyle();
-        add.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/add_NoClick.png")));
-        add.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/add_Clicked.png")));
-        add.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/add_Hover.png")));
-        add.font = font;
-        add_damage = new TextButton("", add);
+        add_damage = Cover.createButton("buttons/add_NoClick.png", "buttons/add_Clicked.png", "buttons/add_Hover.png", font, 470, 250);
         add_damage.setSize(add_damage.getWidth()/2, add_damage.getHeight()/2);
-        add_damage.setPosition(470, 250);
 
-        add_health = new TextButton("", add);
+        add_health =  Cover.createButton("buttons/add_NoClick.png", "buttons/add_Clicked.png", "buttons/add_Hover.png", font, 470, 150);
         add_health.setSize(add_health.getWidth()/2, add_health.getHeight()/2);
-        add_health.setPosition(470, 150);
-
 
         add_damage.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -211,12 +214,7 @@ public class NewRound implements Screen
             }
         });
 
-        nextRound = new TextButtonStyle();
-        nextRound.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/next_round_NoClick.png")));
-        nextRound.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/next_round_Clicked.png")));
-        nextRound.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/next_round_Hover.png")));
-        nextRound.font = font;
-        TextButton nextRound_button = new TextButton("", nextRound);
+        TextButton nextRound_button =  Cover.createButton("buttons/next_round_NoClick.png", "buttons/next_round_Clicked.png", "buttons/next_round_Hover.png", font, 120, 30);
         nextRound_button.setSize(nextRound_button.getWidth()/2, nextRound_button.getHeight()/2);
         nextRound_button.setPosition(120, 30);
 
@@ -224,19 +222,15 @@ public class NewRound implements Screen
             public void clicked(InputEvent event, float x, float y) {
                 buttonSound.play(soundPaths.getVolume());
                 stage.dispose();
-                //foodGame.getEnemiesGenerator().reset();
                 game.incrementRound();
                 game.setScreen(new FoodGame(game));
             }
         });
 
-
-
         // Add buttons to the screen
         stage.addActor(add_health);
         stage.addActor(add_damage);
         stage.addActor(nextRound_button);
-
     }
 
     private void adderVisibility() {
