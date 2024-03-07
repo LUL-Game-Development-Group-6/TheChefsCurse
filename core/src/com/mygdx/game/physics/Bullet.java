@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.game.Screens.FoodGame;
 import com.mygdx.game.Screens.Menu;
-import com.mygdx.game.misc.Coords;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -17,8 +15,7 @@ public class Bullet extends DynamicObject
 	private float xSpeed;
 	private float ySpeed;
 	private Rectangle bulletHitbox;
-	private boolean visible;//if we are reusing the same bullets then we don't want all the bullets to be visible at the same time.
-	
+
 	private float xPosition;
 	private float yPosition;
 	
@@ -41,8 +38,6 @@ public class Bullet extends DynamicObject
 	private Animation<Sprite> ketchupAnimation;
 	private Animation<Sprite> popBulletAnimation;
 	private TextureAtlas atlas;
-
-	private long animationStart;
 
 	public static enum EnemyBullet {
 		HOTDOG_BULLET,
@@ -71,11 +66,8 @@ public class Bullet extends DynamicObject
 		shotgunTexture_DOWN_RIGHT = new Texture("cheff/Shotgun/shotgun_bullet_DOWN_RIGHT.png");
 		shotgunTexture_DOWN_LEFT = new Texture("cheff/Shotgun/shotgun_bullet_DOWN_LEFT.png");
 
-		
-
 		bulletSprite = new Sprite(bulletTexture);
 		bulletHitbox = new Rectangle(xPos, yPos, 10, 10);
-		visible = true;
 		speedModifier = 4f;
 		damage = 10;
 		this.weaponType = weaponType;
@@ -96,7 +88,6 @@ public class Bullet extends DynamicObject
 		// Redgun bullet
 		createBulletAnimation();
 		bulletHitbox = new Rectangle(xPos, yPos, 50, 50);
-		visible = true;
 		speedModifier = 4f;
 		damage = 10;
 		this.enemyBullet = enemyBullet;
@@ -113,16 +104,6 @@ public class Bullet extends DynamicObject
 		return bulletHitbox;
 	}
 	
-	public boolean getVisibility()
-	{
-		return visible;
-	}
-	
-	public void setVisibility(boolean newVisibility)
-	{
-		visible = newVisibility;
-	}
-	
 	public float getSpeed()
 	{
 		return speedModifier;
@@ -131,22 +112,6 @@ public class Bullet extends DynamicObject
 	public void setSpeed(float newSpeed)
 	{
 		speedModifier = newSpeed;
-	}
-	
-	public float getXSpeed()
-	{
-		return xSpeed;
-	}
-	
-	public float getYSpeed()
-	{
-		return ySpeed;
-	}
-	
-	public void setSpeedVector(float x, float y)
-	{
-		xSpeed = x;
-		ySpeed = y;
 	}
 	
 	public float getXPosition()
@@ -244,18 +209,6 @@ public class Bullet extends DynamicObject
 		this.bulletAnimation = anim;
 	}
 
-	public Animation<Sprite> getBulletAnimation() {
-		return this.bulletAnimation;
-	}
-
-	public float getInitialX() {
-		return this.initialX;
-	}
-
-	public float getInitialY() {
-		return this.initialY;
-	}
-
 	public void setShotgunUP(boolean isUp, boolean isLeft) {
 		if (isUp && isLeft) {
 			shotGunTexture = shotgunTexture_UP_LEFT;
@@ -269,14 +222,6 @@ public class Bullet extends DynamicObject
 		if (!isUp && !isLeft) {
 			shotGunTexture = shotgunTexture_DOWN_RIGHT;
 		}
-	}
-
-	public void setAnimationStart(long mins) {
-		this.animationStart = mins;
-	}
-
-	public long getAnimationStart() {
-		return this.animationStart;
 	}
 
 	public void createBulletAnimation() {
