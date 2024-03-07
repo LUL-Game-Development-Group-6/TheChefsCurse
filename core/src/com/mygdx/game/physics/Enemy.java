@@ -377,6 +377,7 @@ public class Enemy extends DynamicObject {
                 this.getAmmunition().remove(bullet);
             }
         }
+        enemyOffLimits();
     }
 
     /**
@@ -602,6 +603,26 @@ public class Enemy extends DynamicObject {
 
         } else if (direction.x >= 0 && direction.y < 0) {
             velocity.set(direction.x * -speed * 2, direction.y * -speed);
+        }
+    }
+
+    /**
+     * Method that will kill an enemy if it gets too far from the player
+     * 
+     * Due to time constraints, this had to be implemented to
+     * fix a bug that pushed enemies off the map after certain collisions
+     * 
+     */
+    public void enemyOffLimits() {
+        if
+        (
+            this.getHitbox().x > 12000 ||
+            this.getHitbox().y > 12000 ||
+            this.getHitbox().x < -12000 ||
+            this.getHitbox().y < -12000
+        )
+        {
+            this.isDead = true;
         }
     }
 }
