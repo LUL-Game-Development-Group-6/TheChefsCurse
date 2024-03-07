@@ -1,34 +1,26 @@
 package com.mygdx.game.physics;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.game.Room.Room;
 import com.mygdx.game.Screens.Menu;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Enemy Generator class. Responsible for generating random enemy batches
+ * @author Juozas Skarbalius
+ */
 public class EnemiesGenerator {
-    private int MAX_ENEMY_POOL_SIZE;
+    private final int MAX_ENEMY_POOL_SIZE;
     private int enemiesLeft;
-    private EnemyFactory factory;
-    private Room room;
+    private final EnemyFactory factory;
+    private final Room room;
     private float timeElapsedSinceLastSpawn;
     private int enemiesSpawned;
-    private List<Object> recentlySpawnedEnemies;
-    private Menu game;
-
-    public EnemiesGenerator() {
-        factory = EnemyFactory.getInstance();
-        timeElapsedSinceLastSpawn = 0;
-        enemiesSpawned = 0;
-        recentlySpawnedEnemies = new ArrayList<>();
-    }
+    private final List<Object> recentlySpawnedEnemies;
+    private final Menu game;
 
     public EnemiesGenerator(List<Object> entityList, Room room, Menu game) {
-
         this.room = room; 
         this.game = game;
         MAX_ENEMY_POOL_SIZE = room.getPoolSize();
@@ -48,7 +40,7 @@ public class EnemiesGenerator {
     }
 
     public void getNextBatchOfEnemies(float delta) {
-        // every 15 seconds generate batch if pool is not full
+        // every 5 seconds generate batch if pool is not full
         if(timeElapsedSinceLastSpawn >= 5 && enemiesSpawned <= MAX_ENEMY_POOL_SIZE) {
             // get random size of enemy chunk
             int enemiesToSpawn = generateNextRandomChuckSize();
@@ -100,14 +92,6 @@ public class EnemiesGenerator {
             }
         }
         return 0;
-    }
-
-    public int getPoolSize() {
-        return MAX_ENEMY_POOL_SIZE;
-    }
-
-    public int getEnemiesSpawned() {
-        return enemiesSpawned;
     }
 
     public int getEnemiesLeft() {
