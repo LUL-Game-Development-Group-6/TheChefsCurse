@@ -21,48 +21,49 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.game.helpers.SoundPaths;
 import com.badlogic.gdx.audio.Sound;
 
+/**
+ * Class for game over screen
+ *
+ * Please see the {@link com.mygdx.game.Screens.GameOver}
+ * @author Gines Moratalla, Juozas Skarbalius
+ *
+ */
 public class GameOver implements Screen  
 {
-
-    // Cover images
+    /**Cover images
+     *
+      */
     private Texture background;
-    private Texture logo;
     private Animation<Sprite> gameOverAnimation;
-    private TextureAtlas gameOverAtlas;
 
-    // Pause Screen buttons
-    private TextButtonStyle exit;
-
-    // Variabkes to display elements (e.g, buttons)
+    /**
+     * Variables to display elements (e.g, buttons)
+     */
     private Stage stage;
     private BitmapFont font;
 
     private float renderOpacity;
     private float timePassed;
 
-    // Game object (Menu instance in the constructor)
     final Menu game;
     private FoodGame foodGame;
 
     // Sound effects
-    private Sound deathSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.PLAYERDEAD_PATH));
-	private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
-    private SoundPaths soundPaths = SoundPaths.getInstance();
+    private final Sound deathSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.PLAYERDEAD_PATH));
+	private final Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private final SoundPaths soundPaths = SoundPaths.getInstance();
 
-    // Screen constructor
     public GameOver(final Menu game, FoodGame foodGame) {
         this.renderOpacity = 0f; 
         this.game = game;
         this.foodGame = foodGame;
     }
 
-    // Methods necessary to implement Screen interface
     public void pause() {}
     public void resume() {}
     public void resize(int width, int height) {}
     public void hide() {}
 
-    // Works like create() method
     public void show() {
         // Variables to draw buttons and images into the screen
         deathSound.play(soundPaths.getVolume());
@@ -72,24 +73,19 @@ public class GameOver implements Screen
         font = new BitmapFont();
 
         background = new Texture("cover/black.png");
-        logo = new Texture("cover/GameOver_logo.png");
+        Texture logo = new Texture("cover/GameOver_logo.png");
 
-        gameOverAtlas = new TextureAtlas("cover/gameOver.atlas");
+        TextureAtlas gameOverAtlas = new TextureAtlas("cover/gameOver.atlas");
 
         gameOverAnimation = new Animation<>(
         1/8f, 
         gameOverAtlas.createSprite("GameOver_logo1"),
         gameOverAtlas.createSprite("GameOver_logo2"));
 
-
-        exit = new TextButtonStyle();
-        exit.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_NotClicked.png")));
-        exit.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_Clicked.png")));
-        exit.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_Hover.png")));
-        exit.font = font;
-        TextButton exit_button = new TextButton("", exit);
+        // Pause Screen buttons
+        TextButton exit_button =
+                Cover.createButton("buttons/Exit_NotClicked.png", "buttons/Exit_Clicked.png","buttons/Exit_Hover.png", font, 500, 100);
         exit_button.setSize(exit_button.getWidth()/2, exit_button.getHeight()/2);
-        exit_button.setPosition(500, 100);
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -127,7 +123,6 @@ public class GameOver implements Screen
     }
 
     public void dispose() {
-        
         background.dispose();
         stage.dispose();
         font.dispose();
