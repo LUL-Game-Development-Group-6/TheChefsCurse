@@ -18,31 +18,35 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-
+/**
+ * Class pause screen
+ * Please refer to {@link com.mygdx.game.Screens.Pause}
+ * @author Gines Moratalla, Juozas Skarbalius
+ */
 public class Pause implements Screen  
 {
 
-    // Cover images
+    /**
+     * Cover images
+     */
     private Texture background;
     private Texture logo;
 
-    // Pause Screen buttons
-    private TextButtonStyle exit;
-    private TextButtonStyle resume;
-
-    // Variabkes to display elements (e.g, buttons)
+    /**
+     * Variables to display elements (e.g, buttons)
+     * */
     private Stage stage;
     private BitmapFont font;
     private SpriteBatch batch;
-    // Game object (Menu instance in the constructor)
-    Menu game;
-    private FoodGame foodGame;
+    private final Menu game;
+    private final FoodGame foodGame;
 
-    // Sound Effects
-    private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
-    private SoundPaths soundPaths = SoundPaths.getInstance();
+    /**
+     * Sound Effects
+      */
+    private final Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private final SoundPaths soundPaths = SoundPaths.getInstance();
 
-    // Screen constructor
     public Pause(Menu game, FoodGame foodGame) {
         this.game = game;
         this.foodGame = foodGame;
@@ -56,7 +60,6 @@ public class Pause implements Screen
         Gdx.input.setInputProcessor(null);
     }
 
-    // Works like create() method
     public void show() {
         
         // Variables to draw buttons and images into the screen
@@ -68,25 +71,16 @@ public class Pause implements Screen
         background = new Texture("cover/pause_background.png");
         logo = new Texture("cover/Paused_logo.png");
 
-
-        exit = new TextButtonStyle();
-        exit.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_NotClicked.png")));
-        exit.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_Clicked.png")));
-        exit.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Exit_Hover.png")));
-        exit.font = font;
-        TextButton exit_button = new TextButton("", exit);
+        /**
+         * Cover images
+         */
+        TextButton exit_button =
+                Cover.createButton("buttons/Exit_NotClicked.png", "buttons/Exit_Clicked.png", "buttons/Exit_Hover.png", font, 490, 200);
         exit_button.setSize(exit_button.getWidth()/2, exit_button.getHeight()/2);
-        exit_button.setPosition(490, 200);
 
-        resume = new TextButtonStyle();
-        resume.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/resume_NotClicked.png")));
-        resume.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/resume_Clicked.png")));
-        resume.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/resume_Hover.png")));
-        resume.font = font;
-        TextButton resume_button = new TextButton("", resume);
+        TextButton resume_button =
+                Cover.createButton("buttons/resume_NotClicked.png", "buttons/resume_Clicked.png", "buttons/resume_Hover.png", font, 490, 100);
         resume_button.setSize(resume_button.getWidth()/2, resume_button.getHeight()/2);
-        resume_button.setPosition(490, 100);
-
 
         resume_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -120,7 +114,6 @@ public class Pause implements Screen
     }
 
     public void dispose() {
-        
         background.dispose();
         stage.dispose();
         font.dispose();
