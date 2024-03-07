@@ -377,12 +377,12 @@ public class Enemy extends DynamicObject{
 
   public void randomizeEnemyDirection(float lastHitObject, Player player, float deltaTime, TiledMap map) {
 
-    Vector2 direction = new Vector2(player.getPreviousPos().x - position.x, player.getPreviousPos().y - position.y);
-    direction.nor();
+    Vector2 enemyPlayerVector = new Vector2(player.getPreviousPos().x - position.x, player.getPreviousPos().y - position.y);
+    enemyPlayerVector.nor();
 
     if(this.getCollided()) {
-      whereIsPlayer(direction);
-      if(isOutsideMap(map)) velocity.set(direction.x * -speed*5, direction.y * -speed*5);
+      adjustVelocity(enemyPlayerVector);
+      if(isOutsideMap(map)) velocity.set(enemyPlayerVector.x * -speed*5, enemyPlayerVector.y * -speed*5);
     } else {
 
       /*
@@ -393,8 +393,8 @@ public class Enemy extends DynamicObject{
        * creating a copy of the direction vector to avoid progresively increase speed
        */
 
-      velocity.set(direction.x * speed, direction.y * speed);
-      setBulletSpeed(direction);
+      velocity.set(enemyPlayerVector.x * speed, enemyPlayerVector.y * speed);
+      setBulletSpeed(enemyPlayerVector);
     }
     // Update enemy position
     isOutsideMap(map);
@@ -423,19 +423,23 @@ public class Enemy extends DynamicObject{
   * Method that will return a different speed direction according to where the enemy is
   * w.r.t. the player 
   */
-  public void whereIsPlayer(Vector2 direction) {
+  public void adjustVelocity(Vector2 enemyPlayerVector) {
 
-    if(direction.x >= 0 && direction.y >= 0) {
-      velocity.set(direction.x * -speed * 2, direction.y * -speed);
+    if(enemyPlayerVector.x >= 0 && enemyPlayerVector.y >= 0) {
+      velocity.set(enemyPlayerVector.x * -speed * 2, enemyPlayerVector.y * -speed);
 
-    } else if (direction.x < 0 && direction.y >= 0) {
-      velocity.set(direction.x * -speed, direction.y * -speed * 2);
+    } else if (enemyPlayerVector.x < 0 && enemyPlayerVector.y >= 0) {
+      velocity.set(enemyPlayerVector.x * -speed, enemyPlayerVector.y * -speed * 2);
 
-    } else if (direction.x < 0 && direction.y < 0) {
-      velocity.set(direction.x * -speed * 5, direction.y * -speed);
+    } else if (enemyPlayerVector.x < 0 && enemyPlayerVector.y < 0) {
+      velocity.set(enemyPlayerVector.x * -speed * 5, enemyPlayerVector.y * -speed);
       
-    } else if (direction.x >= 0 && direction.y  < 0) {
-      velocity.set(direction.x * -speed * 2, direction.y * -speed);
+    } else if (enemyPlayerVector.x >= 0 && enemyPlayerVector.y  < 0) {
+      velocity.set(enemyPlayerVector.x * -speed * 2, enemyPlayerVector.y * -speed);
     }
+  }
+
+  public Vector2 getVelocity() {
+    return this.velocity;
   }
 }
