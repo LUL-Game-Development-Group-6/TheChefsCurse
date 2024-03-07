@@ -223,13 +223,11 @@ public class FoodGame implements Screen
 
 					currentEnemy.setHit(true);
 					currentEnemy.setTimeHit();
-					bullet.setVisibility(false);
 					currentEnemy.takeDamage(bullet.getDamage());
 					player1.getAmmunition().remove(bullet);
 				}
 			}
 			if(bullet.getDespawnTime() < System.currentTimeMillis()) {
-				bullet.setVisibility(false);
 				player1.getAmmunition().remove(bullet);
 			}
 		}
@@ -329,7 +327,7 @@ public class FoodGame implements Screen
 		renderShaders();
 
 		// Render overlay elements
-		overlay.render(player1, entityList.size() - 1, enemiesGenerator, enemiesGenerator.getEnemiesLeft());
+		overlay.render(player1, enemiesGenerator.getEnemiesLeft());
 	}
 	
 	public float getTimePassed() {
@@ -367,8 +365,7 @@ public class FoodGame implements Screen
 		for (Object entity : entityList) {
 			if(entity instanceof Player) {
 				player1.render(batch, this, camera);
-
-			} else if(entity instanceof Enemy){
+			} else if(entity instanceof Enemy) {
 				Enemy enemy = (Enemy) entity;
 				
 				enemy.render(
