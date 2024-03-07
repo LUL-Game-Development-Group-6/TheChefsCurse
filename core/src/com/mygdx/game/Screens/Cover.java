@@ -165,16 +165,20 @@ public class Cover implements Screen
      * @return created TextButton according to parameters
      * @since 1.0
      */
-    private static TextButton createButton(String upTexturePath, String downTexturePath, String overTexturePath, BitmapFont font, int x, int y) {
+    public static TextButton createButton(String upTexturePath, String downTexturePath, String overTexturePath, BitmapFont font, int x, int y) {
         TextButtonStyle buttonSkin = new TextButtonStyle();
         buttonSkin.up = new TextureRegionDrawable(new TextureRegion((new Texture(upTexturePath))));
         buttonSkin.down = new TextureRegionDrawable(new TextureRegion((new Texture(downTexturePath))));
         buttonSkin.over = new TextureRegionDrawable(new TextureRegion((new Texture(overTexturePath))));
         buttonSkin.font = font;
         TextButton button = new TextButton("", buttonSkin);
-        button.setSize(button.getWidth()/2, button.getHeight()/2);
+        button.setSize(button.getWidth(), button.getHeight());
         button.setPosition(x, y);
         return button;
+    }
+
+    private void adjustButtonSize(TextButton button) {
+        button.setSize(button.getWidth() / 2, button.getHeight() / 2);
     }
 
     /**
@@ -205,6 +209,11 @@ public class Cover implements Screen
                 "buttons/Exit_Clicked.png",
                 "buttons/Exit_Hover.png",
                 font, 120, 50);
+
+        adjustButtonSize(start_button);
+        adjustButtonSize(options_button);
+        adjustButtonSize(about_button);
+        adjustButtonSize(exit_button);
 
         exit_button.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
