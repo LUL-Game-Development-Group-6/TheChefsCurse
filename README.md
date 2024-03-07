@@ -25,7 +25,7 @@ Plase, for a good experience, don't miss reading this section before playing!!
 
 ## Dependencies 🧩
 
-You should have at least **JDK11** to run the game. Recommended JDK version is 17. ☕
+You should have at least **JDK11** to run the game. Recommended JDK version is 17 (like the one installed in LUL's Physical Ubuntu lab machines.
 
 
 ## How to run ⌨️
