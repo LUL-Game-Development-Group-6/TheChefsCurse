@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.helpers.SoundPaths;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -15,16 +14,23 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-
-
+/**
+ * Class for options menu screen
+ * Provides ability to change music volume and volume of special effects of the game.
+ * Please refer to {@link com.mygdx.game.Screens.Options}
+ * @author Gines Moratalla, Juozas Skarbalius
+ *
+ */
 public class Options implements Screen  
 {
+    /**
+     * Singleton declaration
+     */
     private static Options instance;
 
     public static Options getInstance() {
@@ -32,29 +38,35 @@ public class Options implements Screen
         return instance;
     }
 
-    // Volume Slider
+    /**
+     * Volume slider
+     */
     private Slider musicSlider;
     private Slider sfxSlider;
 
 
-    // Cover images
-    private Texture background;
+    /**
+     * Cover images
+     */
+    private final Texture background;
 
-    // Pause Screen buttons
-    private TextButtonStyle next;
+    /**
+     * Variables to display elements (e.g, buttons)
+     */
+    private final Stage stage;
+    private final BitmapFont font;
 
-    // Variabkes to display elements (e.g, buttons)
-    private Stage stage;
-    private BitmapFont font;
-
-    // Game object (Menu instance in the constructor)
+    /**
+     * Game object (Menu instance in the constructor)
+     */
     Menu game;
 
-    // Sound Effects
-    private Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
-    private SoundPaths soundPaths = SoundPaths.getInstance();
+    /**
+     * Sound Effects
+     */
+    private final Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal(SoundPaths.BUTTON_PATH));
+    private final SoundPaths soundPaths = SoundPaths.getInstance();
 
-    // Screen constructor
     public Options() {
         
         this.game = Menu.getInstance();
@@ -67,27 +79,20 @@ public class Options implements Screen
         createButtons();
     }
 
-    // Methods necessary to implement Screen interface
+    /**
+     * Methods necessary to implement Screen interface
+     * */
     public void pause() {}
     public void resume() {}
     public void resize(int width, int height) {}
     public void hide() {}
 
-    // Works like create() method
     public void show() {
-
         Gdx.input.setInputProcessor(stage);
-
     }
     
     public void render(float delta) {
-
-        stage.act();
-        ScreenUtils.clear(1, 0, 0, 1);
-        game.batch.begin();
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        game.batch.end();
-        stage.draw();
+        About.renderScreenBackground(stage, game, background);
     }
 
     public void createButtons() {
@@ -102,28 +107,18 @@ public class Options implements Screen
         Slider.SliderStyle sliderStyle = new Slider.SliderStyle(sliderBarDrawable, knobDrawable);
 
         musicSlider = new Slider(0f, 1f, 0.01f, false, sliderStyle);
-        sfxSlider = new Slider(0f, 1f, 0.01f, false, sliderStyle);
+        musicSlider.setPosition(120, 315);
+        musicSlider.setSize(600, 50);
+        musicSlider.setValue(soundPaths.getMusicVolume());
 
+        sfxSlider = new Slider(0f, 1f, 0.01f, false, sliderStyle);
         sfxSlider.setPosition(120, 160);
         sfxSlider.setSize(600, 50);
         sfxSlider.setValue(soundPaths.getVolume());
 
-        musicSlider.setPosition(120, 315);
-        musicSlider.setSize(600, 50);
-        musicSlider.setValue(soundPaths.getMusicVolume());
-        
-
-        next = new TextButtonStyle();
-        next.up = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Normal_X.png")));
-        next.down = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Clicked_X.png")));
-        next.over = new TextureRegionDrawable(new TextureRegion(new Texture("buttons/Hover_X.png")));
-        next.font = font;
-
-        TextButton next_button = new TextButton("", next);
+        TextButton next_button = Cover.createButton("buttons/Normal_X.png", "buttons/Clicked_X.png", "buttons/Hover_X.png", font, 1050, 540);
         next_button.setSize(next_button.getWidth()/2f, next_button.getHeight()/2f);
-        next_button.setPosition(1050, 540);
         next_button.addListener(new ClickListener() {
-
             public void clicked(InputEvent event, float x, float y) {
                 buttonSound.play(soundPaths.getVolume());
                 game.setScreen(Cover.getInstance());
@@ -145,8 +140,6 @@ public class Options implements Screen
                 soundPaths.setMusicVolume(volume);
             }
         });
-        
-        
 
         // Add button to the screen
         stage.addActor(next_button);
@@ -154,11 +147,9 @@ public class Options implements Screen
         stage.addActor(musicSlider);
     }
     public void dispose() {
-        
         background.dispose();
         stage.dispose();
         font.dispose();
         buttonSound.dispose();
-        
     }
 }
