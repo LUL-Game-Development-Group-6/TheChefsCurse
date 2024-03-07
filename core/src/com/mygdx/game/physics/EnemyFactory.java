@@ -8,11 +8,14 @@ import com.mygdx.game.Screens.Menu;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Enemy Factory/Builder class. Responsible for generating Enemy according to specifications.
+ * @author Juozas Skarbalius, Gines Moratalla
+ */
 public class EnemyFactory {
     private static EnemyFactory singletonEnemyFactory;
     private List<Enemy> enemies;
     private Enemy.EnemyType type;
-    private Room room;
     private Vector2 position;
     private float width;
     private float height;
@@ -36,12 +39,7 @@ public class EnemyFactory {
         return singletonEnemyFactory;
     }
 
-    public EnemyFactory withType(Enemy.EnemyType type) {
-        this.type = type;
-        return this;
-    }
-
-    public EnemyFactory withRandomType() {
+    protected EnemyFactory withRandomType() {
         int randomID = MathUtils.random(0, 3);
 
         if(randomID == 0) {
@@ -70,38 +68,22 @@ public class EnemyFactory {
         return this;
     }
 
-    public EnemyFactory withPosition(Vector2 position) {
-        this.position = position;
-        return this;
-    }
-
-    public EnemyFactory withRandomPosition(Room room) {
+    protected EnemyFactory withRandomPosition(Room room) {
         this.position = room.entitySpawn(room.getBackground(), width, 0);
         return this;
     }
 
-    public EnemyFactory withDimensions(float width, float height) {
-        if(dimensionsSetByType) throw new IllegalStateException();
-        this.width = width;
-        this.height = height;
-        return this;
-    }
-
-    public Enemy build(Menu game) {
+    protected Enemy build(Menu game) {
         Enemy enemy = new Enemy(game, position, width, height, type);
         enemies.add(enemy);
         return enemy;
     }
 
-    public List<Enemy> getEnemies() {
+    protected List<Enemy> getEnemies() {
         return enemies;
     }
 
-    public void setEnemies(List<Enemy> enemies) {
-        this.enemies = enemies;
-    }
-
-    public void kill() {
+    protected void kill() {
         enemies = new ArrayList<>();
     }
 }
