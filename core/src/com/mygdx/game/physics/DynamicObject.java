@@ -1,33 +1,31 @@
 package com.mygdx.game.physics;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.Room.Room;
 import com.mygdx.game.Screens.FoodGame;
-import com.mygdx.game.misc.Coords;
 import com.mygdx.game.misc.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dynamic Object class.
+ * Inherited by Player, Enemy, Bullet and Furniture classes
+ * @author Gines Moratalla, Juozas Skarbalius, Macaron
+ */
 public abstract class DynamicObject {
-    private static int[] healthLevels = {10,25,40,50,60,75,80,100};
-    private boolean isMoving;
+    private static final int[] healthLevels = {10,25,40,50,60,75,80,100};
     private boolean collided;
     private int MAX_HEALTH;
     private int currentHealth;
     protected float speed;
-    private double attack;
-    private Coords coordinates;
-    private int ID;
     private boolean isPlayer;
 
     protected Rectangle hitbox;
@@ -53,14 +51,6 @@ public abstract class DynamicObject {
         collided = bool;
     }
 
-    public boolean getIsMoving() {
-        return isMoving;
-    }
-
-    public void setIsMoving(boolean bool) {
-        isMoving = bool;
-    }
-
     public long getTimeHit() {
         return timeHit;
     }
@@ -83,30 +73,6 @@ public abstract class DynamicObject {
 
     public void setSpeed(float speed) {
         this.speed = speed;
-    }
-
-    public double getAttack() {
-        return attack;
-    }
-
-    public void setAttack(double attack) {
-        this.attack = attack;
-    }
-
-    public Coords getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(Coords coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
     }
 
     public Rectangle getHitbox() {
@@ -141,15 +107,6 @@ public abstract class DynamicObject {
         return this.isPlayer;
     }
 
-    // more rectangle stuff
-    // Outline hitbox for testing
-    public void renderHitbox(ShapeRenderer shapeRenderer){
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(hitbox.getX(), hitbox.getY(), hitbox.getWidth(), hitbox.getHeight());
-        shapeRenderer.end();
-    }
-
     public void createHealth() {
         healthTextures = new ArrayList<>();
 
@@ -173,9 +130,16 @@ public abstract class DynamicObject {
     public boolean getHit() {return this.hit;}
     public Animation<Sprite> getAnimation() {return null;}
 
-    // Can't do switch case with ranges, thats why I used this disposition
+    /**
+     * <p>
+     *     Method that updates health bar's texture according to the amount of health left
+     * </p>
+     * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-98">GD-98: [PHYSICS & LOGIC] The enemy can damage player (through shooting & punching) [M]</a>
+     * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-60">GD-60: [LOGIC] Health & damage mechanism [M]</a>
+     * @since 1.0
+     */
     public void healthPercentage() {
-
+        if(MAX_HEALTH == 0) MAX_HEALTH = 100;
         int threshold = (100 * currentHealth) / MAX_HEALTH;
 
         for(int i = 0; i<healthLevels.length; i++) {
@@ -194,4 +158,38 @@ public abstract class DynamicObject {
         this.MAX_HEALTH = health;
     }
 
+    public Sprite flipUpsideDown(Sprite frame) {
+        frame.flip(false, true);
+        return frame;
+    }
+
+    /**
+     * <p>
+     *     Method that generates sprites for supplied type of Enemy
+     * </p>
+     * @param quantity amount of sprites to generate
+     * @param initialPath initial path (usually name of enemy type) of enemy type's textures
+     * @param enemyAtlas reference to the enemy atlas
+     * @return array of Sprite of fixed size determined by quantity
+     * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-97">GD-97: [LOGIC] Spawn certain amount of enemies in a room [M]</a>
+     * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-98">GD-98: [PHYSICS & LOGIC] The enemy can damage player (through shooting & punching) [M]</a>
+     * @see <a href="https://lulgroupproject.atlassian.net/browse/GD-60">GD-60: [LOGIC] Health & damage mechanism [M]</a>
+     * @since 1.0
+     */
+    Sprite[] generateEnemyAtlasSprites(int quantity, String initialPath, TextureAtlas enemyAtlas, boolean... flip) {
+        if(quantity < 1)
+            throw new IllegalArgumentException("[ERROR] Quantity of sprites must be greater than 0");
+        if(initialPath == null || initialPath.isEmpty())
+            throw new IllegalArgumentException("[ERROR] initial path of sprites must not be empty or null");
+        Sprite[] sprites = new Sprite[quantity];
+        for(int i = 0; i<sprites.length; i++) {
+            if(flip.length > 0 && flip[0]) {
+                sprites[i] = flipUpsideDown(enemyAtlas.createSprite(initialPath+(i+1)));
+            } else {
+                sprites[i] = enemyAtlas.createSprite(initialPath+(i+1));
+            }
+
+        }
+        return sprites;
+    }
 }
