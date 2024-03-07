@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import com.mygdx.game.Room.Furniture.FurnitureType;
 import com.mygdx.game.Room.Room.RoomType;
 
+/**
+ * Furniture builder class
+ * Please see the {@link com.mygdx.game.Room.FurnitureBuilder}
+ * @author Gines Moratalla
+ */
 public class FurnitureBuilder {
-
-    public FurnitureBuilder() {}
-
     public void create(RoomType roomType, ArrayList<Object> entityList) {
         switch (roomType) {
             
@@ -136,5 +138,4 @@ public class FurnitureBuilder {
                 break;
         }
     }
-    
 }
